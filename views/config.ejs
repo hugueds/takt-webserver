@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta charset='utf-8'/>
+    <title>LOGISTICA TIMER</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <style rel='stylesheet' type='text/css'>
+		#takt-ml2 {
+			text-align: center;
+			width: 100%;
+			font-size: 4500%;
+			font-weight: bold;			
+		}
+    </style>
+  </head>
+  <body>
+	  <div id="takt-ml2"></div>
+
+<!-- SOCKET I/O -->	    
+   <script src="/socket.io/socket.io.js"></script>
+<!-- MODULES -->	
+<!-- SERVICES -->	
+<!-- CONTROLLERS -->	
+<!-- -->	
+
+   <script>
+	   var socket = io();
+	   socket.on('takt', function(data){
+		   document.getElementById("takt-ml2").innerHTML = data.ml2;
+		});
+   </script>
+  </body>
+</html>

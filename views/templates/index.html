@@ -1,0 +1,139 @@
+  <div class="header">
+
+    <div class="stop-time-box">
+      <div class="stop-time">
+        {{lineStopTime | takt}}
+      </div>
+      <div class='stop-time-text'>
+        STOP TIME - LINE
+      </div>
+    </div>
+
+    <div class="takt-time-box">
+      <div class='takt-time-text'>
+        TAKT LINE
+      </div>
+      <div class='takt-time'>
+        {{lineTakt | takt}}
+      </div>
+      <div ng-hide='show' class='error'>
+        {{error}}
+      </div>
+
+    </div>
+
+
+    <div class="prod-box">
+
+      <div class="prod-produced-text">
+        PRODUZIDOS
+      </div>
+      <div class="prod-produced">
+        {{produced}}
+      </div>
+      <div class="prod-objective-text">
+        OBJETIVO
+      </div>
+      <div class="prod-objective">
+        {{objective}}
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+  <div class='content'>
+
+    <div class='wagon'>
+
+      <div ng-repeat='popid in popidWagon'>
+        <div class="wagon-popid" ng-class='pctUsed(this)'>
+          <span class='wagon-popid-text'> {{popid}} </span>
+        </div>
+      </div>
+
+      <div class='wagon-name-box'>
+        <div class='wagon-name-text'>
+          CAIXA DE DIRECAO
+        </div>
+      </div>
+    </div>
+
+<!--
+    <div class='comboio'>
+
+      <div class='comboio-1 popid-1'>
+
+      </div>
+
+      <div class='comboio-1 popid-2'>
+
+      </div>
+      <div class='comboio-1 popid-3'>
+
+      </div>
+      <div class='comboio-1 popid-4'>
+
+      </div>
+      <div class='comboio-1 popid-5'>
+
+      </div>
+      <div class='comboio-1 popid-6'>
+
+      </div>
+
+      <div class='comboio-1 popid-7'>
+
+      </div>
+
+      <div class='comboio-1 popid-8'>
+
+      </div>
+
+    </div>
+
+
+
+
+    <div class='comboio'>
+
+      <div class='comboio-1 popid-1'>
+
+      </div>
+
+      <div class='comboio-1 popid-2'>
+
+      </div>
+      <div class='comboio-1 popid-3'>
+
+      </div>
+      <div class='comboio-1 popid-4'>
+
+      </div>
+      <div class='comboio-1 popid-5'>
+
+      </div>
+      <div class='comboio-1 popid-6'>
+
+      </div>
+
+      <div class='comboio-1 popid-7'>
+
+      </div>
+
+      <div class='comboio-1 popid-8'>
+
+      </div>
+
+    </div>
+  -->
+</div>
+
+
+<center>  <h1 style="font-size: 800%;">{{serial}}</h1> </center>
+
+
+<div ng-repeat='wagon in wagons'>{{wagon.name}}</div>
