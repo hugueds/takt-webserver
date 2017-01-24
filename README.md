@@ -7,3 +7,4 @@
   * [x] Comunicação Socket
   * [x] Web Server
   * [x] Página de configurações
+  * [ ] Comunicação entre rede cabeada e Wifi
