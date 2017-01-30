@@ -3,6 +3,10 @@
 	margin: 0 auto;
 }
 
+body {
+	background-color: white; //change to white
+}
+
 .header{
 	//border: 1px solid blue;
 	position: relative;
@@ -34,7 +38,6 @@
 
 
 /*	TAKT	*/
-
 .takt-time-box{
 	margin-left: 1%;
 	margin-top: 2%;
@@ -47,6 +50,7 @@
 .takt-time-text{
 	font-size : 170%;
 	text-align: center;
+	color:black ;//change to black
 
 }
 
@@ -54,6 +58,11 @@
 	font-size : 1400%;
 	text-align: center;
 	margin-top: -3.4%;
+	color: black; //change to black
+}
+
+.takt-negative{
+	color: red;
 }
 
 /*	PRODUCTION	*/
@@ -71,6 +80,7 @@
 
 .prod-produced-text , .prod-objective-text{
 	font-size: 170%;
+	color: black; //change to black
 }
 
 
@@ -79,31 +89,33 @@
 	border: 1px solid black;
 	width: 45%;
 	margin-bottom: 3%;
+	color: black; //change
 }
 
 
 /* CONTENT */
 
 .content {
-	margin-top: 5%;
+	margin-top: 3%;
 	//border: solid blue 1px;
 	height: 400px;
 	position: relative;
 	float: left;
 }
 
-/* COMBOIO */
+/* WAGON */
 
 .wagon {
 	width: 40%;
 	position: relative;
 	float: left;
 	margin-left: 8%;
+	margin-bottom: 2%;
 }
 
 .wagon-popid{
-	border: 1px solid black;	
-	height: 300px;
+	border: 2px solid black;	
+	height: 280px;
 	width: 10%;
 	position: relative;
 	float: left;
@@ -115,27 +127,30 @@
 	margin-left: 20%;
 }
 
-.wagon-not-used{
+.wagon-used{
 	background-color: grey;
+	border: dashed 2px;
+	opacity: 0.3;
 }
 
-.wagon-used{
+.wagon-green{
 	background-color: lime;
 }
 
-.wagon-used-warning{
+.wagon-warning{
 	background-color: yellow;
 }
 
-.wagon-used-danger{
+.wagon-danger{
 	background-color: red;
 }
 
 .wagon-name-box{
+	font-weight: bold;
 	border: 1px solid black;
 	width: 70%;
 	float: left;
-	height: 50px;
+	height: 85px;
 	margin-top:2%;
 	margin-left:5%;
 	background-color: #f9ec95;
@@ -146,3 +161,66 @@
 	text-align: center;
 	margin-top: 2%;
 }
+
+/* ADJUST SCREEN */ 
+{
+
+}
+
+
+#clock-container{
+	font-size: 14px;
+}
+
+.form-control{
+	text-align: center;
+}
+
+/*
+#clock-container  input {
+	text-align: center;
+	font-size: 325%;
+	background-color: #ffff63;
+	height: 80px;
+	border-radius: 30%;
+}
+
+#clock-container .btn-success {
+	margin-top: 0%;
+	height : 50px;
+}
+
+#clock-container .btn-info {	
+	height : 40px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	border-radius: 40%;
+	width: 90%;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

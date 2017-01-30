@@ -1,0 +1,86 @@
+*{
+	width: 99%;
+	margin: 0 auto;
+}
+
+body{
+	background-color: #93e4ff;
+}
+
+h1{
+	font-weight: bold;
+	font-size: 500%;
+	font-style: italic;
+
+}
+
+/* LINE FEEDING */
+
+.pbl{
+	margin-left: 2.5%;
+	width: 99%;
+}
+
+.pbl-scanner-header{
+	font-size: 250%;
+	text-align: center;
+	margin-top: 4%;
+}
+
+.pbl-scanner{		
+	margin-bottom: 3%;
+}
+
+.pbl-scanner input{	
+	height: 100px;
+	font-size: 400%;
+	margin-bottom: 3%;
+}
+
+.pbl-buttons button{	
+	font-size: 350%;
+	height: 250px;
+}
+
+.pbl-title{
+	text-align: center;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	font-weight: bold;
+}
+
+.pbl-body{
+	text-align: center;
+}
+
+.part-table-header{
+	border : 1px solid black;
+	text-align: center;
+	font-size: 200%;	
+	background-color: white;
+}
+
+.part-table-body{
+	border : 1px solid black;
+	text-align: center;
+	font-size: 400%;
+	background-color: #ff979F;
+	padding: 1% 0% 1% 0%;
+	margin-top: 0.3%;
+}
+
+.part-table-header-cel{
+	border : 1px solid black;
+}
+
+.part-table{
+	border : 1px solid black;
+}
+
+.part-text{
+	font-size: 200%;
+
+}
+.part-cel-date{
+	font-size: 30px;
+}

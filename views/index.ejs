@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html ng-app="MainApp">
+<html ng-app="TaktApp">
   <head>
-<meta charset='utf-8'/>
- <base href="/">
+    <base href="/"/>
+    <meta name="author" content="Hugo Peres - SSBHPE"/>
+    <meta name="description" content="Timer logistico utilizado para operadores do jacto"/>
+    <meta name="keywords" content="P30, QAS, Logistica, Automacao, Takt, Timer, Raspberry"/>
+    <meta charset='utf-8'/>
     <title>LOGISTICA TIMER</title>
-    <link rel='stylesheet' href="stylesheets/bootstrap/dist/css/bootstrap.min.css" type="text/css" >
+    <link rel='stylesheet' href="stylesheets/bootstrap/dist/css/bootstrap.min.css" type="text/css"/>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
 	  
 	  <ui-view></ui-view>  
-	
-	
-	
-<!-- jQuery -->		
-<script type="text/javascript" src="javascripts/jquery/jquery.js"> </script>
-<!-- BOOTSTRAP -->	
-<script type="text/javascript" src="stylesheets/bootstrap/dist/js/bootstrap.js"> </script>
-<!-- SOCKET I/O -->	    
-   <script src="/socket.io/socket.io.js"></script>
-<!-- MODULES -->	
-<script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
-<script type="text/javascript" src="javascripts/angular/angular-websocket.js"> </script>
-<script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
-<script type="text/javascript" src="javascripts/angularApp.js"> </script>
-<!-- SERVICES -->	
-<!-- CONTROLLERS -->	
-<!-- SCRIPTS -->
-   <script src="javascripts/scripts.js"></script>
+
+    <!-- SOCKET I/O -->	    
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- MODULES -->	
+    <script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
+    <script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
+    <script type="text/javascript" src="javascripts/bootstrap/ui.bootstrap.min.js"> </script>
+    <script type="text/javascript" src="javascripts/angularApp.js"> </script>
+    <!-- FILTERS -->
+    <script type="text/javascript" src="javascripts/filters/filters.js"> </script>
+    <!-- SERVICES -->	
+    <script type="text/javascript" src="javascripts/services/takt-service.js"> </script>
+    <script type="text/javascript" src="javascripts/services/socket-service.js"> </script>
+    <!-- CONTROLLERS -->	
+    <script type="text/javascript" src="javascripts/controllers/takt-controller.js"> </script>
+    <!-- SCRIPTS -->
+    <script src="javascripts/scripts.js"></script>
+
+
   </body>
 </html>

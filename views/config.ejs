@@ -1,33 +1,26 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
   <head>
-<meta charset='utf-8'/>
+	<meta charset='utf-8'/>
+	<base href="/">
     <title>LOGISTICA TIMER</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <style rel='stylesheet' type='text/css'>
-		#takt-ml2 {
-			text-align: center;
-			width: 100%;
-			font-size: 4500%;
-			font-weight: bold;			
-		}
-    </style>
   </head>
   <body>
-	  <div id="takt-ml2"></div>
+  AAAAAAAAaaaaaa
+ 
 
-<!-- SOCKET I/O -->	    
-   <script src="/socket.io/socket.io.js"></script>
-<!-- MODULES -->	
-<!-- SERVICES -->	
-<!-- CONTROLLERS -->	
-<!-- -->	
-
-   <script>
-	   var socket = io();
-	   socket.on('takt', function(data){
-		   document.getElementById("takt-ml2").innerHTML = data.ml2;
-		});
-   </script>
-  </body>
+		<!-- jQuery -->		
+		<script type="text/javascript" src="javascripts/jquery/jquery.js"> </script>
+		<!-- BOOTSTRAP -->	
+		<script type="text/javascript" src="stylesheets/bootstrap/dist/js/bootstrap.js"> </script>
+		<!-- SOCKET I/O -->	    
+		<script src="/socket.io/socket.io.js"></script>
+		<!-- MODULES -->	
+		<script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
+		<script type="text/javascript" src="javascripts/angular/angular-websocket.js"> </script>
+		<script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
+		<script type="text/javascript" src="javascripts/angularApp.js"> </script>
+	</body>
+   
 </html>

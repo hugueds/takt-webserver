@@ -1,0 +1,209 @@
+<div id='clock-container' class='container-fluid'>
+	<div class="row">
+		<div class="col-md-5">
+			<div class="row">
+
+				<div class="col-sm-3 col-sm-offset-2">
+					INSTÂNCIA
+				</div>
+				<div class="col-sm-2 col-sm-offset-1">
+					<select >
+						<option>1</option>
+					</select>
+				</div>		
+				
+			
+
+				STOP TIME
+
+				<!-- CLOCK BOX  STOP TIME--> 
+				<!-- UP ARROWS --> 
+				<div class="row">
+					<center>
+					<div class="col-sm-1 col-sm-offset-5">
+						<button ng-click='increase(st, 0)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-up"></i>
+						</button>
+					</div>
+
+					<div class="col-sm-1">
+						<button ng-click='increase(st, 1)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-up"></i>
+						</button>
+					</div>
+
+					<div class="col-sm-1">
+						<button ng-click='increase(st, 2)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-up"></i>
+						</button>
+					</div>
+					</center>
+				</div>
+
+				<!-- CLOCK --> 
+				<div class="row">
+					
+					<div class="col-sm-1 col-sm-offset-5">
+						<input ng-model='st.h' type="text" name="">
+					</div>
+
+					<div class="col-sm-1">
+						<input ng-change='st.m' ng-model='st.m' type="text" name="">
+					</div>
+
+					<div class="col-sm-1">
+						<input ng-model='st.s' type="text" name="">
+					</div>			
+				</div>
+
+				<!-- DOWN ARROWS --> 
+				<div class="row">
+					<center>
+					<div class="col-sm-1 col-sm-offset-5">
+						<button ng-click='decrease(st, 0)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-down"></i>
+						</button>
+					</div>
+
+					<div class="col-sm-1">
+						<button ng-click='decrease(st, 1)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-down"></i>
+						</button>
+					</div>
+
+					<div class="col-sm-1">
+						<button ng-click='decrease(st, 2)' class="btn-info">
+							<i class="glyphicon glyphicon-menu-down"></i>
+						</button>
+					</div>
+					</center>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="row">
+			<div class="col-sm-3 col-sm-offset-5">
+				<button ng-click='setStopTime(st)' class="btn-lg btn-success">
+					<i></i>
+				</button>
+			</div>
+		</div>
+
+
+
+		<!-- WAGON -->
+		COMBOIO
+		
+		<div class="row">
+			<div class="col-sm-3 col-sm-offset-2">
+				COMBOIO
+			</div
+>			<div class="col-sm-2 col-sm-offset-1">
+				<select ng-model='wagon.number'>
+					<option disabled selected></option>
+					<option>1</option>
+					<option>2</option>
+				</select>
+			</div>		
+			
+		</div>
+
+		<div class="row">
+			<div class="col-sm-3 col-sm-offset-2">
+				QUANTIDADE
+			</div>
+			<div class="col-sm-2 col-sm-offset-1">
+				<select ng-model='wagon.quantity'>
+					<option disabled selected></option>
+					<option  ng-repeat='i in [1,2,3,4,5,6,7,8]'>{{i}} </option>
+				</select>
+			</div>		
+			<div class="col-sm-2">
+				<button ng-click='updateWagon(wagon)' class="btn-sm btn-success">ATUALIZAR</button>
+			</div>	
+		</div>
+
+
+	<!-- CLOCK BOX --> 
+		<div class="row">
+			<center>
+			<div class="col-sm-1 col-sm-offset-5">
+				<button ng-click='increase(t, 0)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-up"></i>
+				</button>
+			</div>
+
+			<div class="col-sm-1">
+				<button ng-click='increase(t, 1)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-up"></i>
+				</button>
+			</div>
+
+			<div class="col-sm-1">
+				<button ng-click='increase(t, 2)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-up"></i>
+				</button>
+			</div>
+			</center>
+		</div>
+
+
+		<div class="row">
+			
+			<div class="col-sm-1 col-sm-offset-5">
+				<input ng-model='t.h' type="text" name="">
+			</div>
+
+			<div class="col-sm-1">
+				<input ng-change='t.m' ng-model='t.m' type="text" name="">
+			</div>
+
+			<div class="col-sm-1">
+				<input ng-model='t.s' type="text" name="">
+			</div>
+			
+		</div>
+
+		<div class="row">
+			<center>
+			<div class="col-sm-1 col-sm-offset-5">
+				<button ng-click='decrease(t, 0)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-down"></i>
+				</button>
+			</div>
+
+			<div class="col-sm-1">
+				<button ng-click='decrease(t, 1)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-down"></i>
+				</button>
+			</div>
+
+			<div class="col-sm-1">
+				<button ng-click='decrease(t, 2)' class="btn-info">
+					<i class="glyphicon glyphicon-menu-down"></i>
+				</button>
+			</div>
+			</center>
+		</div>
+
+
+
+		<div class="row">
+			<div class="col-sm-3 col-sm-offset-5">
+				<button ng-click='setTime(t, wagon.number)' class="btn-lg btn-success">
+					<i class="glyphicon glyphicon-ok"></i>
+				</button>
+			</div>
+		</div>
+
+
+
+
+	{{t}}<br>
+	{{ms}}<br>
+	{{logStopPlan}}<br>
+
+	<div ng-repeat='wagon in wagons'>{{wagon.timer | takt}}</div>
+
+</div>

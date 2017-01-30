@@ -7,34 +7,11 @@ var s7 = new snap7.S7Client();
 var plc = {};
 
 
-function taktToString(buff){
-	var negative = false;
-	var takt;
-	var ms = buff.readUIntBE(0, 4);
-	console.log(ms);
-	if (ms < 0){
-		negative = true;
-		ms = ms * -1;
-	}
-	var hr = 0,
-		min = (ms/1000/60) << 0,
-		sec = (ms/1000) % 60;
-	if (sec < 10){
-		takt = min+":0"+sec;
-	}
-	else{
-		takt = min+":"+sec;
-	}
-	if (negative)
-		takt = "-" + takt;
-	return takt;
-}
-
 plc.cpuInfo = function(){
 	s7.GetCpuInfo(function(data){
 		console.log(data);
 	});
-});
+};
 
 plc.cpuDt = function(){
 	s7.S7GetPlcDateTime(function(data){
