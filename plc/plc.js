@@ -1,91 +1,144 @@
+/* ARQUIVO QUE CRIA OS MÉTODOS PARA A UTILIZAÇÃO DO SNAP7 PARA TRANSMISSÃO DE DADOS COM O PLC */
+
+'use strict';
 //Criar metodos para buscar informacoes no PLC
 require('node-snap7');
-var db = require('../data/db');
+var Instance = require('./ScreenInstance'); // Carrega construtor de dados a serem exibidos na tela
 var plc = {};
 var s7 = new snap7.S7Client();
 
-var ins = [];
+const server_line = '10.8.66.8', rack = 0, slot = 2
+	,server = '10.8.66.82';
 
-var Instance = function(dataBuffer){
-	this.instName = dataBuffer.slice(0,18).toString();
-	this.lineTakt = dataBuffer.readInt32BE(18,22);
-	this.lineStopTime = dataBuffer.readInt32BE(22,26);
-	this.produce = dataBuffer.readInt16BE(26,28);
-	this.objective =   dataBuffer.readInt16BE(28,30);
-	this.lineStopPlan = dataBuffer.readInt32BE(30,34);
-	this.logTimer = dataBuffer.readInt32BE(34,38);
-	this.logStopTime = dataBuffer.readInt32BE(38,42);
-	this.andon = dataBuffer.slice(42,44);
-	this.logStopPlan = dataBuffer.slice(42,44);
-	this.andonMsg = dataBuffer.slice(44,62).toString();	
-	this.wagon = [
-	{"enabled" : dataBuffer.slice(62,64), "name" : dataBuffer.slice(64,84).toString(), "quantity" : dataBuffer.readInt16BE(82,84)}
-	,{"enabled" : dataBuffer.slice(84,86), "name" : dataBuffer.slice(86,104).toString(), "quantity" : dataBuffer.readInt16BE(104,106)}
-	]	
-};
+const dbNumber = 8	//Hard Coded
+	,dbStart  = 0
+	,dbSize = 162;
 
-var server2 = '10.8.66.8', rack = 0, slot = 2;
-var server = '10.33.22.251', rack = 0, slot = 2;
-
-var dbNumber = 8;	//Hard Coded
-var dbStart  = 0;
-var dbSize = 106;
-
+const adjustInstantSize = 22
+	, screenInstanceSize = 162;
 
 var data = {};
 
-/*
-s7.ConnectTo(server, rack, slot, function(err){
-	if(err) return console.log('>> Connection failed. Code#'+err+' - '+s7.ErrorText(err));
-	console.log("Connected to PLC at " + server);
-});
-*/
+var ins = [];
 
-/*
-plc.taktToString = function (buff){
-	var negative = false;
-	var takt;
-	var ms = buff.readInt32BE(0, 4);
-	if (ms < 0){
-		negative = true;
-		ms = ms * -1;
+plc.connect = () => {
+	if (s7.Connect()){
+		return console.log("Client Already Connected");
 	}
-	var hr = 0,
-		min = (ms/1000/60) << 0,
-		sec = (ms/1000) % 60;
-	if (sec < 10){
-		takt = min+":0"+sec;
-	}
-	else{
-		takt = min+":"+sec;
-	}
-	if (negative)
-		takt = "-" + takt;
-	return takt;
-}
-*/
-
-/*
-plc.getDb = function() {
-	var conn = s7.Connected();
-	if (!conn)
-		return console.log("Not connected Yet");
-	var takt1 = s7.DBRead(6, 20, 4);
-	var takt2 = s7.DBRead(19, 20, 4);
-	takt1 = plc.taktToString(takt1);
-	takt2 = plc.taktToString(takt2);
-	return {takt1, takt2};
+	return connection();
 };
-*/
+
+plc.disconnect = () => {
+	return s7.Disconnect();
+};
+
+function connection(){		
+	s7.ConnectTo(server, rack, slot, (err) => {
+		if(err) 
+			return console.log('>> Connection failed. Code#'+err+' - '+s7.ErrorText(err));
+		console.log("Connected to PLC at " + server);
+	});
+}
 
 
-plc.getData = function(){
+plc.getData = () => {	
 	var conn = s7.Connected();
-	if (!conn)
-		return console.log("There is no connection with PLC: " + server);
-	data = s7.DBRead(dbNumber, dbStart, dbSize);
+	if (!conn){
+		return console.log("There is no connection with PLC: " + server);		
+	}
+	data = s7.DBRead(dbNumber, dbStart, dbSize);	
+	if (!data)
+		return console.log("No Data!");
 	ins = new Instance(data);
 	return ins;
+};
+
+plc.getWagons = () => {
+	var dbNumber = 5;
+	var wagon =[];
+	var conn = s7.Connected();
+	if (!conn)
+		console.log("There is no connection with PLC: " + server);
+	 wagon[0] = s7.DBRead(5, 14, 2).readInt16BE(0,2); // Hard Coded
+	 wagon[1] = s7.DBRead(5, 16, 2).readInt16BE(0,2); // Hard Coded 
+	console.log(wagon);
+	return wagon;
+};
+
+plc.updateWagon = (instance, wagon, quantity) => {
+	//Alocar Instance, Offset, Inicio
+	var dbNumber = 9;
+	var start = 0 + (6 + (0 +((wagon -1) * 10)));;	//FUNCAO HARD CODED
+	var size = 2;
+	var buff = Buffer.alloc(2);
+	buff[1] = quantity;
+	buff[0] = 0;
+	s7.DBWrite(dbNumber, start, size, buff, (err) => {
+		if (err) 
+			return console.error(err);
+		console.log('WAGON '+ wagon +' quantity updated');
+		console.log(buff);
+	});
+	return true;
+};
+
+plc.getWagonTimer = (instance, wagon) => {
+	var dbNumber = 8;
+	var size = 4;	
+	var start = 108 + ((wagon - 1) * 46);
+	//108 - 154
+	data = s7.DBRead(dbNumber, start, size);
+	console.log(data);
+	return data;
+	
+};
+
+plc.updateWagonTimer = (instance, wagon, ms) => {
+	var dbNumber = 9;
+	var instanceSize; //Preencher
+	var start = 0 + (6 + (2 +((wagon -1) * 10))); //FUNCAO HARD CODED
+	var size = 4;
+	var arr = new Uint32Array(1);
+	arr[0] = ms;
+	var buff = Buffer.from(arr.buffer);
+	buff = buff.swap32();
+	s7.DBWrite(dbNumber, start, size, buff, (err) => {
+		if (err) 
+			return console.error(err);
+		console.log('WAGON '+ wagon +' timer updated');
+		console.log(buff);
+	}); 
+
+	return true;
+};
+
+plc.getStopTime = (instance) => {
+	var dbNumber = 8;
+	var instanceSize; //Preencher
+	var size = 4;	
+	data = s7.DBRead(dbNumber, 38, size);
+	console.log(data);
+	return data;
+	
+};
+
+plc.updateStopTime = (instance, ms) => {
+	var dbNumber = 9;
+	var instanceSize; //Preencher
+	var start = 0 + (2); //FUNCAO HARD CODED
+	var size = 4;
+	var arr = new Uint32Array(1);
+	arr[0] = (ms * -1);
+	var buff = Buffer.from(arr.buffer);
+	buff = buff.swap32();
+	s7.DBWrite(dbNumber, start, size, buff, (err) => {
+		if (err) 
+			return console.error(err);
+		console.log('Stop time updated');
+		console.log(buff);
+	}); 
+
+	return true;
 };
 
 

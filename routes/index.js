@@ -1,35 +1,28 @@
-var express = require('express');
-var router = express.Router();
-var colors = require('colors');
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('data/config.db');
+'use strict';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-	console.log("Conection stablished with: " + req.ip + " " + new Date());
-	res.render('index');
-});
+const express = require('express')
+ ,router = express.Router()
+ ;
 
-/* GET Config page. */
-router.get('/config', function(req, res, next) {
-	db.run(`CREATE TABLE IF NOT EXISTS plc_conn (
-		id int
-		,address varchar(15)
-		,rack integer
-		,slot integer
-		,location varchar(10)
-		,active int
-		)`
-		);
+var stopTime = require('../routes/functions');
 
-	db.all(`SELECT * from plc_conn` , function(err, data){
-		res.send(data);
-	});
-
+router.route('/')
+	.get(stopTime.index)	
+;
 	
+router.route('/instance/:instance/stop-time')
+	.get(stopTime.getStopTime)
+	.post(stopTime.updateStopTime)
+;
 
-});
+router.route('/instance/:instance/wagon/:wagon/timer')
+	.get(stopTime.getWagonTimer)
+	.post(stopTime.updateWagonTimer)
+;
 
-//db.close();
+router.route('/instance/:instance/wagon/:wagon/quantity')	
+	.post(stopTime.updateWagons)
+	
+;
 
 module.exports = router;
