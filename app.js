@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const dotenv = require('dotenv');
 //,favicon = require('serve-favicon')  //Providenciar 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -10,14 +11,10 @@ const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8888;
 
 
 var clients = {};
-
-
-
-s7.connect();
 
 io.on('connection', (socket) => {
 
@@ -84,7 +81,7 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-http.listen(process.env.PORT || 80, (err) => {
+http.listen(PORT, (err) => {
     if (err) return console.error(err);
     console.log("Server Connected at port " + PORT + " " + new Date().toISOString().slice(0, 10));
 });
