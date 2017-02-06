@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const dotenv = require('dotenv');
-//,favicon = require('serve-favicon')  //Providenciar 
+const favicon = require('serve-favicon'); //Providenciar 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const s7 = require('./plc/plc');
@@ -10,6 +10,8 @@ const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 
+
+console.log(app.settings.env)
 
 const PORT = process.env.PORT || 8888;
 
@@ -20,28 +22,16 @@ io.on('connection', (socket) => {
 
     console.log('A CLIENT HAS CONNECTED! ' + socket.request.connection.remoteAddress.slice(7));
 
-    socket
-        .on('plc-reconnect', (data) => {
-            console.log(data);
-            s7.disconnect();
-            s7.connect();
-        })
-
-    .on('dec-part', (data) => {
-        io.emit('dec-part', data);
+    socket.on('plc-reconnect', (data) => {
         console.log(data);
-    })
-
-    .on('serial', (data) => {
-        console.log(data);
-        io.emit('serial2', data.toString());
+        s7.disconnect();
+        s7.connect();
     })
 
     .on('disconnect', () => {; //delete socket;
     });
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
-
 
     setInterval(() => {
         socket.emit('takt-1', s7.getData());
@@ -57,12 +47,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('public'));
 app.use('/', index);
-
-
-//.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(logger('dev'));
-
-
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
