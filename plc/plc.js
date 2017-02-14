@@ -1,15 +1,16 @@
+'use strict';
+
 /* ARQUIVO QUE CRIA OS MÉTODOS PARA A UTILIZAÇÃO DO SNAP7 PARA TRANSMISSÃO DE DADOS COM O PLC */
 
-'use strict';
 //Criar metodos para buscar informacoes no PLC
 const snap = require('node-snap7');
 const PLC_SERVER = process.env.PLC_SERVER;
 const PLC_TAKT = process.env.PLC_TAKT;
 const RACK = 0;
 const SLOT = 2;
-const dbNumber = 8 //Hard Coded
-const dbStart = 0;
-const dbSize = 162;
+const DB_NUMBER = 8 //Hard Coded
+const DB_START = 0;
+const DB_SIZE = 162;
 const adjustInstantSize = 22;
 const screenInstanceSize = 162;
 
@@ -21,7 +22,7 @@ var data = {};
 var ins = [];
 
 plc.connect = () => {
-    if (s7.Connect()) return console.log("Client is Already Connected");
+    if (s7.Connect()) return console.log("THE CLIENT IS ALREADY CONNECTED \n");
     console.log(PLC_SERVER);
     s7.ConnectTo(PLC_SERVER, RACK, SLOT, (err) => {
         if (err) return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err));
@@ -33,15 +34,15 @@ plc.disconnect = () => { return s7.Disconnect(); };
 
 plc.getData = () => {
     var conn = s7.Connected();
-    if (!conn) return console.log("There is no connection with PLC: " + PLC_SERVER);
-    data = s7.DBRead(dbNumber, dbStart, dbSize);
-    if (!data || data.length === 0) return console.error("No Data to get!");
+    if (!conn) return console.log("DB_NUMBERe is no connection with PLC: " + PLC_SERVER);
+    data = s7.DBRead(DB_NUMBER, DB_START, DB_SIZE);
+    if (!data || data.length === 0) return console.error("No Data to get!\n");
     ins = new Instance(data);
     return ins;
 };
 
 plc.getWagons = () => {
-    var dbNumber = 5;
+    var DB_NUMBER = 5;
     var wagon = [];
     var conn = s7.Connected();
     if (!conn) return console.error("There is no connection with PLC: " + PLC_SERVER);
@@ -53,13 +54,13 @@ plc.getWagons = () => {
 
 plc.updateWagon = (instance, wagon, quantity) => {
     //Alocar Instance, Offset, Inicio
-    var dbNumber = 9;
+    const DB_NUMBER = 9;
     var start = 0 + (6 + (0 + ((wagon - 1) * 10)));; //FUNCAO HARD CODED
     var size = 2;
     var buff = Buffer.alloc(2);
     buff[1] = quantity;
     buff[0] = 0;
-    s7.DBWrite(dbNumber, start, size, buff, (err) => {
+    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
         console.log('WAGON ' + wagon + ' quantity updated');
         console.log(buff);
@@ -68,17 +69,17 @@ plc.updateWagon = (instance, wagon, quantity) => {
 };
 
 plc.getWagonTimer = (instance, wagon) => {
-    var dbNumber = 8;
+    var DB_NUMBER = 8;
     var size = 4;
     var start = 108 + ((wagon - 1) * 46);
     //108 - 154
-    data = s7.DBRead(dbNumber, start, size);
+    data = s7.DBRead(DB_NUMBER, start, size);
     console.log(data);
     return data;
 };
 
 plc.updateWagonTimer = (instance, wagon, ms) => {
-    var dbNumber = 9;
+    var DB_NUMBER = 9;
     var instanceSize; //Preencher
     var start = 0 + (6 + (2 + ((wagon - 1) * 10))); //FUNCAO HARD CODED
     var size = 4;
@@ -86,7 +87,7 @@ plc.updateWagonTimer = (instance, wagon, ms) => {
     arr[0] = ms;
     var buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
-    s7.DBWrite(dbNumber, start, size, buff, (err) => {
+    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
         console.log('WAGON ' + wagon + ' timer updated');
         console.log(buff);
@@ -96,16 +97,16 @@ plc.updateWagonTimer = (instance, wagon, ms) => {
 };
 
 plc.getStopTime = (instance) => {
-    var dbNumber = 8;
+    var DB_NUMBER = 8;
     var instanceSize; //Preencher
     var size = 4;
-    data = s7.DBRead(dbNumber, 38, size);
+    data = s7.DBRead(DB_NUMBER, 38, size);
     console.log(data);
     return data;
 };
 
 plc.updateStopTime = (instance, ms) => {
-    var dbNumber = 9;
+    var DB_NUMBER = 9;
     var instanceSize; //Preencher
     var start = 0 + (2); //FUNCAO HARD CODED
     var size = 4;
@@ -113,7 +114,7 @@ plc.updateStopTime = (instance, ms) => {
     arr[0] = (ms * -1);
     var buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
-    s7.DBWrite(dbNumber, start, size, buff, (err) => {
+    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
         console.log('Stop time updated');
         console.log(buff);
