@@ -33,8 +33,7 @@ plc.connect = () => {
 plc.disconnect = () => { return s7.Disconnect(); };
 
 plc.getData = () => {
-    var conn = s7.Connected();
-    if (!conn) return console.log("DB_NUMBERe is no connection with PLC: " + PLC_SERVER);
+    if (!s7.Connected()) return console.log("There is no connection with PLC: " + PLC_SERVER);
     data = s7.DBRead(DB_NUMBER, DB_START, DB_SIZE);
     if (!data || data.length === 0) return console.error("No Data to get!\n");
     ins = new Instance(data);
@@ -44,8 +43,7 @@ plc.getData = () => {
 plc.getWagons = () => {
     var DB_NUMBER = 5;
     var wagon = [];
-    var conn = s7.Connected();
-    if (!conn) return console.error("There is no connection with PLC: " + PLC_SERVER);
+    if (s7.Connected()) return console.error("There is no connection with PLC: " + PLC_SERVER);
     wagon[0] = s7.DBRead(5, 14, 2).readInt16BE(0, 2); // Hard Coded
     wagon[1] = s7.DBRead(5, 16, 2).readInt16BE(0, 2); // Hard Coded 
     console.log(wagon);
