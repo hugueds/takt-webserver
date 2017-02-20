@@ -1,8 +1,7 @@
 //Cria instancia para formatar bytes lidos do PLC, necessidade de dinamizar para receber novas instancias
 var Instance = function(dataBuffer) { //Tamanhos hardCoded
-    if (!dataBuffer || dataBuffer.length === 0) {
-        return console.log("There is no Buffer!");
-    }
+    if (!dataBuffer || dataBuffer.length === 0) return console.error("There is no Buffer from PLC!");
+
     this.instName = dataBuffer.slice(0, 18).toString() || null; //Nome da instância
     this.lineTakt = dataBuffer.readInt32BE(18, 22) || 0; //Takt da linha
     this.lineStopTime = dataBuffer.readInt32BE(22, 26) || null; //Stop time da linha

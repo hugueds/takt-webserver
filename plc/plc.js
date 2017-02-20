@@ -8,9 +8,9 @@ const PLC_SERVER = process.env.PLC_SERVER;
 const PLC_TAKT = process.env.PLC_TAKT;
 const RACK = 0;
 const SLOT = 2;
-const DB_NUMBER = 8 //Hard Coded
+const DB_NUMBER = process.env.DB_INSTANCE_NUMBER || 8;
 const DB_START = 0;
-const DB_SIZE = 162;
+const DB_SIZE = process.env.DB_INSTANCE_SIZE || 162;
 const adjustInstantSize = 22;
 const screenInstanceSize = 162;
 
@@ -32,20 +32,21 @@ plc.connect = () => {
 
 plc.disconnect = () => { return s7.Disconnect(); };
 
-plc.getData = () => {
+plc.getData = (instance) => {
+    //ERRO SE NAO HOUVER CONEXAO
     if (!s7.Connected()) return console.log("There is no connection with PLC: " + PLC_SERVER);
-    data = s7.DBRead(DB_NUMBER, DB_START, DB_SIZE);
+    //CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
+    data = s7.DBRead(DB_NUMBER, (DB_START + (instance * DB_SIZE)), DB_SIZE);
     if (!data || data.length === 0) return console.error("No Data to get!\n");
-    ins = new Instance(data);
-    return ins;
+    return new Instance(data);
 };
 
 plc.getWagons = () => {
     var DB_NUMBER = 5;
     var wagon = [];
     if (s7.Connected()) return console.error("There is no connection with PLC: " + PLC_SERVER);
-    wagon[0] = s7.DBRead(5, 14, 2).readInt16BE(0, 2); // Hard Coded
-    wagon[1] = s7.DBRead(5, 16, 2).readInt16BE(0, 2); // Hard Coded 
+    wagon[0] = s7.DBRead(DB_NUMBER, 14, 2).readInt16BE(0, 2); // Hard Coded
+    wagon[1] = s7.DBRead(DB_NUMBER, 16, 2).readInt16BE(0, 2); // Hard Coded 
     console.log(wagon);
     return wagon;
 };
@@ -87,8 +88,7 @@ plc.updateWagonTimer = (instance, wagon, ms) => {
     buff = buff.swap32();
     s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
-        console.log('WAGON ' + wagon + ' timer updated');
-        console.log(buff);
+        console.log('WAGON ' + wagon + ' TIMER UPDATED');
     });
     return true;
 };

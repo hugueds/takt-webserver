@@ -11,10 +11,11 @@ const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 
 
+var instance = 0;
+
 console.log(app.settings.env)
 
-const PORT = process.env.PORT || 8888;
-
+const PORT = process.env.PORT || process.env.DEV_PORT;
 
 var clients = {};
 
@@ -22,23 +23,24 @@ io.on('connection', (socket) => {
 
     clients.push(socket);
 
+    console.log("CLIENTS " + clients);
+
     console.log('A CLIENT HAS CONNECTED! ' + socket.request.connection.remoteAddress.slice(7));
 
     socket.on('plc-reconnect', (data) => {
-        console.log(data);
         s7.disconnect();
         s7.connect();
     })
 
     .on('disconnect', (socket) => {
         var idx = clients.indexOf(socket);
-        delete clients[idx];
+        clients.splice(idx, 1);
     });
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
 
     setInterval(() => {
-        socket.emit('takt-1', s7.getData());
+        socket.emit('takt-1', s7.getData(instance));
     }, 1100);
 });
 
