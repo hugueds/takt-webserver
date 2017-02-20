@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const dotenv = require('dotenv');
+const dotenv = require('dotenv').config();
 const favicon = require('serve-favicon'); //Providenciar 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -20,6 +20,8 @@ var clients = {};
 
 io.on('connection', (socket) => {
 
+    clients.push(socket);
+
     console.log('A CLIENT HAS CONNECTED! ' + socket.request.connection.remoteAddress.slice(7));
 
     socket.on('plc-reconnect', (data) => {
@@ -28,7 +30,9 @@ io.on('connection', (socket) => {
         s7.connect();
     })
 
-    .on('disconnect', () => {; //delete socket;
+    .on('disconnect', (socket) => {
+        var idx = clients.indexOf(socket);
+        delete clients[idx];
     });
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));

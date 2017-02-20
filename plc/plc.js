@@ -90,7 +90,6 @@ plc.updateWagonTimer = (instance, wagon, ms) => {
         console.log('WAGON ' + wagon + ' timer updated');
         console.log(buff);
     });
-
     return true;
 };
 
@@ -99,7 +98,6 @@ plc.getStopTime = (instance) => {
     var instanceSize; //Preencher
     var size = 4;
     data = s7.DBRead(DB_NUMBER, 38, size);
-    console.log(data);
     return data;
 };
 
@@ -117,10 +115,8 @@ plc.updateStopTime = (instance, ms) => {
         console.log('Stop time updated');
         console.log(buff);
     });
-
     return true;
 };
-
 
 plc.connect();
 
