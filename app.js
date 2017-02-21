@@ -10,22 +10,26 @@ const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 
+var instances = [
+    { id: 0, counter: 0 },
+    { id: 1, counter: 0 }
+];
 
-var instance = 0;
+var active = 0;
 
 console.log(app.settings.env)
 
-const PORT = process.env.PORT || process.env.DEV_PORT;
+var PORT = process.env.PORT || process.env.DEV_PORT;
+PORT = parseInt(PORT);
 
-var clients = {};
+var clients = [];
+
 
 io.on('connection', (socket) => {
 
     clients.push(socket);
 
-    console.log("CLIENTS " + clients);
-
-    console.log('A CLIENT HAS CONNECTED! ' + socket.request.connection.remoteAddress.slice(7));
+    console.log('A CLIENT HAS CONNECTED! -> ' + socket.request.connection.remoteAddress.slice(7));
 
     socket.on('plc-reconnect', (data) => {
         s7.disconnect();
@@ -39,11 +43,15 @@ io.on('connection', (socket) => {
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
 
-    setInterval(() => {
-        socket.emit('takt-1', s7.getData(instance));
-    }, 1100);
 });
 
+setInterval(() => {
+    io.emit('takt-1', s7.getData(active));
+}, 1100);
+
+setInterval(() => {
+    active == 1 ? active = 0 : active = 1;
+}, 10000);
 
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup

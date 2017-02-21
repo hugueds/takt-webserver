@@ -1,5 +1,4 @@
-//Cria instancia para formatar bytes lidos do PLC, necessidade de dinamizar para receber novas instancias
-var Instance = function(dataBuffer) { //Tamanhos hardCoded
+var Instance = function(dataBuffer) {
     if (!dataBuffer || dataBuffer.length === 0) return console.error("There is no Buffer from PLC!");
 
     this.instName = dataBuffer.slice(0, 18).toString() || null; //Nome da instância

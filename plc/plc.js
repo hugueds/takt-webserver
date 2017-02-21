@@ -8,11 +8,17 @@ const PLC_SERVER = process.env.PLC_SERVER;
 const PLC_TAKT = process.env.PLC_TAKT;
 const RACK = 0;
 const SLOT = 2;
-const DB_NUMBER = process.env.DB_INSTANCE_NUMBER || 8;
+//DBS
+const DB_NUMBER = parseInt(process.env.DB_INSTANCE_NUMBER) || 8;
 const DB_START = 0;
-const DB_SIZE = process.env.DB_INSTANCE_SIZE || 162;
+const DB_SIZE = parseInt(process.env.DB_INSTANCE_SIZE) || 162;
+//DB Ajuste
+const DB_CONFIG_NUMBER = parseInt(process.env.DB_CONFIG_NUMBER);
+const DB_CONFIG_SIZE = parseInt(process.env.DB_CONFIG_SIZE);
+
+
 const adjustInstantSize = 22;
-const screenInstanceSize = 162;
+const screenInstanceSize = 162; // 
 
 var s7 = new snap7.S7Client();
 
@@ -36,7 +42,9 @@ plc.getData = (instance) => {
     //ERRO SE NAO HOUVER CONEXAO
     if (!s7.Connected()) return console.log("There is no connection with PLC: " + PLC_SERVER);
     //CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
-    data = s7.DBRead(DB_NUMBER, (DB_START + (instance * DB_SIZE)), DB_SIZE);
+    var pointer = (DB_START + (instance * DB_SIZE));
+    console.log(pointer);
+    data = s7.DBRead(DB_NUMBER, pointer, DB_SIZE);
     if (!data || data.length === 0) return console.error("No Data to get!\n");
     return new Instance(data);
 };
