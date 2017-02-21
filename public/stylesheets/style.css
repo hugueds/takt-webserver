@@ -1,180 +1,190 @@
-*{
-	width: 99%;
-	margin: 0 auto;
+@font-face {
+    font-family: 'DSDIGI';
+    src: url('./fonts/DSDIGI.eot');
+    src: url('./fonts/DSDIGI.woff') format('woff'), url('./fonts/DSDIGI.tff') format('truetype');
+}
+
+* {
+    width: 99%;
+    margin: 0 auto;
 }
 
 body {
-	background-color: white; //change to white
+    background-color: white;
 }
 
-.header{
-	//border: 1px solid blue;
-	position: relative;
-	float: left;
+.header {
+    /*border: 1px solid blue;*/
+    position: relative;
+    float: left;
 }
+
 
 /*	STOP TIME	*/
 
-.stop-time-box{
-	color :  red;
-	margin-left: 1%;
-	margin-top: 2%;
-	width: 25%;
-	//border: 1px solid red;
-	padding: 1%;
-	position: relative;
-	float: left;
+.stop-time-box {
+    color: red;
+    margin-left: 1%;
+    margin-top: 2%;
+    width: 25%;
+    /*border: 1px solid red;*/
+    padding: 1%;
+    position: relative;
+    float: left;
 }
 
-.stop-time{
-	text-align: center;
-	font-size: 600%;
+.stop-time {
+    text-align: center;
+    font-size: 600%;
+    font-family: 'DSDIGI';
 }
 
-.stop-time-text{
-	font-size: 150%;
-	text-align: center;
+.stop-time-text {
+    font-size: 150%;
+    text-align: center;
 }
 
 
 /*	TAKT	*/
-.takt-time-box{
-	margin-left: 1%;
-	margin-top: 2%;
-	width: 47%;
-	//border: 1px solid gray;
-	position: relative;
-	float: left;
+
+.takt-time-box {
+    margin-left: 1%;
+    margin-top: 2%;
+    width: 47%;
+    /*//border: 1px solid gray;*/
+    position: relative;
+    float: left;
 }
 
-.takt-time-text{
-	font-size : 170%;
-	text-align: center;
-	color:black ;//change to black
-
+.takt-time-text {
+    font-size: 170%;
+    text-align: center;
+    /*color: black; //change to black*/
 }
 
-.takt-time{
-	font-size : 1400%;
-	text-align: center;
-	margin-top: -3.4%;
-	color: black; //change to black
+.takt-time {
+    font-size: 1400%;
+    text-align: center;
+    margin-top: -3.4%;
+    font-family: 'DSDIGI';
+    /*color: black; //change to black*/
 }
 
-.takt-negative{
-	color: red;
+.takt-negative {
+    color: red;
 }
+
 
 /*	PRODUCTION	*/
 
-.prod-box{
-	border: 1px black;
-	margin-left: 1%;
-	margin-top: 2%;
-	width: 22%;
-	//border: 1px solid gray;
-	position: relative;
-	float: left;
-	text-align: center;
+.prod-box {
+    border: 1px black;
+    margin-left: 1%;
+    margin-top: 2%;
+    width: 22%;
+    /*//border: 1px solid gray;*/
+    position: relative;
+    float: left;
+    text-align: center;
 }
 
-.prod-produced-text , .prod-objective-text{
-	font-size: 170%;
-	color: black; //change to black
+.prod-produced-text,
+.prod-objective-text {
+    font-size: 170%;
+    /*color: black; //change to black*/
 }
 
-
-.prod-produced , .prod-objective{
-	font-size: 500%;
-	border: 1px solid black;
-	width: 45%;
-	margin-bottom: 3%;
-	color: black; //change
+.prod-produced,
+.prod-objective {
+    font-size: 500%;
+    border: 1px solid black;
+    width: 45%;
+    margin-bottom: 3%;
+    /*color: black; //change*/
 }
 
 
 /* CONTENT */
 
 .content {
-	margin-top: 3%;
-	//border: solid blue 1px;
-	height: 400px;
-	position: relative;
-	float: left;
+    margin-top: 3%;
+    /*//border: solid blue 1px;*/
+    height: 400px;
+    position: relative;
+    float: left;
 }
+
 
 /* WAGON */
 
 .wagon {
-	width: 40%;
-	position: relative;
-	float: left;
-	margin-left: 8%;
-	margin-bottom: 2%;
+    width: 40%;
+    position: relative;
+    float: left;
+    margin-left: 8%;
+    margin-bottom: 2%;
 }
 
-.wagon-popid{
-	border: 2px solid black;	
-	height: 280px;
-	width: 10%;
-	position: relative;
-	float: left;
+.wagon-popid {
+    border: 2px solid black;
+    height: 280px;
+    width: 10%;
+    position: relative;
+    float: left;
 }
 
-.wagon-popid-text{
-	text-align: center;
-	font-size :300%;
-	margin-left: 20%;
+.wagon-popid-text {
+    text-align: center;
+    font-size: 300%;
+    margin-left: 20%;
 }
 
-.wagon-used{
-	background-color: grey;
-	border: dashed 2px;
-	opacity: 0.3;
+.wagon-used {
+    background-color: grey;
+    border: dashed 2px;
+    opacity: 0.3;
 }
 
-.wagon-green{
-	background-color: lime;
+.wagon-green {
+    background-color: lime;
 }
 
-.wagon-warning{
-	background-color: yellow;
+.wagon-warning {
+    background-color: yellow;
 }
 
-.wagon-danger{
-	background-color: red;
+.wagon-danger {
+    background-color: red;
 }
 
-.wagon-name-box{
-	font-weight: bold;
-	border: 1px solid black;
-	width: 70%;
-	float: left;
-	height: 85px;
-	margin-top:2%;
-	margin-left:5%;
-	background-color: #f9ec95;
+.wagon-name-box {
+    font-weight: bold;
+    border: 1px solid black;
+    width: 70%;
+    float: left;
+    height: 85px;
+    margin-top: 2%;
+    margin-left: 5%;
+    background-color: #f9ec95;
 }
 
-.wagon-name-text{
-	font-size: 180%;
-	text-align: center;
-	margin-top: 2%;
-}
-
-/* ADJUST SCREEN */ 
-{
-
+.wagon-name-text {
+    font-size: 180%;
+    text-align: center;
+    margin-top: 2%;
 }
 
 
-#clock-container{
-	font-size: 14px;
+/* ADJUST SCREEN */
+
+#clock-container {
+    font-size: 14px;
 }
 
-.form-control{
-	text-align: center;
+.form-control {
+    text-align: center;
 }
+
 
 /*
 #clock-container  input {
@@ -198,29 +208,3 @@ body {
 	width: 90%;
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
