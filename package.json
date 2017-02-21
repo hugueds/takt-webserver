@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "scripts": {
-    "start": "sudo PORT=80 node app.js"
+    "start": "sudo node app.js"
   },
   "dependencies": {
     "body-parser": "~1.15.2",

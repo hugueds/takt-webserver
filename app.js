@@ -38,7 +38,7 @@ io.on('connection', (socket) => {
 
     .on('disconnect', (socket) => {
         var idx = clients.indexOf(socket);
-        clients.splice(idx, 1);
+        if (idx > -1) clients.splice(idx, 1);
     });
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));

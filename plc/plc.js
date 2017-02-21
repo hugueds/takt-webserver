@@ -29,7 +29,7 @@ var ins = [];
 
 plc.connect = () => {
     if (s7.Connect()) return console.log("THE CLIENT IS ALREADY CONNECTED \n");
-    console.log(PLC_SERVER);
+    console.log("CONNECTED TO " + PLC_SERVER);
     s7.ConnectTo(PLC_SERVER, RACK, SLOT, (err) => {
         if (err) return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err));
         return console.log("Connected to PLC at " + PLC_SERVER);
@@ -42,8 +42,7 @@ plc.getData = (instance) => {
     //ERRO SE NAO HOUVER CONEXAO
     if (!s7.Connected()) return console.log("There is no connection with PLC: " + PLC_SERVER);
     //CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
-    var pointer = (DB_START + (instance * DB_SIZE));
-    console.log(pointer);
+    let pointer = (DB_START + (instance * DB_SIZE));
     data = s7.DBRead(DB_NUMBER, pointer, DB_SIZE);
     if (!data || data.length === 0) return console.error("No Data to get!\n");
     return new Instance(data);
