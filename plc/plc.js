@@ -15,6 +15,10 @@ const DB_SIZE = parseInt(process.env.DB_INSTANCE_SIZE) || 162;
 //DB Ajuste
 const DB_CONFIG_NUMBER = parseInt(process.env.DB_CONFIG_NUMBER);
 const DB_CONFIG_SIZE = parseInt(process.env.DB_CONFIG_SIZE);
+const WAGON_SIZE = 10;
+const WAGON_START = 6;
+const WAGON_TIMER = WAGON_START + 2;
+const STOP_TIME = 2;
 
 
 const adjustInstantSize = 22;
@@ -48,36 +52,35 @@ plc.getData = (instance) => {
     return new Instance(data);
 };
 
-plc.getWagons = () => {
-    var DB_NUMBER = 5;
-    var wagon = [];
-    if (s7.Connected()) return console.error("There is no connection with PLC: " + PLC_SERVER);
-    wagon[0] = s7.DBRead(DB_NUMBER, 14, 2).readInt16BE(0, 2); // Hard Coded
-    wagon[1] = s7.DBRead(DB_NUMBER, 16, 2).readInt16BE(0, 2); // Hard Coded 
-    console.log(wagon);
-    return wagon;
-};
+
+/* Check if the code above is necessary */
+// plc.getWagons = () => {
+//     var DB_NUMBER = 5;
+//     var wagon = [];
+//     if (s7.Connected()) return console.error("There is no connection with PLC: " + PLC_SERVER);
+//     wagon[0] = s7.DBRead(DB_NUMBER, 14, 2).readInt16BE(0, 2); // Hard Coded
+//     wagon[1] = s7.DBRead(DB_NUMBER, 16, 2).readInt16BE(0, 2); // Hard Coded 
+//     console.log(wagon);
+//     return wagon;
+// };
 
 plc.updateWagon = (instance, wagon, quantity) => {
-    //Alocar Instance, Offset, Inicio
-    const DB_NUMBER = 9;
-    var start = 0 + (6 + (0 + ((wagon - 1) * 10)));; //FUNCAO HARD CODED
-    var size = 2;
-    var buff = Buffer.alloc(2);
-    buff[1] = quantity;
+    var start = WAGON_START + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
+    let size = 2;
+    let buff = Buffer.alloc(2);
     buff[0] = 0;
-    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
+    buff[1] = quantity;
+    s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
-        console.log('WAGON ' + wagon + ' quantity updated');
+        console.log('WAGON ' + wagon + '--> QUANTITY UPDATED');
         console.log(buff);
     });
     return true;
 };
 
 plc.getWagonTimer = (instance, wagon) => {
-    var DB_NUMBER = 8;
-    var size = 4;
-    var start = 108 + ((wagon - 1) * 46);
+    let size = 4;
+    let start = 108 + ((wagon - 1) * 46);
     //108 - 154
     data = s7.DBRead(DB_NUMBER, start, size);
     console.log(data);
@@ -85,23 +88,20 @@ plc.getWagonTimer = (instance, wagon) => {
 };
 
 plc.updateWagonTimer = (instance, wagon, ms) => {
-    var DB_NUMBER = 9;
-    var instanceSize; //Preencher
-    var start = 0 + (6 + (2 + ((wagon - 1) * 10))); //FUNCAO HARD CODED
+    var start = WAGON_TIMER + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
     var size = 4;
     var arr = new Uint32Array(1);
     arr[0] = ms;
     var buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
-    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
+    s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
-        console.log('WAGON ' + wagon + ' TIMER UPDATED');
+        console.log('WAGON ' + wagon + '--> TIMER UPDATED');
     });
     return true;
 };
 
 plc.getStopTime = (instance) => {
-    var DB_NUMBER = 8;
     var instanceSize; //Preencher
     var size = 4;
     data = s7.DBRead(DB_NUMBER, 38, size);
@@ -109,17 +109,15 @@ plc.getStopTime = (instance) => {
 };
 
 plc.updateStopTime = (instance, ms) => {
-    var DB_NUMBER = 9;
-    var instanceSize; //Preencher
-    var start = 0 + (2); //FUNCAO HARD CODED
+    var start = STOP_TIME + (instance * DB_CONFIG_SIZE);
     var size = 4;
     var arr = new Uint32Array(1);
     arr[0] = (ms * -1);
     var buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
-    s7.DBWrite(DB_NUMBER, start, size, buff, (err) => {
+    s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
-        console.log('Stop time updated');
+        console.log('STOP TIME UPDATED');
         console.log(buff);
     });
     return true;

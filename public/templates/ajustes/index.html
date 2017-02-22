@@ -1,4 +1,5 @@
 <div id='clock-container' class='container-fluid'>
+
     <br>
     <div class="row">
         <h1 class="text-center">AJUSTES</h1>
@@ -9,13 +10,16 @@
             INSTÂNCIA
         </div>
         <div class="col-sm-2 col-sm-offset-1">
-            <select class="form-control">
+            <select ng-model='instance' class="form-control">
+                <option>0</option>
 				<option>1</option>
+                <option>2</option>
+                <option>3</option>               
 			</select>
         </div>
     </div>
     <br><br>
-    <div class="row">
+    <div ng-if='instance' class="row">
         <div class="col-sm-4 col-sm-offset-3">
             STOP TIME
         </div>
@@ -35,7 +39,7 @@
             </div>
             <div class="col-sm-1">
                 <center>&nbsp</center>
-                <button ng-click='setStopTime(st)' class="btn-sm btn-success">
+                <button ng-click='setStopTime(instance, st)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
             </div>
@@ -44,14 +48,13 @@
 
     <br><br><br><br><br><br>
 
-    <div class="row">
+    <div ng-show='instance' class="row">
         <div class="col-sm-1 col-sm-offset-3">
             COMBOIO
         </div>
 
         <div class="col-sm-2">
-            <select class="form-control" ng-model='wagon.number'>
-					<option disabled selected></option>
+            <select class="form-control" ng-model='wagon.number'>					
 					<option>1</option>
 					<option>2</option>
 				</select>
@@ -69,20 +72,20 @@
         </div>
 
         <div ng-show='wagon.quantity && wagon.number' class="col-sm-1 col-sm-offset-1">
-            <button ng-click='updateWagon(wagon)' class="btn-lg btn-success">
+            <button ng-click='updateWagon(instance, wagon)' class="btn-lg btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
         </div>
     </div>
     <br>
 
-    <div ng-show='wagon.number' class="row">
+    <div ng-if='wagon.number' class="row">
         <center>
             <h4>TIMER</h4>
         </center>
     </div>
 
-    <div ng-show='wagon.number' class="row">
+    <div ng-if='wagon.number' class="row">
         <div class="form-group">
             <div class="col-sm-1 col-sm-offset-5">
                 <center>HORA</center>
@@ -98,7 +101,7 @@
             </div>
             <div class="col-sm-1">
                 <center>&nbsp</center>
-                <button ng-click='setTime(t, wagon)' class="btn-sm btn-success">
+                <button ng-click='setTime(instance, t, wagon)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
             </div>

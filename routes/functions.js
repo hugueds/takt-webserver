@@ -25,7 +25,7 @@ exports.updateWagons = (req, res, next) => {
     let inst = req.params.instance;
     let wagon = req.params.wagon;
     s7.updateWagon(inst, wagon, qnt);
-    res.status(201).json(req.body);
+    res.status(201).json({ message: "Quantity Updated", quantity: qnt });
 }
 
 exports.updateWagonTimer = (req, res, next) => {

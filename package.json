@@ -16,5 +16,9 @@
     "node-snap7": "^0.2.3",
     "serve-favicon": "~2.3.0",
     "socket.io": "^1.7.2"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.8",
+    "browsersync": "0.0.1-security"
   }
 }

@@ -36,6 +36,7 @@ function mainCtrl($scope, $filter, socket) {
             $scope.error = "Sem Conexao...";
             return 1;
         }
+        $scope.takt = data;
         $scope.instName = data.instName;
         $scope.lineTakt = data.lineTakt;
         $scope.lineStopTime = data.lineStopTime;
@@ -43,7 +44,7 @@ function mainCtrl($scope, $filter, socket) {
         $scope.objective = data.objective;
         $scope.lineStopPlan = data.lineStopPlan;
         $scope.logTimer = data.logTimer;
-        $scope.logStopTime = data.logStopTime;
+        $scope.logStopTime = data.logStopTime || 0;
         $scope.logStopPlan = data.logStopPlan;
         $scope.andon = data.andon;
         $scope.andonMsg = data.andonMsg;
@@ -86,17 +87,17 @@ function adjustCtrl($scope, $log, config, socket) {
     $scope.t.m = '00';
     $scope.t.s = '00';
 
-    $scope.setTime = function(t, wagon) {
+    $scope.setTime = function(instance, t, wagon) {
         var ms = converToMs(t);
         $scope.ms = ms;
         console.log(ms + ' ' + wagon.number)
-        config.updateWagonTime(wagon.number, ms);
+        config.updateWagonTime(instance, wagon, ms);
     };
 
-    $scope.setStopTime = function(t) {
+    $scope.setStopTime = function(instance, t) {
         var ms = converToMs(t);
         $scope.stopTimeMs = ms;
-        config.updateStopTime(ms);
+        config.updateStopTime(instance, ms);
     };
 
     $scope.increase = function(t, type) {
@@ -146,8 +147,8 @@ function adjustCtrl($scope, $log, config, socket) {
         }
     };
 
-    $scope.updateWagon = function(wagon) {
-        config.updateWagon(wagon.number, wagon.quantity);
+    $scope.updateWagon = function(instance, wagon) {
+        config.updateWagon(instance, wagon);
     };
 
     function converToMs(time) {

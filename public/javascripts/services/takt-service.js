@@ -5,7 +5,6 @@
 
 function configService($http) {
     var o = {
-        addr: String,
         wagons: []
     };
 
@@ -14,53 +13,34 @@ function configService($http) {
             .success(function(data) {
                 angular.copy(data, o.wagons);
             })
-            .error(function(err) {
-                console.log(err)
-            });
-    };
-
-    o.getServers = function() {
-        return $http.get('/servers')
-            .success(function() {
-                console.log('Getting servers...');
-            })
-            .error(function(err) {
-                console.error('error retrieving config')
-            });
+            .error(function(err) { console.error(err) });
     };
 
     //Atualiza a quantidade de popids consumidos no comboio
-    o.updateWagon = function(wagon, quantity) {
-        return $http.post('/instance/1/wagon/' + wagon + '/quantity', { quantity: quantity }) //HARD CODED PARA UMA INSTANCIA
+    o.updateWagon = function(instance, wagon) {
+        return $http.post('/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/quantity', { quantity: wagon.quantity }) //HARD CODED PARA UMA INSTANCIA
             .success(function(data) {
-                console.log("Dados Atualizados " + data);
+                console.log("Dados Atualizados ", data);
             })
-            .error(function(err) {
-                console.error(err)
-            });
+            .error(function(err) { console.error(err) });
     };
 
-
     //Atualiza o Stop Time da instancia
-    o.updateStopTime = function(time) {
-        return $http.post('/instance/1/stop-time', { time: time }) //HARD CODED PARA UMA INSTANCIA
+    o.updateStopTime = function(instance, time) {
+        return $http.post('/instance/' + instance + '/stop-time', { time: time }) //HARD CODED PARA UMA INSTANCIA
             .success(function(data) {
-                console.log(data);
+                console.log("Stop time has been updated", data);
             })
-            .error(function(err) {
-                throw err;
-            });
+            .error(function(err) { console.error(err); });
     };
 
     //Atualiza o Timer da instancia de acordo com o comboio selecionado
-    o.updateWagonTime = function(wagon, time) {
-        return $http.post('/instance/1/wagon/' + wagon + '/timer', { timer: time }) //HARD CODED PARA UMA INSTANCIA
+    o.updateWagonTime = function(instance, wagon, time) {
+        return $http.post('/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/timer', { timer: time }) //HARD CODED PARA UMA INSTANCIA
             .success(function(data) {
                 console.log(data);
             })
-            .error(function(err) {
-                throw err;
-            });
+            .error(function(err) { console.error(err); });
     };
 
     return o;
