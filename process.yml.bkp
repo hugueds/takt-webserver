@@ -1,0 +1,4 @@
+apps:
+	- script : app.js
+	intances : 1
+	

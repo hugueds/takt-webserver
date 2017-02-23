@@ -3,27 +3,27 @@
     <!-- STOP TIME -->
 
     <div class="stop-time-box">
-      <div class="stop-time">
-        {{lineStopTime | takt}}
-      </div>
-      <div class='stop-time-text'>
-        STOP TIME - LINE
-      </div>
+        <div class="stop-time">
+            {{lineStopTime | takt}}
+        </div>
+        <div class='stop-time-text'>
+            STOP TIME - LINE
+        </div>
     </div>
 
     <!-- TAKT -->
 
     <div class="takt-time-box">
-      <div class='takt-time-text'>
-        TAKT LINE
-      </div>
-      <div class='takt-time' ng-class='{ "takt-negative" : taktNegative}'>
-        {{lineTakt | takt}}
-      </div>
-      <div ng-show='error' class='error'>
-        {{error}}
-        <button class='btn-lg btn-danger' ng-click='reconnect()'>RECONECTAR...</button>
-      </div>
+        <div class='takt-time-text'>
+            TAKT LINE
+        </div>
+        <div class='takt-time' ng-class='{ "takt-negative" : taktNegative}'>
+            {{lineTakt | takt}}
+        </div>
+        <div ng-show='error' class='error'>
+            {{error}}
+            <button class='btn-lg btn-danger' ng-click='reconnect()'>RECONECTAR...</button>
+        </div>
 
     </div>
 
@@ -31,43 +31,43 @@
 
     <div class="prod-box">
 
-      <div class="prod-produced-text">
-        PRODUZIDOS
-      </div>
-      <div class="prod-produced">
-        {{produced}}
-      </div>
-      <div class="prod-objective-text">
-        OBJETIVO
-      </div>
-      <div class="prod-objective">
-        {{objective}}
-      </div>
+        <div class="prod-produced-text">
+            PRODUZIDOS
+        </div>
+        <div class="prod-produced">
+            {{produced}}
+        </div>
+        <div class="prod-objective-text">
+            OBJETIVO
+        </div>
+        <div class="prod-objective">
+            {{objective}}
+        </div>
 
     </div>
-    
+
 </div>
 
 
-  <!-- COMBOIOS -->
+<!-- COMBOIOS -->
 <div class='content'>
 
-  <div ng-repeat='wagon in wagons'>
+    <div ng-repeat='wagon in wagons'>
 
-    <div class='wagon'>
+        <div class='wagon'>
 
-      <div ng-repeat='popid in popidWagon'>
-        <div class="wagon-popid" ng-class='wagonColor(popid, wagon.quantity)'>
-          <span class='wagon-popid-text'> {{popid}} </span>
+            <div ng-repeat='popid in popidWagon'>
+                <div class="wagon-popid" ng-class='wagonColor(popid, wagon.quantity)'>
+                    <span class='wagon-popid-text'> {{popid}} </span>
+                </div>
+            </div>
+
+            <div class='wagon-name-box'>
+                <div class='wagon-name-text'>
+                    {{wagon.name}}
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class='wagon-name-box'>
-        <div class='wagon-name-text'>
-          {{wagon.name}}
-        </div>
-      </div>
     </div>
-  </div>
 
 </div>

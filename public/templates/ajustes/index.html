@@ -1,116 +1,119 @@
 <div id='clock-container' class='container-fluid'>
-<br>
-	<div class="row">		
-		<center><h1>AJUSTES</h1></center>
-	</div>
-<br><br>
-	<div class="row">		
-		<div class="col-sm-3 col-sm-offset-3">
-			INSTÂNCIA
-		</div>
-		<div class="col-sm-2 col-sm-offset-1">
-			<select class="form-control">
+
+    <br>
+    <div class="row">
+        <h1 class="text-center">AJUSTES</h1>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-sm-3 col-sm-offset-3">
+            INSTÂNCIA
+        </div>
+        <div class="col-sm-2 col-sm-offset-1">
+            <select ng-model='instance' class="form-control">
+                <option>0</option>
 				<option>1</option>
+                <option>2</option>
+                <option>3</option>               
 			</select>
-		</div>	
-	</div>	
-<br><br>
-	<div class="row">					
-		<div class="col-sm-4 col-sm-offset-3">
-			STOP TIME
-		</div>
-	<!-- CLOCK --> 		
-		<div class="form-group">
-			<div class="col-sm-1">
-				<center>HORA</center>
-				<input class="form-control" ng-model='st.h' type="text" name="" size='1000'>
-			</div>
-			<div class="col-sm-1">
-				<center>MINUTO</center>
-				<input class="form-control" ng-change='st.m' ng-model='st.m' type="text" name="">
-			</div>
-			<div class="col-sm-1">
-				<center>SEGUNDO</center>
-				<input class="form-control" ng-model='st.s' type="text" name="">
-			</div>
-			<div class="col-sm-1">
-			<center>&nbsp</center>
-				<button ng-click='setStopTime(st)' class="btn-sm btn-success">
+        </div>
+    </div>
+    <br><br>
+    <div ng-if='instance' class="row">
+        <div class="col-sm-4 col-sm-offset-3">
+            STOP TIME
+        </div>
+        <!-- CLOCK -->
+        <div class="form-group">
+            <div class="col-sm-1">
+                <center>HORA</center>
+                <input class="form-control" ng-model='st.h' type="text" name="" size='1000'>
+            </div>
+            <div class="col-sm-1">
+                <center>MINUTO</center>
+                <input class="form-control" ng-change='st.m' ng-model='st.m' type="text" name="">
+            </div>
+            <div class="col-sm-1">
+                <center>SEGUNDO</center>
+                <input class="form-control" ng-model='st.s' type="text" name="">
+            </div>
+            <div class="col-sm-1">
+                <center>&nbsp</center>
+                <button ng-click='setStopTime(instance, st)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 
-	<br><br><br><br><br><br>
+    <br><br><br><br><br><br>
 
-	<div class="row">
-			<div class="col-sm-1 col-sm-offset-3">
-				COMBOIO
-			</div>		
+    <div ng-show='instance' class="row">
+        <div class="col-sm-1 col-sm-offset-3">
+            COMBOIO
+        </div>
 
-			<div class="col-sm-2">
-				<select class="form-control" ng-model='wagon.number'>
-					<option disabled selected></option>
+        <div class="col-sm-2">
+            <select class="form-control" ng-model='wagon.number'>					
 					<option>1</option>
 					<option>2</option>
 				</select>
-			</div>								
-		
-			<div class="col-sm-1 ">
-				QUANTIDADE
-			</div>
+        </div>
 
-			<div class="col-sm-2">
-				<select class="form-control" ng-model='wagon.quantity'>
+        <div class="col-sm-1 ">
+            QUANTIDADE
+        </div>
+
+        <div class="col-sm-2">
+            <select class="form-control" ng-model='wagon.quantity'>
 					<option disabled selected></option>
 					<option  ng-repeat='i in [1,2,3,4,5,6,7,8]'>{{i}} </option>
 				</select>
-			</div>
+        </div>
 
-			<div ng-show='wagon.quantity && wagon.number' class="col-sm-1 col-sm-offset-1">
-				<button ng-click='updateWagon(wagon)' class="btn-lg btn-success">
+        <div ng-show='wagon.quantity && wagon.number' class="col-sm-1 col-sm-offset-1">
+            <button ng-click='updateWagon(instance, wagon)' class="btn-lg btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
-			</div>
-	</div>
-	<br>
+        </div>
+    </div>
+    <br>
 
-	<div ng-show='wagon.number' class="row">
-		<center><h4>TIMER</h4></center>
-	</div>
+    <div ng-if='wagon.number' class="row">
+        <center>
+            <h4>TIMER</h4>
+        </center>
+    </div>
 
-	<div ng-show='wagon.number' class="row">
-		<div class="form-group">
-			<div class="col-sm-1 col-sm-offset-5">
-				<center>HORA</center>
-				<input class="form-control" ng-model='t.h' type="text" name="" size='1000'/>
-			</div>
-			<div class="col-sm-1">
-				<center>MINUTO</center>
-				<input class="form-control" ng-change='t.m' ng-model='t.m' type="text" name=""/>
-			</div>
-			<div class="col-sm-1">
-				<center>SEGUNDO</center>
-				<input class="form-control" ng-model='t.s' type="text" name=""/>
-			</div>
-			<div class="col-sm-1">
-			<center>&nbsp</center>
-				<button ng-click='setTime(t, wagon)' class="btn-sm btn-success">
+    <div ng-if='wagon.number' class="row">
+        <div class="form-group">
+            <div class="col-sm-1 col-sm-offset-5">
+                <center>HORA</center>
+                <input class="form-control" ng-model='t.h' type="text" name="" size='1000' />
+            </div>
+            <div class="col-sm-1">
+                <center>MINUTO</center>
+                <input class="form-control" ng-change='t.m' ng-model='t.m' type="text" name="" />
+            </div>
+            <div class="col-sm-1">
+                <center>SEGUNDO</center>
+                <input class="form-control" ng-model='t.s' type="text" name="" />
+            </div>
+            <div class="col-sm-1">
+                <center>&nbsp</center>
+                <button ng-click='setTime(instance, t, wagon)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
-			</div>
-		</div>
-	</div>
-	<br><br><br><br><br><br><br><br>
-	<div class="row">
-		<div class="col-md-3 col-md-offset-5">
-			<button ng-click='reconnect()' class="btn-sm btn-primary">
+            </div>
+        </div>
+    </div>
+    <br><br><br><br><br><br><br><br>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-5">
+            <button ng-click='reconnect()' class="btn-sm btn-primary">
 				<i class="glyphicon glyphicon-repeat">  REESTABELECER CONEXÃO</i>
-			</button>	
-		</div>
-	</div>
+			</button>
+        </div>
+    </div>
 
 </div>
-
-
