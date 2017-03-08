@@ -186,6 +186,18 @@ body {
 }
 
 
+/*INSTANCE DETAIS*/
+
+.instance-name {
+    position: relative;
+    float: left;
+    clear: both;
+    margin-top: 4%;
+    font-size: 500%;
+    font-weight: bold;
+}
+
+
 /*
 #clock-container  input {
 	text-align: center;
