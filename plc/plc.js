@@ -52,18 +52,6 @@ plc.getData = (instance) => {
     return new Instance(data);
 };
 
-
-/* Check if the code above is necessary */
-// plc.getWagons = () => {
-//     var DB_NUMBER = 5;
-//     var wagon = [];
-//     if (s7.Connected()) return console.error("There is no connection with PLC: " + PLC_SERVER);
-//     wagon[0] = s7.DBRead(DB_NUMBER, 14, 2).readInt16BE(0, 2); // Hard Coded
-//     wagon[1] = s7.DBRead(DB_NUMBER, 16, 2).readInt16BE(0, 2); // Hard Coded 
-//     console.log(wagon);
-//     return wagon;
-// };
-
 plc.updateWagon = (instance, wagon, quantity) => {
     var start = WAGON_START + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
     let size = 2;
@@ -73,7 +61,6 @@ plc.updateWagon = (instance, wagon, quantity) => {
     s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
         console.log('WAGON ' + wagon + '--> QUANTITY UPDATED');
-        console.log(buff);
     });
     return true;
 };
@@ -83,7 +70,6 @@ plc.getWagonTimer = (instance, wagon) => {
     let start = 108 + ((wagon - 1) * 46);
     //108 - 154
     data = s7.DBRead(DB_NUMBER, start, size);
-    console.log(data);
     return data;
 };
 
@@ -102,7 +88,6 @@ plc.updateWagonTimer = (instance, wagon, ms) => {
 };
 
 plc.getStopTime = (instance) => {
-    var instanceSize; //Preencher
     var size = 4;
     data = s7.DBRead(DB_NUMBER, 38, size);
     return data;

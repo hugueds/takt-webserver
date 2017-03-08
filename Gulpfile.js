@@ -8,7 +8,7 @@ gulp.task('reload', function() {
         proxy: '10.8.66.81',
         open: false
     })
-    gulp.watch('./public/**/*.js').on('change', bs.reload);
+    gulp.watch('./public/**/*.css').on('change', bs.reload);
 });
 
 gulp.task('default', ['reload']);
