@@ -9,20 +9,18 @@ const s7 = require('./plc/plc');
 const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
+const MAX_INSTANCES = 8;
 
+var instances = [];
+for (let i = 0; i < MAX_INSTANCES; i++)
+    instances.push(new Instance(i));
 
+var currentInstance = 0;
 
 // Criar chain para requisitar dados de todo o PLC, um pouco de cada vez
 // Fazer com que o usuario possa escolher qual instancias quer que apareça
 // 
 
-
-var instances = [
-    { id: 0, counter: 0 },
-    { id: 1, counter: 0 }
-];
-
-var plcData = [];
 
 var active = 0;
 
@@ -53,6 +51,21 @@ io.on('connection', (socket) => {
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
 
 });
+
+
+setInterval(() => {    
+    if (currentInstance < MAX_INSTANCES)
+    {
+        instances[currentInstance].data = s7.getData(currentInstance);
+        currentInstance += 1;
+    }
+    else 
+        currentInstance = 0;    
+
+    console.log("DATA FROM PLC ->   " + instances[currentInstance].data);
+
+}, 100);
+
 
 setInterval(() => {
     io.emit('takt-1', s7.getData(active));
@@ -94,5 +107,11 @@ http.listen(PORT, (err) => {
     if (err) return console.error(err);
     console.log("Server Connected at port " + PORT + " " + new Date().toISOString().slice(0, 10));
 });
+
+function Instance(id){
+    this.id = id;
+    this.count = 0;
+    this.data = undefined;
+}
 
 module.exports = http;
