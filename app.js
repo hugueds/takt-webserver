@@ -10,10 +10,19 @@ const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 
+
+
+// Criar chain para requisitar dados de todo o PLC, um pouco de cada vez
+// Fazer com que o usuario possa escolher qual instancias quer que apareça
+// 
+
+
 var instances = [
     { id: 0, counter: 0 },
     { id: 1, counter: 0 }
 ];
+
+var plcData = [];
 
 var active = 0;
 

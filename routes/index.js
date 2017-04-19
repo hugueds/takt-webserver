@@ -18,3 +18,6 @@ router.route('/instance/:instance/wagon/:wagon/timer')
 router.route('/instance/:instance/wagon/:wagon/quantity').post(stopTime.updateWagons);
 
 module.exports = router;
+
+
+// Criar um configure instance para ver quais takts podem ter por tablet
