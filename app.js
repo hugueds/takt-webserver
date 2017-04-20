@@ -12,15 +12,22 @@ const index = require('./routes/index');
 const MAX_INSTANCES = 8;
 
 var instances = [];
+
+
+function Instance(id){
+    this.id = id;
+    this.count = 0;
+    this.data = undefined;    
+}
+
 for (let i = 0; i < MAX_INSTANCES; i++)
     instances.push(new Instance(i));
 
 var currentInstance = 0;
 
-// Criar chain para requisitar dados de todo o PLC, um pouco de cada vez
 // Fazer com que o usuario possa escolher qual instancias quer que apareça
-// 
-
+// Associar as instâncias quando a conexão é feita
+// Cliente requisita a informação ao invés do server
 
 var active = 0;
 
@@ -54,17 +61,16 @@ io.on('connection', (socket) => {
 
 
 setInterval(() => {    
-    if (currentInstance < MAX_INSTANCES)
-    {
-        instances[currentInstance].data = s7.getData(currentInstance);
+
+    if (currentInstance == MAX_INSTANCES){
+        currentInstance = 0;        
+    }
+    else {
+        instances[currentInstance].data = s7.getData(currentInstance);        
         currentInstance += 1;
     }
-    else 
-        currentInstance = 0;    
-
-    console.log("DATA FROM PLC ->   " + instances[currentInstance].data);
-
-}, 100);
+        
+}, 110);
 
 
 setInterval(() => {
@@ -103,15 +109,19 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-http.listen(PORT, (err) => {
+http.on('error', (err) => {
+    if (err.code == 'EADDRINUSE')    
+        http.listen(5000, err => console.log("server at 80 is busy... connected to port 5000"));
+    else 
+        console.log(err)
+});
+
+http.listen(PORT, (err) => {    
     if (err) return console.error(err);
+    
     console.log("Server Connected at port " + PORT + " " + new Date().toISOString().slice(0, 10));
 });
 
-function Instance(id){
-    this.id = id;
-    this.count = 0;
-    this.data = undefined;
-}
+
 
 module.exports = http;

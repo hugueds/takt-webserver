@@ -8,7 +8,12 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                 .state('takt', {
                     url: '/',
                     templateUrl: 'templates',
-                    controller: 'MainCtrl'
+                    controller: 'MainCtrl',
+                    onEnter : function($state, welcome) { 
+                        welcome.checkInstance().then(function (hasInstance){
+                            if (!hasInstance) $state.go('welcome');
+                        })
+                    }
                 })
 
             .state('adjusts', {
@@ -17,8 +22,10 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                 controller: 'Adjust'
             })
 
-            .state('instance', {
-                url: '/instance/:instance'
+            .state('welcome', {
+                url : '/welcome',
+                templateUrl : 'templates/welcome/',
+                controller : 'WelcomeCtrl'
             })
 
 
