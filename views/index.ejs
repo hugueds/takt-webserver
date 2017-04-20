@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="TaktApp" manifest='offline.manifest'>
+<html ng-app="TaktApp" ><!-- manifest='offline.manifest' -->
   <head>
     <base href="/"/>
     <meta name="author" content="Hugo Peres - SSBHPE"/>
@@ -17,17 +17,18 @@
 
     <!-- SOCKET I/O -->	    
     <script src="/socket.io/socket.io.js"></script>
-    <!-- MODULES -->	
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <!-- MODULES -->	    
     <script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
     <script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
-    <script type="text/javascript" src="javascripts/bootstrap/ui.bootstrap.min.js"> </script>
+    <script type="text/javascript" src="javascripts/bootstrap/ui.bootstrap.min.js"> </script>    
     <script type="text/javascript" src="javascripts/angularApp.js"> </script>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>-->
     <!-- FILTERS -->
     <script type="text/javascript" src="javascripts/filters/filters.js"> </script>
     <!-- SERVICES -->	
     <script type="text/javascript" src="javascripts/services/takt-service.js"> </script>
     <script type="text/javascript" src="javascripts/services/socket-service.js"> </script>
+    <!--<script type="text/javascript" src="javascripts/services/instance-service.js"> </script>-->
     <!-- CONTROLLERS -->	
     <script type="text/javascript" src="javascripts/controllers/takt-controller.js"> </script>
     <!-- SCRIPTS -->
