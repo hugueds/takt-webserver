@@ -1,18 +1,18 @@
 (function() {
     angular.module('takt-controller', ['socket-service', 'takt-service' /*, 'instance-service'*/])
-        .controller('MainCtrl', mainCtrl)
-        .controller('Adjust', adjustCtrl)
+        .controller('MainCtrl', mainController)
+        .controller('Adjust', adjustController)
         // .controller('WelcomeCtrl', welcomeController)
 })();
 
-function mainCtrl($scope, $filter, socket, $interval) {
+function mainController($scope, $filter, socket, $interval) {
     var instance = 'takt-1'; //Hard Coded
 
     $interval(function(){
         socket.emit('ping', {hugo : "1231231231231231"});
     },1000)
 
-    socket.emit('ping', {hugo : "1231231231231231"});
+
 
     $scope.popidWagon = [];
 
@@ -75,7 +75,7 @@ function mainCtrl($scope, $filter, socket, $interval) {
     };
 }
 
-function adjustCtrl($scope, $log, config, socket) {
+function adjustController($scope, $log, config, socket) {
     var instance = 'takt-1'; //Hard Coded
 
     socket.on(instance, function(data) {

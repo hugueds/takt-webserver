@@ -5,7 +5,7 @@ function instanceService($http, $q, $state, $localStorage){
     var avaliableInstances = [
         {id : 0, name: "Kit FA 1.1"},
         {id : 1, name: "FA1.1 LE / LD"},
-        {id : 2, name: ""},
+        {id : 2, name: "Kit FA 0"},
         {id : 3, name: ""},
         {id : 4, name: ""},
         {id : 5, name: ""},
