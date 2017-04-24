@@ -2,17 +2,29 @@
     angular.module('takt-controller', ['socket-service', 'takt-service' /*, 'instance-service'*/])
         .controller('MainCtrl', mainController)
         .controller('Adjust', adjustController)
-        // .controller('WelcomeCtrl', welcomeController)
+        .controller('WelcomeCtrl', welcomeController)
 })();
 
-function mainController($scope, $filter, socket, $interval) {
+function mainController($scope, $filter, socket, $interval, instances) {
+
+    var idx = 0;
+    var instanceSize = 0;
     var instance = 'takt-1'; //Hard Coded
 
+    $scope.instances = instances.getInstances();  
+
     $interval(function(){
-        socket.emit('ping', {hugo : "1231231231231231"});
+        if ($scope.instances.length){
+            instanceSize = $scope.instances.length;
+            console.log($scope.instances[idx].id);
+            idx++;
+            if (idx > instanceSize - 1){
+                idx = 0;
+            }
+        }
+        ///socket.emit('ping', {hugo : "1231231231231231"});
+        
     },1000)
-
-
 
     $scope.popidWagon = [];
 
@@ -179,12 +191,35 @@ function adjustController($scope, $log, config, socket) {
     }
 }
 
-function welcomeController($scope, socket){
-    $scope.instances = ""; //Busca instancias
+function welcomeController($scope, socket, instances){
+
+    init();
 
     $scope.selectedInstances = [];
 
     $scope.deviceName = "";
+
+    $scope.pickInstance = function(instance){
+        var idx = $scope.avaliableInstances.indexOf(instance);
+        $scope.avaliableInstances.splice(idx, 1);
+        $scope.selectedInstances.push(instance); 
+    }
+
+    $scope.removeInstance = function(instance){
+        var idx = $scope.selectedInstances.indexOf(instance);
+        $scope.selectedInstances.splice(idx, 1);
+        $scope.avaliableInstances.push(instance); 
+    }
+
+    $scope.saveChanges = function(deviceName, selectedInstances){      
+        if (!deviceName) deviceName = "Default";
+        instances.setInstances(deviceName, selectedInstances);
+        console.log('Alterações realizadas com sucesso!');
+    }
+
+    function init(){        
+        $scope.avaliableInstances = instances.avaliableInstances;
+    }
 
 
 

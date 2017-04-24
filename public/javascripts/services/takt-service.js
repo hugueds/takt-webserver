@@ -1,6 +1,7 @@
 (function() {
-    angular.module('takt-service', [])
+    angular.module('takt-service', ['ngStorage'])
         .factory('config', configService)
+        .factory('instances', instanceService)
 })();
 
 function configService($http) {
@@ -42,6 +43,65 @@ function configService($http) {
             })
             .error(function(err) { console.error(err); });
     };
+
+    return o;
+}
+
+function instanceService($http, $q, $state, $localStorage, $window){
+
+    var local = $localStorage;
+
+    var avaliableInstances = [
+        {id : 0, name: "Kit FA 1.1"},
+        {id : 1, name: "FA1.1 LE / LD"},
+        {id : 2, name: "Kit FA 0"},
+        {id : 3, name: ""},
+        {id : 4, name: ""},
+        {id : 5, name: ""},
+        {id : 6, name: ""},
+        {id : 7, name: ""}
+    ];
+
+    var o = {
+        device : "",
+        avaliableInstances : avaliableInstances,
+        instances : []
+    }
+
+    o.getInstances = function(){
+        if (local.instances){            
+            return local.instances;
+        } else {
+            console.log("ERRO: NÃO HÁ INSTANCIAS");
+        }
+    }
+
+    o.checkInstance = function(){
+        var defer = $q.defer();
+        if (o.instances  && local.instances){            
+            o.setInstances(o.device, o.instances);
+            defer.resolve(true);
+        } else {
+            defer.resolve(false);
+        }
+        return defer.promise;                
+    }
+
+
+    o.setInstances = function(device, instances){
+        if (instances.length > 0){            
+            local.device = device;
+            local.instances = instances;
+            location = "http://10.8.66.81:5000";
+        } 
+    }
+
+    o.unsetInstances = function(){
+        o.avaliableInstances = avaliableInstances;
+        o.instances = [];        
+        local.instances = "";
+        local.device = "";
+    }   
 
     return o;
 }

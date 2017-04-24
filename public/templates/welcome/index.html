@@ -1,6 +1,33 @@
+<style>
+h1 {
+    color:red;
+}
+</style>
+
+
+<h1>BEM VINDO!</h1>
+
+<p>COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ TRABALHAR</p>
+
+<p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
+
+<input type="text" ng-model="deviceName"/>
+
+<p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
+
+<ul ng-click='pickInstance(inst)' ng-repeat="inst in avaliableInstances" ng-if="inst.name != ''">
+    <li >{{inst.id}} - {{inst.name}}</li>
+</ul>
+
+<hr>
+
+<ul ng-click='removeInstance(sel)' ng-repeat="sel in selectedInstances">
+    <li >{{sel.id}} - {{sel.name}}</li>
+</ul>
 
 
 
+<button ng-click='saveChanges(deviceName, selectedInstances)' class='btn btn-primary'>ENVIAR</button>
 
 
 
