@@ -68,17 +68,13 @@ function instanceService($http, $q, $state, $localStorage, $window){
         instances : []
     }
 
-    o.getInstances = function(){
-        if (local.instances){            
-            return local.instances;
-        } else {
-            console.log("ERRO: NÃO HÁ INSTANCIAS");
-        }
+    o.getInstances = function(){                
+            return local.instances;        
     }
 
     o.checkInstance = function(){
         var defer = $q.defer();
-        if (o.instances  && local.instances){            
+        if (o.instances){            
             o.setInstances(o.device, o.instances);
             defer.resolve(true);
         } else {
@@ -87,12 +83,11 @@ function instanceService($http, $q, $state, $localStorage, $window){
         return defer.promise;                
     }
 
-
     o.setInstances = function(device, instances){
         if (instances.length > 0){            
             local.device = device;
             local.instances = instances;
-            location = "http://10.8.66.81:5000";
+            setTimeout(function(){ location = "http://10.8.66.81:5000"; },100);            
         } 
     }
 

@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
 
     console.log('A CLIENT HAS CONNECTED! -> ' + socket.request.connection.remoteAddress.slice(7));
 
+    socket.on('get-takt', (instanceId) => {
+        var data = instances[instanceId].data;
+        socket.emit('put-takt', data);
+    });
+
     socket.on('ping', (data) => {
         console.log("pong");
     });
