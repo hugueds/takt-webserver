@@ -108,6 +108,18 @@ plc.updateStopTime = (instance, ms) => {
     return true;
 };
 
+plc.getInstances = () => {
+    var instances = [];    
+    let maxInstances = 8;
+    let size = 18;
+    var start = 0;
+    for (let i=0;i<maxInstances;i++){
+        instances.push(s7.DBRead(DB_NUMBER,start, size).toString().replace(/[\u0000-\u001f]/g,""));
+        start += DB_SIZE;
+    }
+    return instances;
+}
+
 plc.connect();
 
 module.exports = plc;

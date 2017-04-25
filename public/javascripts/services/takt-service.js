@@ -1,6 +1,7 @@
 (function() {
-    angular.module('takt-service', [])
+    angular.module('takt-service', ['ngStorage'])
         .factory('config', configService)
+        .factory('instances', instanceService)
 })();
 
 function configService($http) {
@@ -42,6 +43,69 @@ function configService($http) {
             })
             .error(function(err) { console.error(err); });
     };
+
+    return o;
+}
+
+function instanceService($http, $q, $state, $localStorage, $window){
+
+    var local = $localStorage;   
+
+    var avaliableInstances = [
+        {id : 0, name: "KIT FA 1.1" },
+        {id : 1, name: "KIT LE / LD"},
+        {id : 2, name: "KIT FA 0"}
+    ]
+
+    var o = {
+        device : "",   
+        avaliableInstances : avaliableInstances,     
+        instances : [],
+        registered : false
+    }
+
+    o.getAvaliableInstances = function(){
+        // return $http.get('/instances')
+        // .success(function (data) {
+        //     angular.copy(data, o.avaliableInstances);
+        // })
+        // .error(function(){
+        //     console.log("Erro durante requisicao das instancias");
+        // });
+    }
+
+    o.getInstances = function(){                
+            return local.instances;        
+    }
+
+    o.checkInstance = function(){
+        var defer = $q.defer();
+        if (local.instances){            
+            o.setInstances(o.device, o.instances);
+            defer.resolve(true);
+        } else {
+            defer.resolve(false);
+        }
+        return defer.promise;                
+    }
+
+    o.setInstances = function(device, instances){
+        if (instances.length > 0){            
+            local.device = device;
+            local.instances = instances;
+            o.registered = true;
+            return setTimeout(function(){ location = "http://10.8.66.81/"; } ,100);            
+        } 
+    }
+
+    o.unsetInstances = function(){
+        // o.avaliableInstances = avaliableInstances;
+        o.instances = [];        
+        o.registered = false;
+        local.instances = "";
+        local.device = "";
+        return;
+    }   
 
     return o;
 }

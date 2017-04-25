@@ -1,18 +1,33 @@
 (function() {
     angular.module('takt-controller', ['socket-service', 'takt-service'])
-        .controller('MainCtrl', mainCtrl)
-        .controller('Adjust', adjustCtrl)
+        .controller('MainCtrl', mainController)
+        .controller('Adjust', adjustController)
+        .controller('WelcomeCtrl', welcomeController)
 })();
 
-function mainCtrl($scope, $filter, socket) {
-    var instance = 'takt-1'; //Hard Coded
+function mainController($scope, $filter, socket, $interval, instances) {
 
-    $scope.popidWagon = [];
+    var idx = 0;
+    var instanceSize = 0;   
+    var wagonGenerated = false;
+    $scope.popidWagon = [];    
+    $scope.instances = instances.getInstances();  
 
-    $scope.cfgWagonAmount = 8; //initial value
+    $interval(function(){
+        if ($scope.instances && $scope.instances.length > 0){                     
+            socket.emit('get-takt', $scope.instances[idx].id);                        
+        }          
+    },1000);
 
-    for (var i = 1; i <= $scope.cfgWagonAmount; i++)
-        $scope.popidWagon.push(i);
+    $interval(function(){        
+        if ($scope.instances && $scope.instances.length > 0){            
+            instanceSize = $scope.instances.length;            
+            idx++;
+            if (idx > instanceSize - 1) idx = 0;            
+        }        
+    },10000);
+
+    
 
 
     $scope.wagonColor = function(wagon, quantity) {
@@ -20,22 +35,27 @@ function mainCtrl($scope, $filter, socket) {
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
         quantity--;
-        if (quantity >= wagon)
-            wagonColor = "wagon-used";
-        else if (prct < color.green)
-            wagonColor = "wagon-green";
-        else if (prct <= color.yellow && prct < color.red)
-            wagonColor = "wagon-warning";
-        else
-            wagonColor = "wagon-danger";
+        if (quantity >= wagon) wagonColor = "wagon-used";
+        else if (prct < color.green) wagonColor = "wagon-green";
+        else if (prct <= color.yellow && prct < color.red) wagonColor = "wagon-warning";
+        else wagonColor = "wagon-danger";
         return wagonColor;
     };
 
-    socket.on(instance, function(data) {
-        if (data == null) {
-            $scope.error = "Sem Conexao...";
-            return 1;
-        }
+    socket.on('put-takt', formatPlcData);    
+
+    socket.on('newConnection', function(data) {
+        console.log(data.toString());
+    });
+
+    $scope.reconnect = function() {
+        socket.emit('plc-reconnect', { conn: "Reconnection Request" });
+        console.log('Tentando reconectar com o PLC...');
+    };
+
+    function formatPlcData(data){
+        if (data == null) $scope.error = "Sem Conexao...";
+
         $scope.takt = data;
         $scope.instName = data.instName;
         $scope.lineTakt = data.lineTakt;
@@ -54,21 +74,26 @@ function mainCtrl($scope, $filter, socket) {
         $scope.wagons = data.wagon;
         $scope.error = data.error;
         $scope.taktNegative = false;
-        if (data.lineTakt <= 0)
-            $scope.taktNegative = true;
-    });
 
-    socket.on('newConnection', function(data) {
-        console.log(data.toString());
-    });
+        if (data.lineTakt <= 0) $scope.taktNegative = true;
 
-    $scope.reconnect = function() {
-        socket.emit('plc-reconnect', { conn: "Reconnection Request" });
-        console.log('Tentando reconectar com o PLC...');
-    };
+        if (!wagonGenerated){
+            generateWagons($scope.cfgWagonAmount);
+            wagonGenerated = true;
+        }
+    }
+
+    function generateWagons(amount){
+         for (var i = 1; i <= amount; i++)
+            $scope.popidWagon.push(i);  
+    }
+
+     
+
+
 }
 
-function adjustCtrl($scope, $log, config, socket) {
+function adjustController($scope, $log, config, socket) {
     var instance = 'takt-1'; //Hard Coded
 
     socket.on(instance, function(data) {
@@ -170,4 +195,42 @@ function adjustCtrl($scope, $log, config, socket) {
 
     $scope.storage = function() {;
     }
+}
+
+function welcomeController($scope, socket, instances){
+
+    init();
+
+    $scope.selectedInstances = [];
+
+    $scope.deviceName = "";
+
+    $scope.pickInstance = function(instance){
+        var idx = $scope.avaliableInstances.indexOf(instance);
+        $scope.avaliableInstances.splice(idx, 1);
+        $scope.selectedInstances.push(instance); 
+    }
+
+    $scope.removeInstance = function(instance){
+        var idx = $scope.selectedInstances.indexOf(instance);
+        $scope.selectedInstances.splice(idx, 1);
+        $scope.avaliableInstances.push(instance); 
+    }
+
+    $scope.saveChanges = function(deviceName, selectedInstances){      
+        if (selectedInstances){
+            console.log("Erro, nao foram selecionadas instancias");
+        }
+        if (!deviceName) deviceName = "Default";
+        instances.setInstances(deviceName, selectedInstances);
+        console.log('Alterações realizadas com sucesso!');
+    }
+
+    function init(){        
+        instances.getAvaliableInstances();        
+        $scope.avaliableInstances = instances.avaliableInstances;
+    }
+
+
+
 }
