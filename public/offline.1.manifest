@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-#v9
+#v13w
 
 javascripts/angular/angular.min.js
 javascripts/angular/angular-ui-router.js
@@ -17,7 +17,7 @@ templates/ajustes/index.html
 
 
 stylesheets/style.css
-stylesheets/bootstrap/dist/css/bootstrap.min.css
+stylesheets/bootstrap/dist/css/bootstrap.min.css#
 
 
 NETWORK:

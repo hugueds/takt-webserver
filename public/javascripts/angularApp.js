@@ -5,11 +5,20 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
         function($stateProvider, $urlRouterProvider, $locationProvider) {
 
             $stateProvider
-                .state('takt', {
-                    url: '/',
-                    templateUrl: 'templates',
-                    controller: 'MainCtrl'
-                })
+
+            .state('takt', {
+                url: '/',
+                templateUrl: 'templates',
+                controller: 'MainCtrl',
+                onEnter : function($state, instances) { 
+                    instances.checkInstance().then(function (hasInstance){
+                        if (!hasInstance) {
+                            $state.go('welcome');
+                            console.log('there is no instances set');
+                        }
+                    })
+                }
+            })
 
             .state('adjusts', {
                 url: '/ajustes',
@@ -17,8 +26,13 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                 controller: 'Adjust'
             })
 
-            .state('instance', {
-                url: '/instance/:instance'
+            .state('welcome', {
+                url : '/welcome',
+                templateUrl : 'templates/welcome/',
+                controller : 'WelcomeCtrl',
+                onEnter : function($state, instances) { 
+                    instances.unsetInstances();
+                }
             })
 
 

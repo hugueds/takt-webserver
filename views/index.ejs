@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="TaktApp" manifest='offline.manifest'>
+<html ng-app="TaktApp"  ><!-- manifest='offline.manifest' -->
   <head>
     <base href="/"/>
     <meta name="author" content="Hugo Peres - SSBHPE"/>
@@ -7,7 +7,7 @@
     <meta name="keywords" content="P30, QAS, Logistica, Automacao, Takt, Timer, Raspberry"/>
     <meta charset='utf-8'/>
     <title>CHASSIS PRIDE</title>
-	<link rel='manifest' href='app.manifest' />
+	  <link rel='manifest' href='app.manifest' />
     <link rel='stylesheet' href="/stylesheets/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
@@ -15,18 +15,21 @@
 	  
 	  <ui-view></ui-view>  
 
+    
     <!-- SOCKET I/O -->	    
     <script src="/socket.io/socket.io.js"></script>
-    <!-- MODULES -->	
+    <!-- MODULES -->	    
     <script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
+    <script type="text/javascript" src="javascripts/angular/ngStorage.min.js"> </script>
     <script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
-    <script type="text/javascript" src="javascripts/bootstrap/ui.bootstrap.min.js"> </script>
+    <script type="text/javascript" src="javascripts/bootstrap/ui.bootstrap.min.js"> </script>    
     <script type="text/javascript" src="javascripts/angularApp.js"> </script>
+    
     <!-- FILTERS -->
     <script type="text/javascript" src="javascripts/filters/filters.js"> </script>
     <!-- SERVICES -->	
     <script type="text/javascript" src="javascripts/services/takt-service.js"> </script>
-    <script type="text/javascript" src="javascripts/services/socket-service.js"> </script>
+    <script type="text/javascript" src="javascripts/services/socket-service.js"> </script>    
     <!-- CONTROLLERS -->	
     <script type="text/javascript" src="javascripts/controllers/takt-controller.js"> </script>
     <!-- SCRIPTS -->

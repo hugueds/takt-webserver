@@ -1,6 +1,8 @@
 //'use strict';
 const colors = require('colors');
 const s7 = require('../plc/plc');
+const instances = require('../app').Instances;
+
 
 exports.index = (req, res, next) => {
     console.log("Conection stablished with: " + req.ip.slice(7) + " " + new Date());
@@ -43,4 +45,8 @@ exports.updateStopTime = (req, res, next) => {
 
     s7.updateStopTime(inst, time);
     res.status(201).json({ message: "Stop Time updated", time: time });
+}
+
+exports.getInstances = (req, res, next) => {    
+    res.json(s7.getInstances());
 }
