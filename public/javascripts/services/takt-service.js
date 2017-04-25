@@ -65,13 +65,13 @@ function instanceService($http, $q, $state, $localStorage, $window){
     }
 
     o.getAvaliableInstances = function(){
-        return $http.get('/instances')
-        .success(function (data) {
-            angular.copy(data, o.avaliableInstances);
-        })
-        .error(function(){
-            console.log("Erro durante requisicao das instancias");
-        });
+        // return $http.get('/instances')
+        // .success(function (data) {
+        //     angular.copy(data, o.avaliableInstances);
+        // })
+        // .error(function(){
+        //     console.log("Erro durante requisicao das instancias");
+        // });
     }
 
     o.getInstances = function(){                

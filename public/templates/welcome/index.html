@@ -1,7 +1,8 @@
 <style>
-    h1 {
+    .welcome-header {
         color: red;
         text-align: center;
+        
     }
 
     .welcome-body {
@@ -11,7 +12,7 @@
     }
 
     .welcome-instances {
-        margin-top: 3%;
+        margin-top: 2.5%;
         position: relative;
         float: left;
     }
@@ -56,19 +57,29 @@
         </div>
     </div>
 
+    <br>
+
     <div class='welcome-body'>
 
         <p>COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ
             TRABALHAR
         </p>
 
-        <p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
+        <br>
 
-        <div class="row">
-            <input type="text" ng-model="deviceName" />
-        </div cla>
+        <div class="row text-center">
+            <p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
+        </div>
 
-        <p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
+        <div class="row text-center">
+            <input class='form col-sm-offset-3 col-sm-6' type="text" ng-model="deviceName" />
+        </div>
+
+        <br><br>
+
+        <div class="row text-center">
+            <p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
+        </div>
 
         <div class='row welcome-instances'>
 
@@ -101,7 +112,7 @@
         
 
         <div class="row">
-            <button class='btn btn-primary btn-instances-send' ng-click='saveChanges(deviceName, selectedInstances)' >ENVIAR</button>
+            <button class='btn btn-primary col-sm-offset-4 col-sm-3 btn-instances-send' ng-click='saveChanges(deviceName, selectedInstances)' >ENVIAR</button>
         </div>
 
 

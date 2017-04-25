@@ -10,24 +10,24 @@ function mainController($scope, $filter, socket, $interval, instances) {
     var idx = 0;
     var instanceSize = 0;   
     var wagonGenerated = false;
-
+    $scope.popidWagon = [];    
     $scope.instances = instances.getInstances();  
 
     $interval(function(){
-        if ($scope.instances && $scope.instances.length > 0){            
+        if ($scope.instances && $scope.instances.length > 0){                     
             socket.emit('get-takt', $scope.instances[idx].id);                        
         }          
     },1000);
 
     $interval(function(){        
-        if ($scope.instances && $scope.instances.length > 0){
+        if ($scope.instances && $scope.instances.length > 0){            
             instanceSize = $scope.instances.length;            
             idx++;
             if (idx > instanceSize - 1) idx = 0;            
         }        
     },10000);
 
-    $scope.popidWagon = [];    
+    
 
 
     $scope.wagonColor = function(wagon, quantity) {
