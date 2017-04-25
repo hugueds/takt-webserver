@@ -128,3 +128,4 @@ http.listen(parseInt(PORT), (err) => {
 
 
 module.exports = http;
+exports.Instances = instances;

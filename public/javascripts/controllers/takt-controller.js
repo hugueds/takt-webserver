@@ -1,5 +1,5 @@
 (function() {
-    angular.module('takt-controller', ['socket-service', 'takt-service' /*, 'instance-service'*/])
+    angular.module('takt-controller', ['socket-service', 'takt-service'])
         .controller('MainCtrl', mainController)
         .controller('Adjust', adjustController)
         .controller('WelcomeCtrl', welcomeController)
@@ -9,6 +9,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
     var idx = 0;
     var instanceSize = 0;   
+    var wagonGenerated = false;
 
     $scope.instances = instances.getInstances();  
 
@@ -18,21 +19,15 @@ function mainController($scope, $filter, socket, $interval, instances) {
         }          
     },1000);
 
-    $interval(function(){
+    $interval(function(){        
         if ($scope.instances && $scope.instances.length > 0){
             instanceSize = $scope.instances.length;            
             idx++;
             if (idx > instanceSize - 1) idx = 0;            
         }        
-    },10000)
+    },10000);
 
-
-    $scope.popidWagon = [];
-
-    $scope.cfgWagonAmount = 8; //Buscar o maximo de carrinhos
-
-    for (var i = 1; i <= $scope.cfgWagonAmount; i++)
-        $scope.popidWagon.push(i);
+    $scope.popidWagon = [];    
 
 
     $scope.wagonColor = function(wagon, quantity) {
@@ -40,20 +35,14 @@ function mainController($scope, $filter, socket, $interval, instances) {
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
         quantity--;
-        if (quantity >= wagon)
-            wagonColor = "wagon-used";
-        else if (prct < color.green)
-            wagonColor = "wagon-green";
-        else if (prct <= color.yellow && prct < color.red)
-            wagonColor = "wagon-warning";
-        else
-            wagonColor = "wagon-danger";
+        if (quantity >= wagon) wagonColor = "wagon-used";
+        else if (prct < color.green) wagonColor = "wagon-green";
+        else if (prct <= color.yellow && prct < color.red) wagonColor = "wagon-warning";
+        else wagonColor = "wagon-danger";
         return wagonColor;
     };
 
-    socket.on('put-takt', formatPlcData);
-
-    //socket.on(instance, formatPlcData);
+    socket.on('put-takt', formatPlcData);    
 
     socket.on('newConnection', function(data) {
         console.log(data.toString());
@@ -87,7 +76,19 @@ function mainController($scope, $filter, socket, $interval, instances) {
         $scope.taktNegative = false;
 
         if (data.lineTakt <= 0) $scope.taktNegative = true;
+
+        if (!wagonGenerated){
+            generateWagons($scope.cfgWagonAmount);
+            wagonGenerated = true;
+        }
     }
+
+    function generateWagons(amount){
+         for (var i = 1; i <= amount; i++)
+            $scope.popidWagon.push(i);  
+    }
+
+     
 
 
 }
@@ -226,6 +227,7 @@ function welcomeController($scope, socket, instances){
     }
 
     function init(){        
+        instances.getAvaliableInstances();        
         $scope.avaliableInstances = instances.avaliableInstances;
     }
 

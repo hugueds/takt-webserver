@@ -12,7 +12,10 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                 controller: 'MainCtrl',
                 onEnter : function($state, instances) { 
                     instances.checkInstance().then(function (hasInstance){
-                        if (!hasInstance) $state.go('welcome');
+                        if (!hasInstance) {
+                            $state.go('welcome');
+                            console.log('there is no instances set');
+                        }
                     })
                 }
             })

@@ -1,35 +1,113 @@
 <style>
-h1 {
-    color:red;
-}
+    h1 {
+        color: red;
+        text-align: center;
+    }
+
+    .welcome-body {
+        text-align: center;
+        font-size: 22px;
+        text-align: justify;
+    }
+
+    .welcome-instances {
+        margin-top: 3%;
+        position: relative;
+        float: left;
+    }
+
+    .instances-avaliable{        
+        margin: auto;
+        position: relative;
+        float: left;
+    }
+
+    .instances-header{
+        position: relative;
+        float: left;
+        color: white;
+        background-color: black;        
+    }
+
+    .instances-row{
+        position: relative;
+        float: left;
+        margin-top: 2%;
+        border: black solid 2px;
+    }
+    .instances-row:hover{
+        background-color: aquamarine;
+    }
+
+    .btn-instances-send{
+        margin-top: 50px;
+    }
+    
+
+
 </style>
 
-
-<h1>BEM VINDO!</h1>
-
-<p>COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ TRABALHAR</p>
-
-<p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
-
-<input type="text" ng-model="deviceName"/>
-
-<p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
-
-<ul ng-click='pickInstance(inst)' ng-repeat="inst in avaliableInstances" ng-if="inst.name != ''">
-    <li >{{inst.id}} - {{inst.name}}</li>
-</ul>
-
-<hr>
-
-<ul ng-click='removeInstance(sel)' ng-repeat="sel in selectedInstances">
-    <li >{{sel.id}} - {{sel.name}}</li>
-</ul>
+<div class='container-fluid'>
 
 
+    <div class="row">
+        <div class='welcome-header'>
+            <h1>BEM VINDO!</h1>
+        </div>
+    </div>
 
-<button ng-click='saveChanges(deviceName, selectedInstances)' class='btn btn-primary'>ENVIAR</button>
+    <div class='welcome-body'>
+
+        <p>COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ
+            TRABALHAR
+        </p>
+
+        <p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
+
+        <div class="row">
+            <input type="text" ng-model="deviceName" />
+        </div cla>
+
+        <p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
+
+        <div class='row welcome-instances'>
+
+            <div class="col-sm-6 instances-avaliable">
+                <div class="instances-header">
+                    <div class="col-sm-12 text-center">DISPONÍVEIS</div>
+                    <div class="col-sm-4">ID</div>
+                    <div class="col-sm-7 text-center">NOME</div>
+                </div>
+                <div class='instances-row' ng-repeat="inst in avaliableInstances" ng-click='pickInstance(inst)' ng-if="inst.name != ''">
+                    <div class="col-sm-4">{{inst.id}}</div>
+                    <div class="col-sm-6">{{inst.name}}</div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-6 instances-checked">
+                <div class="instances-header">
+                    <div class="col-sm-12 text-center">SELECIONADAS</div>
+                    <div class="col-sm-4">ID</div>
+                    <div class="col-sm-7 text-center">NOME</div>
+                </div>
+                <div class='instances-row' ng-click='removeInstance(sel)' ng-repeat="sel in selectedInstances">
+                    <div class="col-sm-4">{{sel.id}}</div>
+                    <div class="col-sm-8">{{sel.name}}</div>
+                </div>
+            </div>
+
+        </div>
+
+        
+
+        <div class="row">
+            <button class='btn btn-primary btn-instances-send' ng-click='saveChanges(deviceName, selectedInstances)' >ENVIAR</button>
+        </div>
 
 
+    </div>
+
+</div>
 
 
 

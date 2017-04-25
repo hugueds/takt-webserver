@@ -49,23 +49,29 @@ function configService($http) {
 
 function instanceService($http, $q, $state, $localStorage, $window){
 
-    var local = $localStorage;
+    var local = $localStorage;   
 
     var avaliableInstances = [
-        {id : 0, name: "Kit FA 1.1"},
-        {id : 1, name: "FA1.1 LE / LD"},
-        {id : 2, name: "Kit FA 0"},
-        {id : 3, name: ""},
-        {id : 4, name: ""},
-        {id : 5, name: ""},
-        {id : 6, name: ""},
-        {id : 7, name: ""}
-    ];
+        {id : 0, name: "KIT FA 1.1" },
+        {id : 1, name: "KIT LE / LD"},
+        {id : 2, name: "KIT FA 0"}
+    ]
 
     var o = {
-        device : "",
-        avaliableInstances : avaliableInstances,
-        instances : []
+        device : "",   
+        avaliableInstances : avaliableInstances,     
+        instances : [],
+        registered : false
+    }
+
+    o.getAvaliableInstances = function(){
+        return $http.get('/instances')
+        .success(function (data) {
+            angular.copy(data, o.avaliableInstances);
+        })
+        .error(function(){
+            console.log("Erro durante requisicao das instancias");
+        });
     }
 
     o.getInstances = function(){                
@@ -74,7 +80,7 @@ function instanceService($http, $q, $state, $localStorage, $window){
 
     o.checkInstance = function(){
         var defer = $q.defer();
-        if (o.instances){            
+        if (local.instances){            
             o.setInstances(o.device, o.instances);
             defer.resolve(true);
         } else {
@@ -87,15 +93,18 @@ function instanceService($http, $q, $state, $localStorage, $window){
         if (instances.length > 0){            
             local.device = device;
             local.instances = instances;
-            setTimeout(function(){ location = "http://10.8.66.81:5000"; },100);            
+            o.registered = true;
+            return setTimeout(function(){ location = "http://10.8.66.81/"; } ,100);            
         } 
     }
 
     o.unsetInstances = function(){
-        o.avaliableInstances = avaliableInstances;
+        // o.avaliableInstances = avaliableInstances;
         o.instances = [];        
+        o.registered = false;
         local.instances = "";
         local.device = "";
+        return;
     }   
 
     return o;
