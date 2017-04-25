@@ -1,0 +1,149 @@
+<style>
+    .welcome-header {
+        color: red;
+        text-align: center;
+        
+    }
+
+    .welcome-body {
+        text-align: center;
+        font-size: 22px;
+        text-align: justify;
+    }
+
+    .welcome-instances {
+        margin-top: 2.5%;
+        position: relative;
+        float: left;
+    }
+
+    .instances-avaliable{        
+        margin: auto;
+        position: relative;
+        float: left;
+    }
+
+    .instances-header{
+        position: relative;
+        float: left;
+        color: white;
+        background-color: black;        
+    }
+
+    .instances-row{
+        position: relative;
+        float: left;
+        margin-top: 2%;
+        border: black solid 2px;
+    }
+    .instances-row:hover{
+        background-color: aquamarine;
+    }
+
+    .btn-instances-send{
+        margin-top: 50px;
+    }
+    
+
+
+</style>
+
+<div class='container-fluid'>
+
+
+    <div class="row">
+        <div class='welcome-header'>
+            <h1>BEM VINDO!</h1>
+        </div>
+    </div>
+
+    <br>
+
+    <div class='welcome-body'>
+
+        <p>COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ
+            TRABALHAR
+        </p>
+
+        <br>
+
+        <div class="row text-center">
+            <p>QUAL O NOME DESTE DISPOSITIVO / USUARIO?</p>
+        </div>
+
+        <div class="row text-center">
+            <input class='form col-sm-offset-3 col-sm-6' type="text" ng-model="deviceName" />
+        </div>
+
+        <br><br>
+
+        <div class="row text-center">
+            <p>POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR</p>
+        </div>
+
+        <div class='row welcome-instances'>
+
+            <div class="col-sm-6 instances-avaliable">
+                <div class="instances-header">
+                    <div class="col-sm-12 text-center">DISPONÍVEIS</div>
+                    <div class="col-sm-4">ID</div>
+                    <div class="col-sm-7 text-center">NOME</div>
+                </div>
+                <div class='instances-row' ng-repeat="inst in avaliableInstances" ng-click='pickInstance(inst)' ng-if="inst.name != ''">
+                    <div class="col-sm-4">{{inst.id}}</div>
+                    <div class="col-sm-6">{{inst.name}}</div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-6 instances-checked">
+                <div class="instances-header">
+                    <div class="col-sm-12 text-center">SELECIONADAS</div>
+                    <div class="col-sm-4">ID</div>
+                    <div class="col-sm-7 text-center">NOME</div>
+                </div>
+                <div class='instances-row' ng-click='removeInstance(sel)' ng-repeat="sel in selectedInstances">
+                    <div class="col-sm-4">{{sel.id}}</div>
+                    <div class="col-sm-8">{{sel.name}}</div>
+                </div>
+            </div>
+
+        </div>
+
+        
+
+        <div class="row">
+            <button class='btn btn-primary col-sm-offset-4 col-sm-3 btn-instances-send' ng-click='saveChanges(deviceName, selectedInstances)' >ENVIAR</button>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+<!--BEM VINDO!
+
+COMO ESSA É SUA PRIMEIRA VEZ NA APLICAÇÃO NESTE DISPOSITIVO, VOCÊ NECESSITARÁ ESCOLHER AS INSTÂNCIAS NAS QUAIS DEVERÁ TRABALHAR
+
+QUAL O NOME DO DISPOSITIVO / OPERADOR?
+
+POR FAVOR, SELECIONE ABAIXO AS INSTANCIAS QUE DESEJA TRABALHAR
+
+ID | INSTANCIA | (MULTIPLA ESCOLHA)
+1  |
+2  |
+3  |
+4  |
+5  |
+
+TEM CERTEZA DE SUA ESCOLHA? SIM / NAO
+
+-- SALVA NO LOCAL STORAGE AS PREFERENCIAS -- 
+-- ENVIA EVENTO VIA EMIT SOCKET CONTENTO INFORMACOES DE QUAIS INSTANCIAS E NOME DO DISPOSITIVO -- 
+-- CRIAR PAGINA PARA DESTRUIR O LOCAL STORAGE -- -->
