@@ -13,8 +13,8 @@ const DB_NUMBER = parseInt(process.env.DB_INSTANCE_NUMBER) || 8;
 const DB_START = 0;
 const DB_SIZE = parseInt(process.env.DB_INSTANCE_SIZE) || 162;
 //DB Ajuste
-const DB_CONFIG_NUMBER = parseInt(process.env.DB_CONFIG_NUMBER);
-const DB_CONFIG_SIZE = parseInt(process.env.DB_CONFIG_SIZE);
+const DB_CONFIG_NUMBER = parseInt(process.env.DB_CONFIG_NUMBER) || 9;
+const DB_CONFIG_SIZE = parseInt(process.env.DB_CONFIG_SIZE) || 26;
 const WAGON_SIZE = 10;
 const WAGON_START = 6;
 const WAGON_TIMER = WAGON_START + 2;
