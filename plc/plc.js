@@ -53,7 +53,7 @@ plc.getData = (instance) => {
 };
 
 plc.updateWagon = (instance, wagon, quantity) => {
-    var start = WAGON_START + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
+    let start = WAGON_START + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
     let size = 2;
     let buff = Buffer.alloc(2);
     buff[0] = 0;
@@ -74,7 +74,7 @@ plc.getWagonTimer = (instance, wagon) => {
 };
 
 plc.updateWagonTimer = (instance, wagon, ms) => {
-    var start = WAGON_TIMER + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
+    let start = WAGON_TIMER + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
     var size = 4;
     var arr = new Uint32Array(1);
     arr[0] = ms;
@@ -94,7 +94,7 @@ plc.getStopTime = (instance) => {
 };
 
 plc.updateStopTime = (instance, ms) => {
-    var start = STOP_TIME + (instance * DB_CONFIG_SIZE);
+    let start = STOP_TIME + (instance * DB_CONFIG_SIZE);
     var size = 4;
     var arr = new Uint32Array(1);
     arr[0] = (ms * -1);
@@ -112,7 +112,7 @@ plc.getInstances = () => {
     var instances = [];    
     let maxInstances = 8;
     let size = 18;
-    var start = 0;
+    let start = 0;
     for (let i=0;i<maxInstances;i++){
         instances.push(s7.DBRead(DB_NUMBER,start, size).toString().replace(/[\u0000-\u001f]/g,""));
         start += DB_SIZE;

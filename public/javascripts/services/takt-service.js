@@ -78,6 +78,10 @@ function instanceService($http, $q, $state, $localStorage, $window){
             return local.instances;        
     }
 
+    o.getDevice = function(){                
+            return local.device;        
+    }
+
     o.checkInstance = function(){
         var defer = $q.defer();
         if (local.instances){            

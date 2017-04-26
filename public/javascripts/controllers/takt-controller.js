@@ -11,6 +11,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
     var instanceSize = 0;   
     var wagonGenerated = false;
     $scope.popidWagon = [];    
+    $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();  
 
     $interval(function(){
@@ -25,9 +26,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
             idx++;
             if (idx > instanceSize - 1) idx = 0;            
         }        
-    },10000);
-
-    
+    },10000);    
 
 
     $scope.wagonColor = function(wagon, quantity) {
