@@ -3,3 +3,6 @@ node_modules/
 *.log
 models/
 .vscode
+public/stylesheets/bootstrap/less
+public/stylesheets/bootstrap/grunt
+

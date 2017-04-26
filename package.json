@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "browser-sync": "^2.18.8",
-    "browsersync": "0.0.1-security"
+    "browsersync": "0.0.1-security",
+    "gulp": "^3.9.1"
   }
 }
