@@ -13,13 +13,14 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();  
 
-    $interval(function(){
+    $interval(function(){                
         if ($scope.instances && $scope.instances.length > 0){                     
-            socket.emit('get-takt', $scope.instances[idx].id);                        
+            socket.emit('get-takt', $scope.instances[idx].id);                     
         }          
+        generateWagons($scope.cfgWagonAmount);
     },1000);
 
-    $interval(function(){        
+    $interval(function(){                
         if ($scope.instances && $scope.instances.length > 0){            
             instanceSize = $scope.instances.length;            
             idx++;
@@ -73,15 +74,16 @@ function mainController($scope, $filter, socket, $interval, instances) {
         $scope.error = data.error;
         $scope.taktNegative = false;
 
-        if (data.lineTakt <= 0) $scope.taktNegative = true;
+        if (data.lineTakt <= 0) $scope.taktNegative = true;        
 
-        if (!wagonGenerated){
-            generateWagons($scope.cfgWagonAmount);
-            wagonGenerated = true;
-        }
+        // if (!wagonGenerated){
+             
+            // wagonGenerated = true;
+        // }
     }
 
     function generateWagons(amount){
+         $scope.popidWagon = [];
          for (var i = 1; i <= amount; i++)
             $scope.popidWagon.push(i);  
     }
