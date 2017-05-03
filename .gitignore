@@ -5,4 +5,11 @@ models/
 .vscode
 public/stylesheets/bootstrap/less
 public/stylesheets/bootstrap/grunt
+public/stylesheets/bootstrap/fonts
+public/stylesheets/bootstrap/js
+public/stylesheets/bootstrap/dist
+public/stylesheets/bootstrap/nuget
+public/stylesheets/fonts
+public/stylesheets/bootstrap
+public/javascripts/bootstrap
 

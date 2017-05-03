@@ -8,8 +8,7 @@
 function mainController($scope, $filter, socket, $interval, instances) {
 
     var idx = 0;
-    var instanceSize = 0;   
-    var wagonGenerated = false;
+    var instanceSize = 0;       
     $scope.popidWagon = [];    
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();  
