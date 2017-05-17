@@ -10,7 +10,12 @@ const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 const PORT = process.env.PORT || process.env.DEV_PORT;
+const Takt = require('./plc/Takt');
 const MAX_INSTANCES = 8;
+
+var takts = [
+    new Takt("FA0"), new Takt("ML0"), new Takt("ML1"), new Takt("ML2")
+];
 
 var instances = [];
 
@@ -25,10 +30,6 @@ for (let i = 0; i < MAX_INSTANCES; i++)
 
 var currentInstance = 0;
 
-// Fazer com que o usuario possa escolher qual instancias quer que apareça
-// Associar as instâncias quando a conexão é feita
-// Cliente requisita a informação ao invés do server
-
 var active = 0;
 
 var clients = [];
@@ -42,11 +43,7 @@ io.on('connection', (socket) => {
     socket.on('get-takt', (instanceId) => {
         var data = instances[instanceId].data;
         socket.emit('put-takt', data);
-    });
-
-    socket.on('ping', (data) => {
-        console.log("pong");
-    });
+    });   
 
     socket.on('plc-reconnect', (data) => {
         s7.disconnect();
@@ -60,29 +57,31 @@ io.on('connection', (socket) => {
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
 
+     socket.on('ping', (data) => {
+        console.log(data.toString());
+        socket.emit('pong', 'pong');        
+    });
+
 });
 
 
-setInterval(() => {    
+function updateInstances(){
 
-    if (currentInstance == MAX_INSTANCES){
-        currentInstance = 0;        
-    }
-    else {
-        instances[currentInstance].data = s7.getData(currentInstance);        
-        currentInstance += 1;
-    }
-        
-}, 110);
+    setInterval(() => {    
 
+        if (currentInstance == MAX_INSTANCES){
+            currentInstance = 0;        
+        }
+        else {
+            instances[currentInstance].data = s7.getData(currentInstance);        
+            currentInstance += 1;
+        }
+            
+    }, 110);
+}
 
-setInterval(() => {
-    io.emit('takt-1', s7.getData(active));
-}, 1100);
+updateInstances();
 
-setInterval(() => {
-    active == 1 ? active = 0 : active = 1;
-}, 10000);
 
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup

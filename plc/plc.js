@@ -2,8 +2,8 @@
 
 /* ARQUIVO QUE CRIA OS MÉTODOS PARA A UTILIZAÇÃO DO SNAP7 PARA TRANSMISSÃO DE DADOS COM O PLC */
 
-//Criar metodos para buscar informacoes no PLC
 const snap = require('node-snap7');
+const Instance = require('./ScreenInstance'); // Carrega construtor de dados a serem exibidos na tela
 const PLC_SERVER = process.env.PLC_SERVER;
 const PLC_TAKT = process.env.PLC_TAKT;
 const RACK = 0;
@@ -19,14 +19,13 @@ const WAGON_SIZE = 10;
 const WAGON_START = 6;
 const WAGON_TIMER = WAGON_START + 2;
 const STOP_TIME = 2;
-
-
-const adjustInstantSize = 22;
-const screenInstanceSize = 162; // 
+//DB TAKT
+const DB_TAKT;
+const DB_TAKT_INSTANCE_SIZE;
 
 var s7 = new snap7.S7Client();
 
-var Instance = require('./ScreenInstance'); // Carrega construtor de dados a serem exibidos na tela
+
 var plc = {};
 var data = {};
 var ins = [];
@@ -119,6 +118,24 @@ plc.getInstances = () => {
     }
     return instances;
 }
+
+plc.getTaktTime = (instanceName) => {
+    let formatedInstanceName = instanceName.toLowerCase().replace(/\s/, '');
+    let start = 0;
+    let offset = 0;
+    switch(instanceName){
+        case "fa0":
+        break;             
+        case "ml0":
+        break;
+        case "ml1":
+        break;
+        case "ml2":
+        break;
+    }
+    s7.DBRead()
+}
+
 
 plc.connect();
 
