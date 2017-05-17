@@ -10,14 +10,10 @@ const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 const PORT = process.env.PORT || process.env.DEV_PORT;
-const Takt = require('./plc/Takt');
 const MAX_INSTANCES = 8;
 
-var takts = [
-    new Takt("FA0"), new Takt("ML0"), new Takt("ML1"), new Takt("ML2")
-];
-
 var instances = [];
+
 
 function Instance(id){
     this.id = id;
@@ -66,22 +62,27 @@ io.on('connection', (socket) => {
 
 
 function updateInstances(){
-
     setInterval(() => {    
 
         if (currentInstance == MAX_INSTANCES){
             currentInstance = 0;        
         }
         else {
-            instances[currentInstance].data = s7.getData(currentInstance);        
+            instances[currentInstance].data = s7.getData(currentInstance);                    
             currentInstance += 1;
         }
             
     }, 110);
 }
 
-updateInstances();
+function updateTaktTime(){
+    setInterval(() => {
+        console.log(s7.getTaktTimeInstance(2));
+    }, 1000)
+}
 
+updateInstances();
+updateTaktTime();
 
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup
