@@ -1,5 +1,9 @@
 //MODULO DO PICK TAKT WEBSERVER
 angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appFilters'])
+    .constant('SERVER', 'http://10.8.66.81/')
+    .constant('HOSTNAME', 'rpitimerserver')
+    .constant('PRIDE_PORT', '80')
+    .constant('PART_MISSING_PORT', '8080')    
     .config([
         '$stateProvider', '$urlRouterProvider', '$locationProvider',
         function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -14,7 +18,7 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                     instances.checkInstance().then(function (hasInstance){
                         if (!hasInstance) {
                             $state.go('welcome');
-                            console.log('there is no instances set');
+                            console.log('There is no instances set');
                         }
                     })
                 }

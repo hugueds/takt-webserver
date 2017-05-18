@@ -15,23 +15,22 @@ var Instance = function (dataBuffer) {
     this.cfgTakt = dataBuffer.readInt32BE(62, 66); //Takt configurado na linha
     this.cfgWagonNumber = dataBuffer.readInt16BE(66, 68) || null; //Numero de vagoes
     this.cfgWagonAmount = dataBuffer.readInt16BE(68, 70) || null; //Numero de Popids por vagao
-    this.wagon = getWagons(dataBuffer);
+    // this.wagon = getWagons(dataBuffer);
     
     /*Implementando funcao para calcular a area dos vagoes */
-
-    // this.wagon = [{
-    //     "enabled": dataBuffer.slice(70, 72) & 0x00 || 0x00,
-    //     "name": dataBuffer.slice(72, 106).toString().replace(/[\u0000-\u001f]/g, ''),
-    //     "quantity": dataBuffer.readInt16BE(106, 108),
-    //     "timer": dataBuffer.readInt32BE(108, 112),
-    //     "avaliability": dataBuffer.readInt32BE(112, 116)
-    // }, {
-    //     "enabled": dataBuffer.slice(116, 118) & 0x00,
-    //     "name": dataBuffer.slice(118, 152).toString().replace(/[\u0000-\u001f]/g, ''), //.slice(118,152).
-    //     "quantity": dataBuffer.readInt16BE(152, 154),
-    //     "timer": dataBuffer.readInt32BE(154, 158),
-    //     "avaliability": dataBuffer.readInt32BE(158, 162)
-    // }] || null;
+    this.wagon = [{
+        "enabled": dataBuffer.slice(70, 72) & 0x00 || 0x00,
+        "name": dataBuffer.slice(72, 106).toString().replace(/[\u0000-\u001f]/g, ''),
+        "quantity": dataBuffer.readInt16BE(106, 108),
+        "timer": dataBuffer.readInt32BE(108, 112),
+        "avaliability": dataBuffer.readInt32BE(112, 116)
+    }, {
+        "enabled": dataBuffer.slice(116, 118) & 0x00,
+        "name": dataBuffer.slice(118, 152).toString().replace(/[\u0000-\u001f]/g, ''), //.slice(118,152).
+        "quantity": dataBuffer.readInt16BE(152, 154),
+        "timer": dataBuffer.readInt32BE(154, 158),
+        "avaliability": dataBuffer.readInt32BE(158, 162)
+    }] || null;
 };
 
 function getWagons(dataBuffer) {

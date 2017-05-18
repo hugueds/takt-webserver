@@ -1,4 +1,4 @@
 apps:
-	- script : app.js
+	- script : npm start
 	intances : 1
 	

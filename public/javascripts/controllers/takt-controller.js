@@ -1,4 +1,4 @@
-(function() {
+(function () {
     angular.module('takt-controller', ['socket-service', 'takt-service'])
         .controller('MainCtrl', mainController)
         .controller('Adjust', adjustController)
@@ -8,28 +8,27 @@
 function mainController($scope, $filter, socket, $interval, instances) {
 
     var idx = 0;
-    var instanceSize = 0;       
-    $scope.popidWagon = [];    
+    var instanceSize = 0;
+    $scope.popidWagon = [];
     $scope.device = instances.getDevice();
-    $scope.instances = instances.getInstances();  
+    $scope.instances = instances.getInstances();
 
-    $interval(function(){                
-        if ($scope.instances && $scope.instances.length > 0){                     
-            socket.emit('get-takt', $scope.instances[idx].id);                     
-        }          
+    $interval(function () {
+        if ($scope.instances && $scope.instances.length > 0) {
+            socket.emit('get-takt', $scope.instances[idx].id);
+        }
         generateWagons($scope.cfgWagonAmount);
-    },1000);
+    }, 1000);
 
-    $interval(function(){                
-        if ($scope.instances && $scope.instances.length > 0){            
-            instanceSize = $scope.instances.length;            
+    $interval(function () {
+        if ($scope.instances && $scope.instances.length > 0) {
+            instanceSize = $scope.instances.length;
             idx++;
-            if (idx > instanceSize - 1) idx = 0;            
-        }        
-    },10000);    
+            if (idx > instanceSize - 1) idx = 0;
+        }
+    }, 10000);
 
-
-    $scope.wagonColor = function(wagon, quantity) {
+    $scope.wagonColor = function (wagon, quantity) {
         var color = { green: 0.75, yellow: 0.9, red: 1 };
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
@@ -41,18 +40,18 @@ function mainController($scope, $filter, socket, $interval, instances) {
         return wagonColor;
     };
 
-    socket.on('put-takt', formatPlcData);    
+    socket.on('put-takt', formatPlcData);
 
-    socket.on('newConnection', function(data) {
-        console.log(data.toString());
+    socket.on('newConnection', function (data) {
+        console.log("NOVA CONEXÃO > " + data.toString());
     });
 
-    $scope.reconnect = function() {
+    $scope.reconnect = function () {
         socket.emit('plc-reconnect', { conn: "Reconnection Request" });
         console.log('Tentando reconectar com o PLC...');
     };
 
-    function formatPlcData(data){
+    function formatPlcData(data) {
         if (data == null) $scope.error = "Sem Conexao...";
 
         $scope.takt = data;
@@ -74,21 +73,14 @@ function mainController($scope, $filter, socket, $interval, instances) {
         $scope.error = data.error;
         $scope.taktNegative = false;
 
-        if (data.lineTakt <= 0) $scope.taktNegative = true;        
-
-        // if (!wagonGenerated){
-             
-            // wagonGenerated = true;
-        // }
+        if (data.lineTakt <= 0) $scope.taktNegative = true;
     }
 
-    function generateWagons(amount){
-         $scope.popidWagon = [];
-         for (var i = 1; i <= amount; i++)
-            $scope.popidWagon.push(i);  
+    function generateWagons(amount) {
+        $scope.popidWagon = [];
+        for (var i = 1; i <= amount; i++)
+            $scope.popidWagon.push(i);
     }
-
-     
 
 
 }
@@ -96,7 +88,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
 function adjustController($scope, $log, config, socket) {
     var instance = 'takt-1'; //Hard Coded
 
-    socket.on(instance, function(data) {
+    socket.on(instance, function (data) {
         $scope.logStopTime = data.logStopTime;
         $scope.wagons = data.wagon;
     });
@@ -112,20 +104,20 @@ function adjustController($scope, $log, config, socket) {
     $scope.t.m = '00';
     $scope.t.s = '00';
 
-    $scope.setTime = function(instance, t, wagon) {
+    $scope.setTime = function (instance, t, wagon) {
         var ms = converToMs(t);
         $scope.ms = ms;
         console.log(ms + ' ' + wagon.number)
         config.updateWagonTime(instance, wagon, ms);
     };
 
-    $scope.setStopTime = function(instance, t) {
+    $scope.setStopTime = function (instance, t) {
         var ms = converToMs(t);
         $scope.stopTimeMs = ms;
         config.updateStopTime(instance, ms);
     };
 
-    $scope.increase = function(t, type) {
+    $scope.increase = function (t, type) {
         if (type == 0) {
             t = parseInt(t.h, 10);
             t++;
@@ -151,7 +143,7 @@ function adjustController($scope, $log, config, socket) {
         }
     };
 
-    $scope.decrease = function(t, type) {
+    $scope.decrease = function (t, type) {
         if (type == 0) {
             t = parseInt(t.h, 10);
             t--;
@@ -172,7 +164,7 @@ function adjustController($scope, $log, config, socket) {
         }
     };
 
-    $scope.updateWagon = function(instance, wagon) {
+    $scope.updateWagon = function (instance, wagon) {
         config.updateWagon(instance, wagon);
     };
 
@@ -185,7 +177,7 @@ function adjustController($scope, $log, config, socket) {
         return ms;
     }
 
-    $scope.reconnect = function() {
+    $scope.reconnect = function () {
         var asw = confirm("Deseja reestabelecer conexão com PLC ?");
         if (!asw) return false;
         console.log('Tentando reconectar com o PLC...');
@@ -193,11 +185,12 @@ function adjustController($scope, $log, config, socket) {
         return true;
     }
 
-    $scope.storage = function() {;
+    $scope.storage = function () {
+        ;
     }
 }
 
-function welcomeController($scope, socket, instances){
+function welcomeController($scope, socket, instances) {
 
     init();
 
@@ -205,20 +198,20 @@ function welcomeController($scope, socket, instances){
 
     $scope.deviceName = "";
 
-    $scope.pickInstance = function(instance){
+    $scope.pickInstance = function (instance) {
         var idx = $scope.avaliableInstances.indexOf(instance);
         $scope.avaliableInstances.splice(idx, 1);
-        $scope.selectedInstances.push(instance); 
+        $scope.selectedInstances.push(instance);
     }
 
-    $scope.removeInstance = function(instance){
+    $scope.removeInstance = function (instance) {
         var idx = $scope.selectedInstances.indexOf(instance);
         $scope.selectedInstances.splice(idx, 1);
-        $scope.avaliableInstances.push(instance); 
+        $scope.avaliableInstances.push(instance);
     }
 
-    $scope.saveChanges = function(deviceName, selectedInstances){      
-        if (selectedInstances){
+    $scope.saveChanges = function (deviceName, selectedInstances) {
+        if (selectedInstances) {
             console.log("Erro, nao foram selecionadas instancias");
         }
         if (!deviceName) deviceName = "Default";
@@ -226,8 +219,8 @@ function welcomeController($scope, socket, instances){
         console.log('Alterações realizadas com sucesso!');
     }
 
-    function init(){        
-        instances.getAvaliableInstances();        
+    function init() {
+        instances.getAvaliableInstances();
         $scope.avaliableInstances = instances.avaliableInstances;
     }
 

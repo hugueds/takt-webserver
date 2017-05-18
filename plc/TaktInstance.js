@@ -11,8 +11,9 @@ var TaktInstance = function (dataBuffer) {
     this.stopTime = dataBuffer.readInt32BE(32, 36);
     this.overBalance = dataBuffer.readInt16BE(36, 38);
     this.accumulatedBalance = dataBuffer.readInt16BE(38, 40);
-    this.buzzer = dataBuffer[40] & 0x01;
-    this.prodComplete = dataBuffer[40] & 0x02;
+    this.buzzer = dataBuffer[40] & 0x00;
+    this.prodComplete = dataBuffer[40] & 0x00;    
+    
 }
 
 function getTaktParameters(dataBuffer) {

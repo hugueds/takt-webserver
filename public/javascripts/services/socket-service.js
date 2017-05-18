@@ -4,6 +4,8 @@ angular.module('socket-service',[])
 	const serverLan = 'http://10.8.66.81';
 	const serverWifi = 'rpitimerserver';
 
+	var locationServer = 'http://' + window.location.hostname;
+
  	var socket = io(serverLan);
 
  	return {

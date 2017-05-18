@@ -11,20 +11,28 @@ const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 const PORT = process.env.PORT || process.env.DEV_PORT;
 const MAX_INSTANCES = 8;
+const MAX_TAKT_INSTANCES = 4;
 
 var instances = [];
 
+var taktInstances = [
+    { id: 0, name: 'FA 0', data: {} },
+    { id: 1, name: 'ML0', data: {} },
+    { id: 2, name: 'ML1', data: {} },
+    { id: 3, name: 'ML2', data: {} }
+];
 
-function Instance(id){
+function Instance(id) {
     this.id = id;
     this.count = 0;
-    this.data = undefined;    
+    this.data = {};
 }
 
 for (let i = 0; i < MAX_INSTANCES; i++)
     instances.push(new Instance(i));
 
 var currentInstance = 0;
+var currentTaktInstance = 0;
 
 var active = 0;
 
@@ -39,7 +47,7 @@ io.on('connection', (socket) => {
     socket.on('get-takt', (instanceId) => {
         var data = instances[instanceId].data;
         socket.emit('put-takt', data);
-    });   
+    });
 
     socket.on('plc-reconnect', (data) => {
         s7.disconnect();
@@ -53,32 +61,42 @@ io.on('connection', (socket) => {
 
     io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
 
-     socket.on('ping', (data) => {
+    socket.on('takt-instance', (taktInstance) => {
+        var data = taktInstances[taktInstance].data;
+        socket.emit('server-takt-instance', data);
+    });
+
+    socket.on('ping', (data) => {
         console.log(data.toString());
-        socket.emit('pong', 'pong');        
+        socket.emit('pong', 'pong');
     });
 
 });
 
 
-function updateInstances(){
-    setInterval(() => {    
-
-        if (currentInstance == MAX_INSTANCES){
-            currentInstance = 0;        
+function updateInstances() {
+    setInterval(() => {
+        if (currentInstance == MAX_INSTANCES) {
+            currentInstance = 0;
         }
         else {
-            instances[currentInstance].data = s7.getData(currentInstance);                    
+            instances[currentInstance].data = s7.getData(currentInstance);
             currentInstance += 1;
         }
-            
+
     }, 110);
 }
 
-function updateTaktTime(){
+function updateTaktTime() {
     setInterval(() => {
-        console.log(s7.getTaktTimeInstance(2));
-    }, 1000)
+        if (currentTaktInstance == MAX_TAKT_INSTANCES) {
+            currentTaktInstance = 0;
+        }
+        else {
+            taktInstances[currentTaktInstance].data = s7.getTaktTimeInstance(currentTaktInstance);
+            currentTaktInstance += 1;
+        }
+    }, 250)
 }
 
 updateInstances();
@@ -112,15 +130,8 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-http.on('error', (err) => {
-    if (err.code == 'EADDRINUSE')    
-        http.listen(5000, err => console.log("server at 80 is busy... connected to port 5000"));
-    else 
-        console.log(err)
-});
-
-http.listen(parseInt(PORT), (err) => {    
-    if (err) return console.error(err);    
+http.listen(parseInt(PORT), (err) => {
+    if (err) return console.error(err);
     console.log('Ambiente -> ' + app.settings.env);
     console.log("Server Connected at port " + PORT + " " + new Date().toISOString().slice(0, 10));
 });
@@ -128,4 +139,3 @@ http.listen(parseInt(PORT), (err) => {
 
 
 module.exports = http;
-exports.Instances = instances;

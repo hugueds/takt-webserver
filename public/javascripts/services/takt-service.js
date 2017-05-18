@@ -49,7 +49,7 @@ function configService($http) {
 
 function instanceService($http, $q, $state, $localStorage, $window){
 
-    var local = $localStorage;   
+    var local = $localStorage;       
 
     var avaliableInstances = [
         {id : 0, name: "KIT FA 1.1" },
@@ -98,7 +98,7 @@ function instanceService($http, $q, $state, $localStorage, $window){
             local.device = device;
             local.instances = instances;
             o.registered = true;
-            return setTimeout(function(){ location = "http://10.8.66.81/"; } ,100);            
+            return setTimeout(function(){ location = window.location.origin; } ,100);            
         } 
     }
 

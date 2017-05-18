@@ -22,7 +22,7 @@ const WAGON_TIMER = WAGON_START + 2;
 const STOP_TIME = 2;
 //DB TAKT
 const DB_TAKT_NUMBER = parseInt(process.env.DB_TAKT_NUMBER) || 67;
-const DB_TAKT_INSTANCE_SIZE = parseInt(process.env.DB_TAKT_INSTANCE_SIZE) || 22;
+const DB_TAKT_INSTANCE_SIZE = parseInt(process.env.DB_TAKT_INSTANCE_SIZE) || 46;
 
 var s7 = new snap7.S7Client();
 
