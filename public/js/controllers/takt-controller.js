@@ -85,8 +85,13 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
 }
 
-function adjustController($scope, $log, config, socket) {
-    var instance = 'takt-1'; //Hard Coded
+function adjustController($scope, $log, config, socket, instances) {    
+
+    $scope.avaliableInstances = instances.getAvaliableInstances();
+
+    $scope.selectedInstance;
+    
+    console.log($scope.avaliableInstances)
 
     socket.on(instance, function (data) {
         $scope.logStopTime = data.logStopTime;

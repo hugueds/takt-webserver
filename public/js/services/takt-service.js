@@ -54,7 +54,9 @@ function instanceService($http, $q, $state, $localStorage, $window){
     var avaliableInstances = [
         {id : 0, name: "KIT FA 1.1" },
         {id : 1, name: "KIT LE / LD"},
-        {id : 2, name: "KIT FA 0"}
+        {id : 2, name: "KIT FA 0"},
+        {id : 3, name: "FA 0.2 - FA 0.4"},
+        {id : 4, name: "FA 1.1.3"}
     ]
 
     var o = {
@@ -65,6 +67,7 @@ function instanceService($http, $q, $state, $localStorage, $window){
     }
 
     o.getAvaliableInstances = function(){
+        return o.avaliableInstances;
         // return $http.get('/instances')
         // .success(function (data) {
         //     angular.copy(data, o.avaliableInstances);

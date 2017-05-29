@@ -9,17 +9,14 @@
         <div class="col-sm-3 col-sm-offset-3">
             INSTÂNCIA
         </div>
-        <div class="col-sm-2 col-sm-offset-1">
-            <select ng-model='instance' class="form-control">
-                <option>0</option>
-				<option>1</option>
-                <option>2</option>
-                <option>3</option>               
-			</select>
+        <div class="col-sm-3 col-sm-offset-1">          
+            <select ng-model='selectedInstance'>
+                <option ng-repeat="option in avaliableInstances" value="{{option.id}}">ID: {{option.id}} NOME: {{option.name}}</option>
+            </select>
         </div>
     </div>
     <br><br>
-    <div ng-if='instance' class="row">
+    <div ng-if='selectedInstance' class="row">
         <div class="col-sm-4 col-sm-offset-3">
             STOP TIME
         </div>
@@ -39,7 +36,7 @@
             </div>
             <div class="col-sm-1">
                 <center>&nbsp</center>
-                <button ng-click='setStopTime(instance, st)' class="btn-sm btn-success">
+                <button ng-click='setStopTime(selectedInstance, st)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
             </div>
@@ -48,7 +45,7 @@
 
     <br><br><br><br><br><br>
 
-    <div ng-show='instance' class="row">
+    <div ng-show='selectedInstance' class="row">
         <div class="col-sm-1 col-sm-offset-3">
             COMBOIO
         </div>
@@ -72,7 +69,7 @@
         </div>
 
         <div ng-show='wagon.quantity && wagon.number' class="col-sm-1 col-sm-offset-1">
-            <button ng-click='updateWagon(instance, wagon)' class="btn-lg btn-success">
+            <button ng-click='updateWagon(selectedInstance, wagon)' class="btn-lg btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
         </div>
@@ -101,7 +98,7 @@
             </div>
             <div class="col-sm-1">
                 <center>&nbsp</center>
-                <button ng-click='setTime(instance, t, wagon)' class="btn-sm btn-success">
+                <button ng-click='setTime(selectedInstance, t, wagon)' class="btn-sm btn-success">
 					<i class="glyphicon glyphicon-ok"></i>
 				</button>
             </div>
