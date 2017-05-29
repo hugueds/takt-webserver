@@ -1,23 +1,23 @@
 CACHE MANIFEST
 
-#v13w
+#v13
 
-javascripts/angular/angular.min.js
-javascripts/angular/angular-ui-router.js
-javascripts/bootstrap/ui.bootstrap.min.js
-javascripts/angularApp.js
-javascripts/filters/filters.js
-javascripts/services/takt-service.js
-javascripts/services/socket-service.js
-javascripts/controllers/takt-controller.js
-javascripts/scripts.js
+js/angular/angular.min.js
+js/angular/angular-ui-router.js
+js/bootstrap/ui.bootstrap.min.js
+js/angularApp.js
+js/filters/filters.js
+js/services/takt-service.js
+js/services/socket-service.js
+js/controllers/takt-controller.js
+js/scripts.js
 templates/
 templates/index.html
 templates/ajustes/index.html
 
 
-stylesheets/style.css
-stylesheets/bootstrap/dist/css/bootstrap.min.css#
+css/style.css
+css/bootstrap/dist/css/bootstrap.min.css#
 
 
 NETWORK:
