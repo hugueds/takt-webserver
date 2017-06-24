@@ -5,18 +5,18 @@
 }
 
 * {
-    width: 99%;
-    margin: 0 auto;
+    width: 100%;
+    
 }
 
 body {
     background-color: white;
 }
 
-.header {
-    /*border: 1px solid blue;*/
+.header {    
     position: relative;
     float: left;
+    margin : auto;
 }
 
 
@@ -26,8 +26,7 @@ body {
     color: red;
     margin-left: 1%;
     margin-top: 2%;
-    width: 25%;
-    /*border: 1px solid red;*/
+    width: 25%;    
     padding: 1%;
     position: relative;
     float: left;
@@ -51,7 +50,6 @@ body {
     margin-left: 1%;
     margin-top: 2%;
     width: 47%;
-    /*//border: 1px solid gray;*/
     position: relative;
     float: left;
 }
@@ -59,7 +57,6 @@ body {
 .takt-time-text {
     font-size: 170%;
     text-align: center;
-    /*color: black; //change to black*/
 }
 
 .takt-time {
@@ -67,7 +64,6 @@ body {
     text-align: center;
     margin-top: -3.4%;
     font-family: 'DSDIGI';
-    /*color: black; //change to black*/
 }
 
 .takt-negative {
@@ -79,10 +75,9 @@ body {
 
 .prod-box {
     border: 1px black;
-    margin-left: 1%;
-    margin-top: 2%;
+    margin: auto;
+    margin-top: 3%;
     width: 22%;
-    /*//border: 1px solid gray;*/
     position: relative;
     float: left;
     text-align: center;
@@ -90,7 +85,7 @@ body {
 
 .prod-produced-text,
 .prod-objective-text {
-    font-size: 170%;
+    font-size: 150%;
     /*color: black; //change to black*/
 }
 
@@ -98,17 +93,16 @@ body {
 .prod-objective {
     font-size: 500%;
     border: 1px solid black;
-    width: 45%;
-    margin-bottom: 3%;
-    /*color: black; //change*/
+    width: 50%;
+    margin-bottom: 2%;
+    margin: auto;    
 }
 
 
 /* CONTENT */
 
 .content {
-    margin-top: 3%;
-    /*//border: solid blue 1px;*/
+    margin-top: 3%;    
     height: 400px;
     position: relative;
     float: left;
@@ -121,13 +115,12 @@ body {
     width: 40%;
     position: relative;
     float: left;
-    margin-left: 8%;
-    margin-bottom: 2%;
+    margin-left: 10%;    
 }
 
 .wagon-popid {
     border: 2px solid black;
-    height: 200px;
+    height: 150px;
     width: 10%;
     position: relative;
     float: left;
@@ -169,7 +162,7 @@ body {
 }
 
 .wagon-name-text {
-    font-size: 180%;
+    font-size: 150%;
     text-align: center;
     margin-top: 2%;
 }
@@ -192,7 +185,7 @@ body {
     position: relative;
     float: left;
     clear: both;
-    margin-top: 4%;
+    margin-top: 3%;
     font-size: 500%;
     font-weight: bold;
 }
