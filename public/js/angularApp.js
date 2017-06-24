@@ -12,7 +12,7 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
 
             .state('takt', {
                 url: '/',
-                templateUrl: 'templates',
+                templateUrl: 'views',
                 controller: 'MainCtrl',
                 onEnter : function($state, instances) { 
                     instances.checkInstance().then(function (hasInstance){
@@ -26,13 +26,13 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
 
             .state('adjusts', {
                 url: '/ajustes',
-                templateUrl: 'templates/ajustes/',
+                templateUrl: 'views/ajustes/',
                 controller: 'Adjust'
             })
 
             .state('welcome', {
                 url : '/welcome',
-                templateUrl : 'templates/welcome/',
+                templateUrl : 'views/welcome/',
                 controller : 'WelcomeCtrl',
                 onEnter : function($state, instances) { 
                     instances.unsetInstances();

@@ -1,0 +1,93 @@
+<div class="header">
+
+    <!-- STOP TIME -->
+
+    <div class="stop-time-box">
+        <div class="stop-time">
+            {{lineStopTime | takt}}
+        </div>
+        <div class='stop-time-text'>
+            STOP TIME - LINE
+        </div>
+    </div>
+
+    <!-- TAKT -->
+
+    <div class="takt-time-box">
+        
+        <div class='takt-time-text'>
+            TAKT LINE
+        </div>
+        <div class='takt-time' ng-class='{ "takt-negative" : taktNegative}'>
+            {{lineTakt | takt}}
+        </div>
+        <div ng-show='error' class='error'>
+            {{error}}
+            <button class='btn-lg btn-danger' ng-click='reconnect()'>RECONECTAR...</button>
+        </div>
+
+    </div>
+
+    <!-- PRODUÇÃO -->
+
+    <div class="prod-box">
+
+        <div class="prod-produced-text">
+            PRODUZIDOS
+        </div>
+        <div class="prod-produced">
+            {{produced}}
+        </div>
+        <div class="prod-objective-text">
+            OBJETIVO
+        </div>
+        <div class="prod-objective">
+            {{objective}}
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- COMBOIOS -->
+<div class='content'>
+
+    <div ng-repeat='wagon in wagons'>
+
+        <div class='wagon'>
+
+            <div ng-repeat='popid in popidWagon'>
+                <div class="wagon-popid" ng-class='wagonColor(popid, wagon.quantity)'>
+                    <span class='wagon-popid-text'> {{popid}} </span>
+                </div>
+            </div>
+
+            <div class='wagon-name-box'>
+                <div class='wagon-name-text'>
+                    {{wagon.name}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class='instance-name text-center'>
+            {{instName}}
+        </div>
+    </div>
+
+    <div class="text-center">
+        Dispositivo : {{device}}
+    </div>
+
+    <br>    
+
+    <div>
+        <a href='#/welcome' class="col-sm-offset-4 col-sm-4 btn btn-warning">RECONFIGURAR INSTÂNCIAS</a>
+        <br>        
+    </div>
+    
+    
+
+</div>

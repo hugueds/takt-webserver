@@ -1,40 +1,53 @@
 <!DOCTYPE html>
-<html ng-app="TaktApp"  ><!-- manifest='offline.manifest' -->
-  <head>
-    <base href="/"/>
-    <meta name="author" content="Hugo Peres - SSBHPE"/>
-    <meta name="description" content="Timer logistico utilizado para operadores do jacto"/>
-    <meta name="keywords" content="P30, QAS, Logistica, Automacao, Takt, Timer, Raspberry"/>
-    <meta charset='utf-8'/>
-    <title>CHASSIS PRIDE</title>
-	  <link rel='manifest' href='app.manifest' />
-    <link rel='stylesheet' href="/css/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel='stylesheet' href='/css/style.css' />
-  </head>
-  <body>
-	  
-	  <ui-view></ui-view>  
+<html ng-app="TaktApp">
+<!-- manifest='offline.manifest' -->
 
-    
-    <!-- SOCKET I/O -->	    
-    <script src="/socket.io/socket.io.js"></script>
-    <!-- MODULES -->	    
-    <script type="text/javascript" src="js/angular/angular.min.js"> </script>
-    <script type="text/javascript" src="js/angular/ngStorage.min.js"> </script>
-    <script type="text/javascript" src="js/angular/angular-ui-router.js"> </script>
-    <script type="text/javascript" src="js/bootstrap/ui.bootstrap.min.js"> </script>    
-    <script type="text/javascript" src="js/angularApp.js"> </script>
-    
-    <!-- FILTERS -->
-    <script type="text/javascript" src="js/filters/filters.js"> </script>
-    <!-- SERVICES -->	
-    <script type="text/javascript" src="js/services/takt-service.js"> </script>
-    <script type="text/javascript" src="js/services/socket-service.js"> </script>    
-    <!-- CONTROLLERS -->	
-    <script type="text/javascript" src="js/controllers/takt-controller.js"> </script>
-    <!-- SCRIPTS -->
-    <script src="js/scripts.js"></script>
+<head>
+  <base href="/" />
+  <meta name="author" content="Hugo Peres - SSBHPE" />
+  <meta name="description" content="Timer logistico utilizado para operadores do jacto" />
+  <meta name="keywords" content="P30, QAS, Logistica, Automacao, Takt, Timer, Raspberry" />
+  <meta charset='utf-8' />
+  <title>CHASSIS PRIDE</title>
+
+  <link rel="apple-touch-startup-image" href="images/icon-256.png">
+  <link rel="apple-touch-icon" href="images/icon-256.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="images/icon-256.png">
+
+  <link rel='manifest' href='app.manifest' />
+  <link rel='stylesheet' href="css/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel='stylesheet' href='css/style.css' />
+</head>
+
+<body>
+
+  <ui-view></ui-view>
 
 
-  </body>
+  <!-- SOCKET I/O -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- MODULES -->
+  <script type="text/javascript" src="js/angular/angular.min.js"> </script>
+  <script type="text/javascript" src="js/angular/ngStorage.min.js">  </script>
+  <script type="text/javascript" src="js/angular/angular-ui-router.js"> </script>
+  <script type="text/javascript" src="js/bootstrap/ui.bootstrap.min.js">  </script>
+  <script type="text/javascript" src="js/angularApp.js"></script>
+
+  <!-- FILTERS -->
+  <script type="text/javascript" src="js/filters/filters.js"></script>
+
+  <!-- SERVICES -->
+  <script type="text/javascript" src="js/services/takt-service.js"></script>
+  <script type="text/javascript" src="js/services/socket-service.js"></script>
+
+  <!-- CONTROLLERS -->
+  <script type="text/javascript" src="js/controllers/takt-controller.js"></script>
+  
+  <!-- SCRIPTS -->
+  <script src="js/scripts.js"></script>
+
+
+</body>
+
 </html>

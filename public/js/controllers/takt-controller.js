@@ -87,27 +87,10 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
 function adjustController($scope, $log, config, socket, instances) {    
 
-    $scope.avaliableInstances = instances.getAvaliableInstances();
+    $scope.avaliableInstances = instances.getAvaliableInstances();    
 
-    $scope.selectedInstance;
-    
-    console.log($scope.avaliableInstances)
-
-    socket.on(instance, function (data) {
-        $scope.logStopTime = data.logStopTime;
-        $scope.wagons = data.wagon;
-    });
-
-    $scope.t = {};
-    $scope.st = {};
-
-    $scope.st.h = '00';
-    $scope.st.m = '00';
-    $scope.st.s = '00';
-
-    $scope.t.h = '00';
-    $scope.t.m = '00';
-    $scope.t.s = '00';
+    $scope.t = { h : '00', m : '00', s : '00' };
+    $scope.st = { h : '00', m : '00', s : '00' };
 
     $scope.setTime = function (instance, t, wagon) {
         var ms = converToMs(t);
@@ -188,11 +171,7 @@ function adjustController($scope, $log, config, socket, instances) {
         console.log('Tentando reconectar com o PLC...');
         socket.emit('plc-reconnect', { conn: "Reconnection Request" });
         return true;
-    }
-
-    $scope.storage = function () {
-        ;
-    }
+    }    
 }
 
 function welcomeController($scope, socket, instances) {
