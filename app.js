@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config();
 const favicon = require('serve-favicon'); //Providenciar 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const s7 = require('./plc/plc');
+const plc = require('./plc/plc');
 const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
@@ -14,6 +14,8 @@ const MAX_INSTANCES = 8;
 const MAX_TAKT_INSTANCES = 4;
 
 var instances = [];
+plc.connect();
+
 
 var taktInstances = [
     { id: 0, name: 'FA 0', data: {} },
@@ -50,8 +52,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('plc-reconnect', (data) => {
-        s7.disconnect();
-        s7.connect();
+        plc.disconnect();
+        plc.connect();
     });
 
     socket.on('disconnect', (socket) => {
@@ -80,7 +82,7 @@ function updateInstances() {
             currentInstance = 0;
         }
         else {
-            instances[currentInstance].data = s7.getData(currentInstance);
+            instances[currentInstance].data = plc.getData(currentInstance);
             currentInstance += 1;
         }
 
@@ -93,7 +95,7 @@ function updateTaktTime() {
             currentTaktInstance = 0;
         }
         else {
-            taktInstances[currentTaktInstance].data = s7.getTaktTimeInstance(currentTaktInstance);
+            taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
             currentTaktInstance += 1;
         }
     }, 250)

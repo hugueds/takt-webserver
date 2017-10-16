@@ -1,6 +1,7 @@
+/* ARQUIVO QUE CRIA OS MÉTODOS PARA A UTILIZAÇÃO DO SNAP7 PARA TRANSMISSÃO DE DADOS COM O PLC */
+
 'use strict';
 
-/* ARQUIVO QUE CRIA OS MÉTODOS PARA A UTILIZAÇÃO DO SNAP7 PARA TRANSMISSÃO DE DADOS COM O PLC */
 
 const snap = require('node-snap7');
 const Instance = require('./ScreenInstance'); // Carrega construtor de dados a serem exibidos na tela
@@ -31,20 +32,30 @@ var data = {};
 var ins = [];
 
 plc.connect = () => {
-    if (s7.Connect()) return console.log("!!! THE CLIENT IS ALREADY CONNECTED \n");    
+    if (s7.Connect()) {
+        return console.log("!!! THE CLIENT IS ALREADY CONNECTED \n");
+    }
     s7.ConnectTo(PLC_SERVER, RACK, SLOT, (err) => {
-        if (err) return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err));
+        if (err) {
+            return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err));
+        }
         return console.log(">> Connected to PLC at " + PLC_SERVER);
     });
 };
 
-plc.disconnect = () => { return s7.Disconnect(); };
+plc.disconnect = () => {
+    return s7.Disconnect();
+};
 
-plc.getData = (instance) => {    
-    if (!s7.Connected()) return console.log(" !!! There is no connection with PLC: " + PLC_SERVER); //ERRO SE NAO HOUVER CONEXAO
+plc.getData = (instance) => {
+    if (!s7.Connected()) {
+        return console.error(" !!! There is no connection with PLC: " + PLC_SERVER); //ERRO SE NAO HOUVER CONEXAO
+    }
     let pointer = (DB_START + (instance * DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     data = s7.DBRead(DB_NUMBER, pointer, DB_SIZE);
-    if (!data || data.length === 0) return console.error(">> No Data to get!\n");
+    if (!data || data.length === 0) {
+        return console.error(">> No Data to get!\n");
+    }
     return new Instance(data);
 };
 
@@ -72,29 +83,31 @@ plc.getWagonTimer = (instance, wagon) => {
 plc.updateWagonTimer = (instance, wagon, ms) => {
     let start = WAGON_TIMER + (instance * DB_CONFIG_SIZE) + (wagon * WAGON_SIZE);
     var size = 4;
-    var arr = new Uint32Array(1);
+    let arr = new Uint32Array(1);
     arr[0] = ms;
-    var buff = Buffer.from(arr.buffer);
+    let buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
     s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
-        if (err) return console.error(err);
+        if (err) {
+            return console.error(err);
+        }
         console.log('>> WAGON ' + wagon + '--> TIMER UPDATED');
     });
     return true;
 };
 
 plc.getStopTime = (instance) => {
-    var size = 4;
+    let size = 4;
     data = s7.DBRead(DB_NUMBER, 38, size);
     return data;
 };
 
 plc.updateStopTime = (instance, ms) => {
     let start = STOP_TIME + (instance * DB_CONFIG_SIZE);
-    var size = 4;
-    var arr = new Uint32Array(1);
+    let size = 4;
+    let arr = new Uint32Array(1);
     arr[0] = (ms * -1);
-    var buff = Buffer.from(arr.buffer);
+    let buff = Buffer.from(arr.buffer);
     buff = buff.swap32();
     s7.DBWrite(DB_CONFIG_NUMBER, start, size, buff, (err) => {
         if (err) return console.error(err);
@@ -105,7 +118,7 @@ plc.updateStopTime = (instance, ms) => {
 };
 
 plc.getInstances = () => {
-    var instances = [];
+    let instances = [];
     let maxInstances = 8;
     let size = 18;
     let start = 0;
@@ -116,16 +129,18 @@ plc.getInstances = () => {
     return instances;
 }
 
-plc.getTaktTimeInstance = (instance) => {     
-    if (!s7.Connected()) return console.log(" !!! There is no connection with PLC: " + PLC_SERVER); //ERRO SE NAO HOUVER CONEXAO                 
-
+plc.getTaktTimeInstance = (instance) => {
+    if (!s7.Connected()){
+        return console.error(" !!! There is no connection with PLC: " + PLC_SERVER); //ERRO SE NAO HOUVER CONEXAO                 
+    } 
     let pointer = instance * DB_TAKT_INSTANCE_SIZE; // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     data = s7.DBRead(DB_TAKT_NUMBER, pointer, DB_TAKT_INSTANCE_SIZE);
-    if (!data || data.length === 0) return console.error(">> No Data to get!\n");
-    return new Takt(data);        
+    if (!data || data.length === 0) {
+        return console.error(">> No Data to get!\n");
+    }
+    return new Takt(data);
 }
 
 
-plc.connect();
 
 module.exports = plc;

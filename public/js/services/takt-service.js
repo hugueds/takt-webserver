@@ -56,7 +56,11 @@ function instanceService($http, $q, $state, $localStorage, $window){
         {id : 1, name: "KIT LE / LD"},
         {id : 2, name: "KIT FA 0"},
         {id : 3, name: "FA 0.2 - FA 0.4"},
-        {id : 4, name: "FA 1.1.3"}
+        {id : 4, name: "FA 1.1.3"},
+		{id : 5, name: "FA 4.1 - 4.2"},
+		{id : 6, name: "FA 4.3 - 4.4"},
+		{id : 7, name: "FA 5.1"},
+		//{id : 8, name: "FA 5.2 - 5.4"}		
     ]
 
     var o = {
