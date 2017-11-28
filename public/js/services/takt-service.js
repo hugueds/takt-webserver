@@ -47,76 +47,68 @@ function configService($http) {
     return o;
 }
 
-function instanceService($http, $q, $state, $localStorage, $window){
+function instanceService($http, $q, $state, $localStorage, $window) {
 
-    var local = $localStorage;       
+    var local = $localStorage;
 
     var avaliableInstances = [
-        {id : 0, name: "KIT FA 1.1" },
-        {id : 1, name: "KIT LE / LD"},
-        {id : 2, name: "KIT FA 0"},
-        {id : 3, name: "FA 0.2 - FA 0.4"},
-        {id : 4, name: "FA 1.1.3"},
-		{id : 5, name: "FA 4.1 - 4.2"},
-		{id : 6, name: "FA 4.3 - 4.4"},
-		{id : 7, name: "FA 5.1"},
-		//{id : 8, name: "FA 5.2 - 5.4"}		
+        { id: 0, name: "KIT FA 1.1" },
+        { id: 1, name: "KIT LE / LD" },
+        { id: 2, name: "KIT FA 0" },
+        { id: 3, name: "FA 0.2 - FA 0.4" },
+        { id: 4, name: "FA 1.1.3" },
+        { id: 5, name: "FA 4.1 - 4.2" },
+        { id: 6, name: "FA 4.3 - 4.4" },
+        { id: 7, name: "FA 5.1" },
+        //{id : 8, name: "FA 5.2 - 5.4"}		
     ]
 
     var o = {
-        device : "",   
-        avaliableInstances : avaliableInstances,     
-        instances : [],
-        registered : false
+        device: "",
+        avaliableInstances: avaliableInstances,
+        instances: [],
+        registered: false
     }
 
-    o.getAvaliableInstances = function(){
+    o.getAvaliableInstances = function() {
         return o.avaliableInstances;
-        // return $http.get('/instances')
-        // .success(function (data) {
-        //     angular.copy(data, o.avaliableInstances);
-        // })
-        // .error(function(){
-        //     console.log("Erro durante requisicao das instancias");
-        // });
     }
 
-    o.getInstances = function(){                
-            return local.instances;        
+    o.getInstances = function() {
+        return local.instances;
     }
 
-    o.getDevice = function(){                
-            return local.device;        
+    o.getDevice = function() {
+        return local.device;
     }
 
-    o.checkInstance = function(){
+    o.checkInstance = function() {
         var defer = $q.defer();
-        if (local.instances){            
+        if (local.instances) {
             o.setInstances(o.device, o.instances);
             defer.resolve(true);
         } else {
             defer.resolve(false);
         }
-        return defer.promise;                
+        return defer.promise;
     }
 
-    o.setInstances = function(device, instances){
-        if (instances.length > 0){            
+    o.setInstances = function(device, instances) {
+        if (instances.length > 0) {
             local.device = device;
             local.instances = instances;
             o.registered = true;
-            return setTimeout(function(){ location = window.location.origin; } ,100);            
-        } 
+            return setTimeout(function() { location = window.location.origin; }, 100);
+        }
     }
 
-    o.unsetInstances = function(){
-        // o.avaliableInstances = avaliableInstances;
-        o.instances = [];        
+    o.unsetInstances = function() {
+        o.instances = [];
         o.registered = false;
         local.instances = "";
         local.device = "";
         return;
-    }   
+    }
 
     return o;
 }

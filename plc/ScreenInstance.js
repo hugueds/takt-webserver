@@ -1,8 +1,11 @@
 const Instance = function (dataBuffer) {
-    if (!dataBuffer || dataBuffer.length === 0) return console.error("There is no Buffer from PLC!");
 
-    let instNameSize = dataBuffer.slice(1,2);
-    this.instName = dataBuffer.slice(2, (2 + size)).toString('utf-8') || null;
+    if (!dataBuffer || !dataBuffer.length){
+        return console.error("There is no Buffer from PLC!");
+    } 
+
+    let instNameSize = dataBuffer.readUInt8(1,2);
+    this.instName = dataBuffer.slice(2, (2 + instNameSize)).toString('utf-8') || null;
     this.lineTakt = dataBuffer.readInt32BE(18, 22) || 0; // Takt da linha
     this.lineStopTime = dataBuffer.readInt32BE(22, 26) || null; // Stop time da linha
     this.produced = dataBuffer.readInt16BE(26, 28) || null; // Produzidos na linha
@@ -18,38 +21,20 @@ const Instance = function (dataBuffer) {
     this.cfgWagonAmount = dataBuffer.readInt16BE(68, 70) || null; // Numero de Popids por vagao    
     
     /* Implementando funcao para calcular a area dos vagoes */
-    let wagonNameSizes = [dataBuffer.slice(73, 74), dataBuffer.slice(119, 120)]
+    let wagonNameSizes = [dataBuffer.readUInt8(73, 74), dataBuffer.readUInt8(119, 120)]
     this.wagon = [{
-        "enabled": dataBuffer.slice(70, 72) & 0x00 || 0x00,
+        "enabled": dataBuffer[70] & 0x01 > 0,
         "name": dataBuffer.slice(74, (74 + wagonNameSizes[0])).toString('utf-8'),
         "quantity": dataBuffer.readInt16BE(106, 108),
         "timer": dataBuffer.readInt32BE(108, 112),
         "avaliability": dataBuffer.readInt32BE(112, 116)
     }, {
-        "enabled": dataBuffer.slice(116, 118) & 0x00,
+        "enabled": dataBuffer[116] & 0x01 > 0,
         "name": dataBuffer.slice(120, (120 + wagonNameSizes[1])).toString('utf-8'),
         "quantity": dataBuffer.readInt16BE(152, 154),
         "timer": dataBuffer.readInt32BE(154, 158),
         "avaliability": dataBuffer.readInt32BE(158, 162)
     }] || null;
 };
-
-function getWagons(dataBuffer) {
-    var wagons = [];
-    let wagonsAmount = 2;
-    let offset = 70;
-    let size = 46;
-    for (let i = 1; i < wagonsAmount; i++) {
-        wagons.push({
-            enabled: dataBuffer.slice(offset + 0, offset + 2) & 0x00 || 0x00,
-            name: dataBuffer.slice(offset + 2, offset + 34).toString().replace(/[\u0000-\u001f]/g, ''),
-            quantity: dataBuffer.readInt16BE(offset + 34, offset + 36),
-            timer: dataBuffer.readInt32BE(offset + 36, offset + 40),
-            avaliability: dataBuffer.readInt32BE(offset + 40, offset + 44)
-        })
-        offset += size;
-    }
-    return wagons;
-}
 
 module.exports = Instance;

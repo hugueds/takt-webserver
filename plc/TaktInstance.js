@@ -1,8 +1,8 @@
-var TaktInstance = function (dataBuffer) {
+var TaktInstance = function(dataBuffer) {
     if (!dataBuffer || dataBuffer.length === 0) return console.error("Buffer is Empty!");
 
-    this.isActive = dataBuffer[0] & 0x01;
-    this.isPPlan = dataBuffer[0] & 0x02;
+    this.isActive = dataBuffer[0] & 0x01 > 0;
+    this.isPPlan = dataBuffer[0] & 0x02 > 0;
     this.pplanTime = dataBuffer.readInt32BE(2, 6);
     this.parameters = getTaktParameters(dataBuffer);
     this.cycleEnd = dataBuffer[24] & 0x01;
@@ -12,8 +12,8 @@ var TaktInstance = function (dataBuffer) {
     this.overBalance = dataBuffer.readInt16BE(36, 38);
     this.accumulatedBalance = dataBuffer.readInt16BE(38, 40);
     this.buzzer = dataBuffer[40] & 0x00;
-    this.prodComplete = dataBuffer[40] & 0x00;    
-    
+    this.prodComplete = dataBuffer[40] & 0x00;
+
 }
 
 function getTaktParameters(dataBuffer) {

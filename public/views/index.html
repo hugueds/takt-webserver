@@ -4,7 +4,7 @@
 
     <div class="stop-time-box">
         <div class="stop-time">
-            {{lineStopTime | takt}}
+            {{takt.lineStopTime | takt}}
         </div>
         <div class='stop-time-text'>
             STOP TIME - LINE
@@ -14,12 +14,12 @@
     <!-- TAKT -->
 
     <div class="takt-time-box">
-        
+
         <div class='takt-time-text'>
             TAKT LINE
         </div>
         <div class='takt-time' ng-class='{ "takt-negative" : taktNegative}'>
-            {{lineTakt | takt}}
+            {{takt.lineTakt | takt}}
         </div>
         <div ng-show='error' class='error'>
             {{error}}
@@ -36,13 +36,13 @@
             PRODUZIDOS
         </div>
         <div class="prod-produced">
-            {{produced}}
+            {{takt.produced}}
         </div>
         <div class="prod-objective-text">
             OBJETIVO
         </div>
         <div class="prod-objective">
-            {{objective}}
+            {{takt.objective}}
         </div>
 
     </div>
@@ -71,26 +71,26 @@
         </div>
     </div>
 
-    
-        <div class='instance-name text-center'>
-            {{instName}}
-        </div>
-    
+
+    <div class='instance-name text-center'>
+        {{takt.instName}}
+    </div>
+
 
     <div class="text-center">
         Dispositivo : {{device}}
     </div>
 
-    <br>    
+    <br>
 
     <div>
         <a href='#/welcome' class="col-sm-offset-4 col-sm-4 btn btn-warning">RECONFIGURAR INSTÂNCIAS</a>
-        <br>        
+        <br>
     </div>
-    
-    <br>       
+
+    <br>
     <hr>
-    
-    
+
+
 
 </div>

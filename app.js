@@ -2,27 +2,25 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const dotenv = require('dotenv').config();
-const favicon = require('serve-favicon'); //Providenciar 
+const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const plc = require('./plc/plc');
 const http = require('http').Server(app);
 const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
+const configInstance = require('./routes/config');
+const config = require('./config');
 const PORT = process.env.PORT || process.env.DEV_PORT;
-const MAX_INSTANCES = 8;
+const MAX_INSTANCES = 12;
 const MAX_TAKT_INSTANCES = 4;
 
 var instances = [];
+
 plc.connect();
 
 
-var taktInstances = [
-    { id: 0, name: 'FA 0', data: {} },
-    { id: 1, name: 'ML0', data: {} },
-    { id: 2, name: 'ML1', data: {} },
-    { id: 3, name: 'ML2', data: {} }
-];
+var taktInstances = config.instances;
 
 function Instance(id) {
     this.id = id;
@@ -30,8 +28,10 @@ function Instance(id) {
     this.data = {};
 }
 
-for (let i = 0; i < MAX_INSTANCES; i++)
+for (let i = 0; i < MAX_INSTANCES; i++) {
     instances.push(new Instance(i));
+}
+
 
 var currentInstance = 0;
 var currentTaktInstance = 0;
@@ -42,12 +42,13 @@ var clients = [];
 
 io.on('connection', (socket) => {
 
-    clients.push(socket);
-
-    console.log('A CLIENT HAS CONNECTED! -> ' + socket.request.connection.remoteAddress.slice(7));
+    let client = socket.request.connection.remoteAddress.slice(7);
+    io.emit('newConnection', client);
+    clients.push(client);
+    console.log('A CLIENT HAS CONNECTED! -> ' + client);
 
     socket.on('get-takt', (instanceId) => {
-        var data = instances[instanceId].data;
+        let data = instances[instanceId].data;
         socket.emit('put-takt', data);
     });
 
@@ -57,14 +58,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', (socket) => {
-        var idx = clients.indexOf(socket);
-        if (idx > -1) clients.splice(idx, 1);
+        let idx = clients.indexOf(client);
+        if (idx > -1) {
+            clients.splice(idx, 1);
+        }
     });
 
-    io.emit('newConnection', socket.request.connection.remoteAddress.slice(7));
-
     socket.on('takt-instance', (taktInstance) => {
-        var data = taktInstances[taktInstance].data;
+        let data = taktInstances[taktInstance].data;
         socket.emit('server-takt-instance', data);
     });
 
@@ -76,34 +77,26 @@ io.on('connection', (socket) => {
 });
 
 
-function updateInstances() {
-    setInterval(() => {
-        if (currentInstance == MAX_INSTANCES) {
-            currentInstance = 0;
-        }
-        else {
-            instances[currentInstance].data = plc.getData(currentInstance);
-            currentInstance += 1;
-        }
+setInterval(updateInstances, 80);
+setInterval(updateTaktTime, 250);
 
-    }, 110);
+function updateInstances() {
+    if (currentInstance == MAX_INSTANCES) {
+        currentInstance = 0;
+    } else {
+        instances[currentInstance].data = plc.getData(currentInstance);
+        currentInstance++;
+    }
 }
 
 function updateTaktTime() {
-    setInterval(() => {
-        if (currentTaktInstance == MAX_TAKT_INSTANCES) {
-            currentTaktInstance = 0;
-        }
-        else {
-            taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
-            currentTaktInstance += 1;
-        }
-    }, 250)
+    if (currentTaktInstance == MAX_TAKT_INSTANCES) {
+        currentTaktInstance = 0;
+    } else {
+        taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
+        currentTaktInstance += 1;
+    }
 }
-
-updateInstances();
-updateTaktTime();
-
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup
 app.set('view engine', 'ejs')
@@ -111,6 +104,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('public'));
+app.use('/config', configInstance);
 app.use('/', index);
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(logger('dev'));
@@ -135,7 +129,7 @@ app.use((err, req, res, next) => {
 http.listen(parseInt(PORT), (err) => {
     if (err) return console.error(err);
     console.log('Ambiente -> ' + app.settings.env);
-    console.log("Server Connected at port " + PORT + " " + new Date().toISOString().slice(0, 10));
+    console.log("Server Connected at port " + PORT + " " + new Date().toLocaleString());
 });
 
 
