@@ -1,13 +1,14 @@
 'use strict';
 
 const snap = require('node-snap7');
-const Instance = require('./ScreenInstance'); // Carrega construtor de dados a serem exibidos na tela
+const Instance = require('../Models/ScreenInstance');
 const ConfigInstance = require('../Models/ConfigInstance');
-const Takt = require('./TaktInstance'); // Carrega construtor do Takt
+const Takt = require('../Models/TaktInstance');
 const PLC_SERVER = process.env.PLC_SERVER;
 const PLC_TAKT = process.env.PLC_TAKT;
 const RACK = 0;
 const SLOT = 2;
+const MAX_INSTANCES = 24 + 1;
 //DBS
 const DB_NUMBER = parseInt(process.env.DB_INSTANCE_NUMBER) || 8;
 const DB_START = 0;
@@ -56,7 +57,7 @@ plc.getData = (instance) => {
     let pointer = (DB_START + (instance * DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     data = s7.DBRead(DB_NUMBER, pointer, DB_SIZE);
     if (!data || data.length === 0) {
-        return console.error(">> No Data to get!\n", new Date().toLocaleString());
+        return console.error(">> No Data to get!", new Date().toLocaleString());
     }
     return new Instance(data);
 };
@@ -64,14 +65,13 @@ plc.getData = (instance) => {
 plc.updateWagon = (instance, wagon, quantity) => {
     let start = WAGON_START + (instance * DB_ADJUST_SIZE) + (wagon * WAGON_SIZE);
     let size = 2;
-    let buff = Buffer.alloc(2);
-    buff[0] = 0;
-    buff[1] = quantity;
+    let buff = Buffer.alloc(size);
+    buff.writeInt16BE(quantity);    
     s7.DBWrite(DB_ADJUST_NUMBER, start, size, buff, (err) => {
         if (err) {
             return console.error(err, new Date().toLocaleString());
         }
-        console.log('>> WAGON ' + wagon + '--> QUANTITY UPDATED');
+        console.log(`Instance ${instance}, Wagon: ${wagon} Updated`, new Date().toLocaleString());
     });
     return true;
 };
@@ -122,11 +122,10 @@ plc.updateStopTime = (instance, ms) => {
 };
 
 plc.getInstances = () => {
-    let instances = [];
-    let maxInstances = 8;
+    let instances = [];    
     let size = 18;
     let start = 0;
-    for (let i = 0; i < maxInstances; i++) {
+    for (let i = 0; i < MAX_INSTANCES; i++) {
         instances.push(s7.DBRead(DB_NUMBER, start, size).toString().replace(/[\u0000-\u001f]/g, ""));
         start += DB_SIZE;
     }
@@ -137,13 +136,14 @@ plc.getTaktTimeInstance = (instance) => {
     if (!s7.Connected()) {
         return console.error(">> There is no connection with PLC: " + PLC_SERVER, new Date().toLocaleString());
     }
-    let pointer = instance * DB_TAKT_INSTANCE_SIZE; // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
+    let pointer = instance * DB_TAKT_INSTANCE_SIZE;
     data = s7.DBRead(DB_TAKT_NUMBER, pointer, DB_TAKT_INSTANCE_SIZE);
     if (!data || !data.length) {
-        return console.error(">> No Data to get!\n", new Date().toLocaleString());
+        return console.error(">> No Takt Data to get!", new Date().toLocaleString());
     }
     return new Takt(data);
 }
+
 
 plc.getConfigInstance = (instance, callback) => {
     if (!s7.Connected()) {
@@ -167,14 +167,44 @@ plc.updateConfigInstance = (instance, data, callback) => {
 
     let pointer = instance * DB_CONFIG_SIZE;
 
-    s7.DBWrite(DB_CONFIG_NUMBER, pointer, DB_CONFIG_SIZE, buffer, (err, buffer) => {
+    let arrayBuffer = new Buffer.alloc(106);
+
+    arrayBuffer.writeInt8(16);
+    arrayBuffer.writeInt8(data.name.length, 1);
+    arrayBuffer.write(data.name, 2);
+
+    arrayBuffer.writeInt16BE(parseInt(data.cycleNumber), 18);
+    arrayBuffer.writeInt16BE(parseInt(data.wagonNumber), 20);
+    arrayBuffer.writeInt16BE(parseInt(data.operatorNumber), 22);
+    arrayBuffer.writeInt16BE(parseInt(data.parallelInstance), 24);
+
+    let res = (_par1, _par2) => {
+        let _val1 = _par1 ? 1 : 0
+        let _val2 = _par2 ? 2 : 0;
+        return _val1 | _val2;
+    }
+    arrayBuffer.writeInt8(res(data.wagon[0].enabled, data.wagon[0].availabilityFirst), 26);
+    arrayBuffer.writeInt8(32, 28);
+    arrayBuffer.writeInt8(data.wagon[0].name.length, 29);
+    arrayBuffer.write(data.wagon[0].name, 30);
+    arrayBuffer.writeInt32BE(parseInt(data.wagon[0].stdTime), 62);
+
+    arrayBuffer.writeInt8(res(data.wagon[1].enabled, data.wagon[1].availabilityFirst), 66);
+    arrayBuffer.writeInt8(32, 68);
+    arrayBuffer.writeInt8(data.wagon[1].name.length, 69);
+    arrayBuffer.write(data.wagon[1].name, 70);
+    arrayBuffer.writeInt32BE(parseInt(data.wagon[1].stdTime), 102);
+
+
+    s7.DBWrite(DB_CONFIG_NUMBER, pointer, DB_CONFIG_SIZE, arrayBuffer, (err, response) => {
         if (err) {
             console.error(err, new Date().toLocaleString());
             callback(err);
         }
-        callback(null, new ConfigInstance(buffer));
+        callback(null, new ConfigInstance(response));
     });
 }
+
 
 
 

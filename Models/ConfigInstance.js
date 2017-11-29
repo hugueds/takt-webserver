@@ -16,7 +16,7 @@ module.exports = function ConfigInstance(buffer) {
         {
             "enabled": (buffer[66] & 0x01) > 0,
             "availabilityFirst": ((buffer[66] & 0x02) >> 1) > 0,
-            "name": buffer.slice(70, 70 + buffer.readUInt8(68, 70)).toString(),
+            "name": buffer.slice(70, 70 + buffer.readUInt8(69, 70)).toString(),
             "stdTime": buffer.readInt32BE(102, 106)
         }
     ]

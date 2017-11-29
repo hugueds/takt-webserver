@@ -5,18 +5,19 @@
         <h1 class="text-center">AJUSTES</h1>
     </div>
     <br><br>
-    <div class="row">
+    <div class="row">        
         <div class="col-sm-3 col-sm-offset-3">
             INSTÂNCIA
         </div>
-        <div class="col-sm-3 col-sm-offset-1">          
-            <select ng-model='selectedInstance'>
+        <div class="col-sm-3 col-sm-offset-1 form-group">          
+            <select class="form-control" ng-model='selectedInstance'>
                 <option ng-repeat="option in avaliableInstances" value="{{option.id}}">ID: {{option.id}} NOME: {{option.name}}</option>
             </select>
         </div>
     </div>
     <br><br>
-    <div ng-if='selectedInstance' class="row">
+
+    <div ng-hide="true" ng-if='selectedInstance' class="row">
         <div class="col-sm-4 col-sm-offset-3">
             STOP TIME
         </div>

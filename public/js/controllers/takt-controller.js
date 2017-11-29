@@ -1,8 +1,9 @@
-(function() {
+(function () {
     angular.module('takt-controller', ['socket-service', 'takt-service'])
         .controller('MainCtrl', mainController)
-        .controller('Adjust', adjustController)
+        .controller('AdjustCtrl', adjustController)
         .controller('WelcomeCtrl', welcomeController)
+        .controller('ConfigCtrl', configController)
 })();
 
 function mainController($scope, $filter, socket, $interval, instances) {
@@ -34,7 +35,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
     }
 
 
-    $scope.wagonColor = function(wagon, quantity) {
+    $scope.wagonColor = function (wagon, quantity) {
         var color = { green: 0.75, yellow: 0.9, red: 1 };
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
@@ -48,11 +49,11 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
     socket.on('put-takt', formatPlcData);
 
-    socket.on('newConnection', function(data) {
+    socket.on('newConnection', function (data) {
         console.log("NOVA CONEXÃO > " + data.toString());
     });
 
-    $scope.reconnect = function() {
+    $scope.reconnect = function () {
         socket.emit('plc-reconnect', { conn: "Reconnection Request" });
         console.log('Tentando reconectar com o PLC...');
     };
@@ -81,29 +82,31 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
 }
 
-function adjustController($scope, $log, config, socket, instances) {
+function adjustController($scope, $log, adjust, socket, instances) {
 
-    $scope.avaliableInstances = instances.getAvaliableInstances();
+    instances.getAvaliableInstances().then(function(){
+        $scope.avaliableInstances = instances.avaliableInstances.filter( d => d.name !== "");
+    });
 
     var time = { h: '00', m: '00', s: '00' };
 
     $scope.t = time;
     $scope.st = time;
 
-    $scope.setTime = function(instance, t, wagon) {
+    $scope.setTime = function (instance, t, wagon) {
         var ms = converToMs(t);
         $scope.ms = ms;
         console.log(ms + ' ' + wagon.number)
-        config.updateWagonTime(instance, wagon, ms);
+        adjust.updateWagonTime(instance, wagon, ms);
     };
 
-    $scope.setStopTime = function(instance, t) {
+    $scope.setStopTime = function (instance, t) {
         var ms = converToMs(t);
         $scope.stopTimeMs = ms;
-        config.updateStopTime(instance, ms);
+        adjust.updateStopTime(instance, ms);
     };
 
-    $scope.increase = function(t, type) {
+    $scope.increase = function (t, type) {
         if (type == 0) {
             t = parseInt(t.h, 10);
             t++;
@@ -135,7 +138,7 @@ function adjustController($scope, $log, config, socket, instances) {
         }
     };
 
-    $scope.decrease = function(t, type) {
+    $scope.decrease = function (t, type) {
         if (type == 0) {
             t = parseInt(t.h, 10);
             t--;
@@ -168,20 +171,17 @@ function adjustController($scope, $log, config, socket, instances) {
         }
     };
 
-    $scope.updateWagon = function(instance, wagon) {
-        config.updateWagon(instance, wagon);
+    $scope.updateWagon = function (instance, wagon) {
+        adjust.updateWagon(instance, wagon);
     };
 
-    function converToMs(time) {
-        var ms;
-        ms = time.h * 36000000;
-        ms += time.m * 60000;
-        ms += time.s * 1000;
-
-        return ms;
+    function converToMs(time) {        
+        var ms = time.h * 60 * 60 * 1000;
+        ms += time.m * 60 * 1000;
+        return ms += time.s * 1000;        
     }
 
-    $scope.reconnect = function() {
+    $scope.reconnect = function () {
         var asw = confirm("Deseja reestabelecer conexão com PLC ?");
         if (!asw) return false;
         console.log('Tentando reconectar com o PLC...');
@@ -198,19 +198,19 @@ function welcomeController($scope, socket, instances) {
 
     $scope.deviceName = "";
 
-    $scope.pickInstance = function(instance) {
+    $scope.pickInstance = function (instance) {
         var idx = $scope.avaliableInstances.indexOf(instance);
         $scope.avaliableInstances.splice(idx, 1);
         $scope.selectedInstances.push(instance);
     }
 
-    $scope.removeInstance = function(instance) {
+    $scope.removeInstance = function (instance) {
         var idx = $scope.selectedInstances.indexOf(instance);
         $scope.selectedInstances.splice(idx, 1);
         $scope.avaliableInstances.push(instance);
     }
 
-    $scope.saveChanges = function(deviceName, selectedInstances) {
+    $scope.saveChanges = function (deviceName, selectedInstances) {
         if (selectedInstances) {
             console.error("Erro, nao foram selecionadas instancias");
         }
@@ -220,9 +220,73 @@ function welcomeController($scope, socket, instances) {
     }
 
     function init() {
-        instances.getAvaliableInstances();
-        $scope.avaliableInstances = instances.avaliableInstances;
+        instances.getAvaliableInstances().then(function(){
+            $scope.avaliableInstances = instances.avaliableInstances.filter( i => i.name !== "");            
+        });        
     }
+
+
+
+}
+
+function configController($scope, instances, config) {
+    instances.getAvaliableInstances().then(function(){
+        $scope.instances = instances.avaliableInstances;
+    });
+    $scope.selectedInstance = 0;
+    $scope.selectedWagon = 0;
+    $scope.configInstance = {};
+
+    $scope.getInstance = function (instance) {
+        config.getConfigInstance(instance).then(function () {
+            $scope.configInstance = config.configInstance;
+            $scope.selectedWagon = 0;
+            $scope.time = null;
+        });
+    }
+
+    $scope.saveInstance = function() {
+        var newConfig = $scope.configInstance;
+        var selectedInstance = $scope.selectedInstance;
+        config.updateInstance(selectedInstance, newConfig).then(function(){
+            console.log('Instância: ' + selectedInstance + ' atualizada');
+        });
+    }
+
+    $scope.t = function () {
+        console.log($scope.time)
+    }
+
+    $scope.updateTime = function () {
+        if (!$scope.time.s){
+            $scope.time.s = 0;
+        }
+        if (!$scope.time.m){
+            $scope.time.m = 0;
+        }
+        if ($scope.time.s > 59) {
+            $scope.time.s = 59;
+        }
+        if ($scope.time.m > 59) {
+            $scope.time.m = 59;
+        }
+
+        var wagon = $scope.selectedWagon - 1;
+        $scope.configInstance.wagon[wagon].stdTime = converToMs($scope.time);        
+
+        function converToMs(time) {            
+            var ms = time.m * 60 * 1000;
+            ms += time.s * 1000;            
+            return ms;
+        }
+
+        setTimeout(function () {
+            $scope.$apply();
+        }, 1000);
+
+    }
+
+
 
 
 

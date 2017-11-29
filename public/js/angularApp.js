@@ -3,7 +3,7 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
     .constant('SERVER', 'http://10.8.66.81/')
     .constant('HOSTNAME', 'rpitimerserver')
     .constant('PRIDE_PORT', '80')
-    .constant('PART_MISSING_PORT', '8080')    
+    .constant('PART_MISSING_PORT', '8083')    
     .config([
         '$stateProvider', '$urlRouterProvider', '$locationProvider',
         function($stateProvider, $urlRouterProvider, $locationProvider) {
@@ -27,7 +27,13 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
             .state('adjusts', {
                 url: '/ajustes',
                 templateUrl: 'views/ajustes/',
-                controller: 'Adjust'
+                controller: 'AdjustCtrl'
+            })
+
+            .state('config', {
+                url : '/config',
+                templateUrl : 'views/config/',
+                controller : 'ConfigCtrl'                
             })
 
             .state('welcome', {

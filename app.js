@@ -12,7 +12,7 @@ const index = require('./routes/index');
 const configInstance = require('./routes/config');
 const config = require('./config');
 const PORT = process.env.PORT || process.env.DEV_PORT;
-const MAX_INSTANCES = 12;
+const MAX_INSTANCES = 12 + 1;
 const MAX_TAKT_INSTANCES = 4;
 
 var instances = [];
@@ -48,8 +48,10 @@ io.on('connection', (socket) => {
     console.log('A CLIENT HAS CONNECTED! -> ' + client);
 
     socket.on('get-takt', (instanceId) => {
-        let data = instances[instanceId].data;
-        socket.emit('put-takt', data);
+        if (instances[instanceId]) {
+            let data = instances[instanceId].data
+            socket.emit('put-takt', data);
+        }
     });
 
     socket.on('plc-reconnect', (data) => {
@@ -65,8 +67,10 @@ io.on('connection', (socket) => {
     });
 
     socket.on('takt-instance', (taktInstance) => {
-        let data = taktInstances[taktInstance].data;
-        socket.emit('server-takt-instance', data);
+        if (taktInstances[taktInstance]) {
+            let data = taktInstances[taktInstance].data;
+            socket.emit('server-takt-instance', data);
+        }
     });
 
     socket.on('ping', (data) => {
