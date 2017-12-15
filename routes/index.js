@@ -1,35 +1,25 @@
-var express = require('express');
-var router = express.Router();
-var colors = require('colors');
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('data/config.db');
+'use strict';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-	console.log("Conection stablished with: " + req.ip + " " + new Date());
-	res.render('index');
-});
+const express = require('express');
+const router = express.Router();
+const plc = require('../routes/functions');
 
-/* GET Config page. */
-router.get('/config', function(req, res, next) {
-	db.run(`CREATE TABLE IF NOT EXISTS plc_conn (
-		id int
-		,address varchar(15)
-		,rack integer
-		,slot integer
-		,location varchar(10)
-		,active int
-		)`
-		);
+router.route('/').get(plc.index);
 
-	db.all(`SELECT * from plc_conn` , function(err, data){
-		res.send(data);
-	});
+router.route('/instances')
+    .get(plc.getInstances);
 
-	
+router.route('/instance/:instance/stop-time')
+    .get(plc.getStopTime)
+    .post(plc.updateStopTime);
 
-});
+router.route('/instance/:instance/wagon/:wagon/timer')
+    .get(plc.getWagonTimer)
+    .post(plc.updateWagonTimer);
 
-//db.close();
+router.route('/instance/:instance/wagon/:wagon/quantity').post(plc.updateWagons);
 
 module.exports = router;
+
+
+// Criar um configure instance para ver quais takts podem ter por tablet

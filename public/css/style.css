@@ -1,0 +1,215 @@
+@font-face {
+    font-family: 'DSDIGI';
+    src: url('./fonts/DSDIGI.eot');
+    src: url('./fonts/DSDIGI.woff') format('woff'), url('./fonts/DSDIGI.tff') format('truetype');
+}
+
+* {
+    width: 100%;
+    
+}
+
+body {
+    background-color: white;
+}
+
+.header {    
+    position: relative;
+    float: left;
+    margin : auto;
+}
+
+
+/*	STOP TIME	*/
+
+.stop-time-box {
+    color: red;
+    margin-left: 1%;
+    margin-top: 2%;
+    width: 25%;    
+    padding: 1%;
+    position: relative;
+    float: left;
+}
+
+.stop-time {
+    text-align: center;
+    font-size: 630%;
+    font-family: 'DSDIGI';
+}
+
+.stop-time-text {
+    font-size: 150%;
+    text-align: center;
+}
+
+
+/*	TAKT	*/
+
+.takt-time-box {
+    margin-left: 1%;
+    margin-top: 2%;
+    width: 47%;
+    position: relative;
+    float: left;
+}
+
+.takt-time-text {
+    font-size: 170%;
+    text-align: center;
+}
+
+.takt-time {
+    font-size: 1400%;
+    text-align: center;
+    margin-top: -3.4%;
+    font-family: 'DSDIGI';
+}
+
+.takt-negative {
+    color: red;
+}
+
+
+/*	PRODUCTION	*/
+
+.prod-box {
+    border: 1px black;
+    margin: auto;
+    margin-top: 3%;
+    width: 22%;
+    position: relative;
+    float: left;
+    text-align: center;
+}
+
+.prod-produced-text,
+.prod-objective-text {
+    font-size: 150%;
+    /*color: black; //change to black*/
+}
+
+.prod-produced,
+.prod-objective {
+    font-size: 500%;
+    border: 1px solid black;
+    width: 50%;
+    margin-bottom: 2%;
+    margin: auto;    
+}
+
+
+/* CONTENT */
+
+.content {
+    margin-top: 3%;    
+    height: 400px;
+    position: relative;
+    float: left;
+}
+
+
+/* WAGON */
+
+.wagon {
+    width: 40%;
+    position: relative;
+    float: left;
+    margin-left: 10%;    
+}
+
+.wagon-popid {
+    border: 2px solid black;
+    height: 150px;
+    width: 10%;
+    position: relative;
+    float: left;
+}
+
+.wagon-popid-text {
+    text-align: center;
+    font-size: 300%;
+    margin-left: 20%;
+}
+
+.wagon-used {
+    background-color: grey;
+    border: dashed 2px;
+    opacity: 0.3;
+}
+
+.wagon-green {
+    background-color: lime;
+}
+
+.wagon-warning {
+    background-color: yellow;
+}
+
+.wagon-danger {
+    background-color: red;
+}
+
+.wagon-name-box {
+    font-weight: bold;
+    border: 1px solid black;
+    width: 70%;
+    float: left;
+    height: 85px;
+    margin-top: 2%;
+    margin-left: 5%;
+    background-color: #f9ec95;
+}
+
+.wagon-name-text {
+    font-size: 150%;
+    text-align: center;
+    margin-top: 2%;
+}
+
+
+/* ADJUST SCREEN */
+
+#clock-container {
+    font-size: 14px;
+}
+
+.form-control {
+    text-align: center;
+}
+
+
+/*INSTANCE DETAIS*/
+
+.instance-name {
+    position: relative;
+    float: left;
+    clear: both;
+    margin-top: 3%;
+    font-size: 500%;
+    font-weight: bold;
+}
+
+
+/*
+#clock-container  input {
+	text-align: center;
+	font-size: 325%;
+	background-color: #ffff63;
+	height: 80px;
+	border-radius: 30%;
+}
+
+#clock-container .btn-success {
+	margin-top: 0%;
+	height : 50px;
+}
+
+#clock-container .btn-info {	
+	height : 40px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	border-radius: 40%;
+	width: 90%;
+}
+*/

@@ -1,78 +1,141 @@
-var express = require('express')                                                                                                                                                                                      
-,app = require('express')()
-,path = require('path')
-,favicon = require('serve-favicon')
-,cookieParser = require('cookie-parser')
-,bodyParser = require('body-parser')
+const express = require('express');
+const app = express();
+const path = require('path');
+const dotenv = require('dotenv').config();
+const favicon = require('serve-favicon');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const plc = require('./plc/plc');
+const http = require('http').Server(app);
+const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
+const index = require('./routes/index');
+const configInstance = require('./routes/config');
+const config = require('./config');
+const PORT = process.env.PORT || process.env.DEV_PORT;
+const MAX_INSTANCES = 12 + 1;
+const MAX_TAKT_INSTANCES = 4;
 
-,s7 = require('./plc/plc')
-,http = require('http').Server(app)
-,io = require('socket.io',{ forceNew:true, 'multiplex':false })(http);
+var instances = [];
 
-require('./plc/plc_connection');
-var clients = {};
-
-var index = require('./routes/index');
-app.use('/', index);
+plc.connect();
 
 
-io.on('connection', function (socket) {
-	var currentUID = null;
+var taktInstances = config.instances;
 
-	console.log('A CLIENT HAS CONNECTED!');
+function Instance(id) {
+    this.id = id;
+    this.count = 0;
+    this.data = {};
+}
 
-	setInterval(function(){
-		socket.emit('takt-1', s7.getData());
-	}
-	, 1100);
+for (let i = 0; i < MAX_INSTANCES; i++) {
+    instances.push(new Instance(i));
+}
 
-	socket.on('serial', function(data){
-		io.emit('serial', data.toString());
-	});
 
-	socket.on('disconnect', function () {
-		delete socket;
-	});
+var currentInstance = 0;
+var currentTaktInstance = 0;
+
+var active = 0;
+
+var clients = [];
+
+io.on('connection', (socket) => {
+
+    let client = socket.request.connection.remoteAddress.slice(7);
+    io.emit('newConnection', client);
+    clients.push(client);
+    console.log('A CLIENT HAS CONNECTED! -> ' + client);
+
+    socket.on('get-takt', (instanceId) => {
+        if (instances[instanceId]) {
+            let data = instances[instanceId].data
+            socket.emit('put-takt', data);
+        }
+    });
+
+    socket.on('plc-reconnect', (data) => {
+        plc.disconnect();
+        plc.connect();
+    });
+
+    socket.on('disconnect', (socket) => {
+        let idx = clients.indexOf(client);
+        if (idx > -1) {
+            clients.splice(idx, 1);
+        }
+    });
+
+    socket.on('takt-instance', (taktInstance) => {
+        if (taktInstances[taktInstance]) {
+            let data = taktInstances[taktInstance].data;
+            socket.emit('server-takt-instance', data);
+        }
+    });
+
+    socket.on('ping', (data) => {
+        console.log(data.toString());
+        socket.emit('pong', 'pong');
+    });
 
 });
 
 
+setInterval(updateInstances, 80);
+setInterval(updateTaktTime, 250);
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+function updateInstances() {
+    if (currentInstance == MAX_INSTANCES) {
+        currentInstance = 0;
+    } else {
+        instances[currentInstance].data = plc.getData(currentInstance);
+        currentInstance++;
+    }
+}
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//app.use(logger('dev'));
+function updateTaktTime() {
+    if (currentTaktInstance == MAX_TAKT_INSTANCES) {
+        currentTaktInstance = 0;
+    } else {
+        taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
+        currentTaktInstance += 1;
+    }
+}
+
+app.set('views', path.join(__dirname, 'views')) // view engine setup
+app.set('view engine', 'ejs')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'views')));
-
-
+app.use(express.static('public'));
+app.use('/config', configInstance);
+app.use('/', index);
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+//app.use(logger('dev'));
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+app.use((req, res, next) => {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use((err, req, res, next) => {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
-http.listen(8080, function(){
-	console.log("Server Connected at port 8080");
+http.listen(parseInt(PORT), (err) => {
+    if (err) return console.error(err);
+    console.log('Ambiente -> ' + app.settings.env);
+    console.log("Server Connected at port " + PORT + " " + new Date().toLocaleString());
 });
+
+
 
 module.exports = http;

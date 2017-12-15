@@ -1,0 +1,24 @@
+CACHE MANIFEST
+
+#v13
+
+js/angular/angular.min.js
+js/angular/angular-ui-router.js
+js/bootstrap/ui.bootstrap.min.js
+js/angularApp.js
+js/filters/filters.js
+js/services/takt-service.js
+js/services/socket-service.js
+js/controllers/takt-controller.js
+js/scripts.js
+templates/
+templates/index.html
+templates/ajustes/index.html
+
+
+css/style.css
+css/bootstrap/dist/css/bootstrap.min.css#
+
+
+NETWORK:
+*

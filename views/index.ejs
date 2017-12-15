@@ -1,32 +1,60 @@
 <!DOCTYPE html>
-<html ng-app="MainApp">
-  <head>
-<meta charset='utf-8'/>
- <base href="/">
-    <title>LOGISTICA TIMER</title>
-    <link rel='stylesheet' href="stylesheets/bootstrap/dist/css/bootstrap.min.css" type="text/css" >
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-	  
-	  <ui-view></ui-view>  
-	
-	
-	
-<!-- jQuery -->		
-<script type="text/javascript" src="javascripts/jquery/jquery.js"> </script>
-<!-- BOOTSTRAP -->	
-<script type="text/javascript" src="stylesheets/bootstrap/dist/js/bootstrap.js"> </script>
-<!-- SOCKET I/O -->	    
-   <script src="/socket.io/socket.io.js"></script>
-<!-- MODULES -->	
-<script type="text/javascript" src="javascripts/angular/angular.min.js"> </script>
-<script type="text/javascript" src="javascripts/angular/angular-websocket.js"> </script>
-<script type="text/javascript" src="javascripts/angular/angular-ui-router.js"> </script>
-<script type="text/javascript" src="javascripts/angularApp.js"> </script>
-<!-- SERVICES -->	
-<!-- CONTROLLERS -->	
-<!-- SCRIPTS -->
-   <script src="javascripts/scripts.js"></script>
-  </body>
+<html ng-app="TaktApp">
+<!-- manifest='offline.manifest' -->
+
+<head>  
+  <base href="/" />
+  <title>CHASSIS PRIDE</title>
+  
+  <meta charset='utf-8' />  
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CHASSIS PRIDE">
+
+  <meta name="author" content="Hugo Peres - SSBHPE" />
+  <meta name="description" content="Timer logistico utilizado para operadores do jacto" />
+  <meta name="keywords" content="P30, QAS, Logistica, Automacao, Takt, Timer, Raspberry" />
+  
+
+  <link rel="apple-touch-startup-image" href="images/icon-256.png">
+  <link rel="apple-touch-icon" href="images/icon-256.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="images/icon-256.png">
+
+  <link rel='manifest' href='app.manifest' />
+  <link rel='stylesheet' href="css/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel='stylesheet' href='css/style.css' />
+</head>
+
+<body>
+
+  <ui-view></ui-view>
+
+
+  <!-- SOCKET I/O -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- MODULES -->
+  <script type="text/javascript" src="js/angular/angular.min.js"> </script>
+  <script type="text/javascript" src="js/angular/ngStorage.min.js">  </script>
+  <script type="text/javascript" src="js/angular/angular-ui-router.js"> </script>
+  <script type="text/javascript" src="js/bootstrap/ui.bootstrap.min.js">  </script>
+  <script type="text/javascript" src="js/angularApp.js"></script>
+
+  <!-- FILTERS -->
+  <script type="text/javascript" src="js/filters/filters.js"></script>
+
+  <!-- SERVICES -->
+  <script type="text/javascript" src="js/services/takt-service.js"></script>
+  <script type="text/javascript" src="js/services/socket-service.js"></script>
+
+  <!-- CONTROLLERS -->
+  <script type="text/javascript" src="js/controllers/takt-controller.js"></script>
+
+  <!-- SCRIPTS -->
+  <script src="js/scripts.js"></script>
+
+
+</body>
+
 </html>
