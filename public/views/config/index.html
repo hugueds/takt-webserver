@@ -1,0 +1,137 @@
+<style>
+    .config-container {
+        margin-top: 1%;
+        width: 50%;
+    }
+
+    .config-container button {
+        margin-top: 2%;
+    }
+
+    .time {
+        width: 25%;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container config-container">
+
+    <h1 class="text-center">CONFIGURAÇÕES</h1>
+
+    <div>
+        <div class="form-group col-sm-6">
+            <label class="text-center"> Instância </label>
+            <select class="form-control" ng-model="selectedInstance" ng-change="getInstance(selectedInstance)">
+                <option value="{{instance.id}}" class="form-control" ng-repeat="instance in instances"> {{instance.id}} - {{instance.name}}</option>
+            </select>
+        </div>
+
+        
+        <div ng-if="selectedInstance">
+        <!-- <div> -->
+
+            <div class="form-group col-sm-12">
+                <label>Nome</label>
+                <input ng-model="configInstance.name" class="form-control" type="text" ng-value="configInstance.name" />
+            </div>
+
+            <div class="form-group col-sm-3">
+                <label class="text-center"> Ciclos </label>
+                <select ng-model="configInstance.cycleNumber" class="form-control">
+                    <option selected> {{ configInstance.cycleNumber }} </option>
+                    <option disabled></option>
+                    <option ng-repeat="value in [1,2,3,4,5,6,7,8] track by $index">{{ value }}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-3">
+                <label class="text-center">Comboios</label>
+                <select ng-model="configInstance.wagonNumber" class="form-control">
+                    <option selected> {{ configInstance.wagonNumber }} </option>
+                    <option disabled></option>
+                    <option ng-repeat="value in [1,2] track by $index">{{ value }}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-3">
+                <label class="text-center">Colaboradores</label>
+                <select ng-model="configInstance.operatorNumber" class="form-control">
+                    <option selected> {{ configInstance.operatorNumber }} </option>
+                    <option disabled></option>
+                    <option ng-repeat="value in [1,2] track by $index">{{ value }}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-3">
+                <label class="text-center">Paralelos</label>
+                <select ng-model="configInstance.parallelInstance" class="form-control">
+                    <option selected> {{ configInstance.parallelInstance }} </option>
+                    <option disabled></option>
+                    <option ng-repeat="value in [0,1,2] track by $index">{{ value }}</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+    
+
+    <div>
+        <div ng-hide="!selectedInstance" class="form-group col-sm-3">
+            <label class="text-center"> Comboio </label>
+            <select ng-model="selectedWagon" class="form-control">
+                <option> 1 </option>
+                <option> 2 </option>
+            </select>
+        </div>
+
+        <div ng-show="selectedWagon">
+
+            <div class="form-group col-sm-12">
+                <label class="text-center"> Nome do Comboio</label>
+                <input ng-model="configInstance.wagon[selectedWagon - 1].name" ng-value="configInstance.wagon[selectedWagon - 1].name" class="form-control" type="text">
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="text-center"> Habilitado </label>
+                <select ng-model="configInstance.wagon[selectedWagon - 1].enabled" class="form-control">
+                    <option disabled selected > {{ configInstance.wagon[selectedWagon - 1].enabled | yesNo }} </option>
+                    <option disabled></option>
+                    <option value="true">SIM</option>
+                    <option value="false">NÃO</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="text-center">Disponibilidade Primeiro </label>
+                <select  ng-model="configInstance.wagon[selectedWagon - 1].avaliabilityFirst" class="form-control">
+                    <option disabled selected> {{ configInstance.wagon[selectedWagon - 1].avaliabilityFirst | yesNo }} </option>
+                    <option disabled></option>
+                    <option value="true">SIM</option>
+                    <option value="false">NÃO</option>
+                </select>
+            </div>
+
+
+            <div class="form-group col-sm-12">
+                <label for="">Tempo</label>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="text-center">MINUTOS </label>
+                <input ng-change="updateTime()" ng-model="time.m" ng-value="configInstance.wagon[selectedWagon - 1].stdTime | minutes" class="form-control time" type="text"/>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="text-center ">SEGUNDOS </label>
+                <input ng-change="updateTime()" ng-model="time.s" ng-value="configInstance.wagon[selectedWagon - 1].stdTime | seconds" class="form-control time" type="text">
+            </div>
+
+
+        </div>
+
+        <button ng-click="saveInstance()" ng-if="selectedInstance" class="btn btn-primary"> SALVAR </button>
+
+    </div>
+
+</div>
