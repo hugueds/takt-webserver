@@ -1,3 +1,4 @@
 {
-    "vsicons.presets.angular": false
+    "vsicons.presets.angular": false,
+    "python.pythonPath": "C:\\Python27\\python.exe"
 }
