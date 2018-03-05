@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -15,10 +17,9 @@ const PORT = process.env.PORT || process.env.DEV_PORT;
 const MAX_INSTANCES = 12 + 1;
 const MAX_TAKT_INSTANCES = 4;
 
-var instances = [];
+let instances = [];
 
 plc.connect();
-
 
 var taktInstances = config.instances;
 
@@ -33,12 +34,13 @@ for (let i = 0; i < MAX_INSTANCES; i++) {
 }
 
 
-var currentInstance = 0;
-var currentTaktInstance = 0;
+let currentInstance = 0;
+let currentTaktInstance = 0;
 
 var active = 0;
 
 var clients = [];
+
 
 io.on('connection', (socket) => {
 
@@ -81,7 +83,7 @@ io.on('connection', (socket) => {
 });
 
 
-setInterval(updateInstances, 80);
+setInterval(updateInstances, 125);
 setInterval(updateTaktTime, 250);
 
 function updateInstances() {
@@ -100,6 +102,9 @@ function updateTaktTime() {
         taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
         currentTaktInstance += 1;
     }
+    // plc.getAndons();
+    return null;
+    
 }
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup
@@ -135,6 +140,32 @@ http.listen(parseInt(PORT), (err) => {
     console.log('Ambiente -> ' + app.settings.env);
     console.log("Server Connected at port " + PORT + " " + new Date().toLocaleString());
 });
+
+http.on('error', onError);
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+      throw error;
+    }
+  
+    var bind = typeof port === 'string'
+      ? 'Pipe ' + port
+      : 'Port ' + port;
+  
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(bind + ' requires elevated privileges');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(bind + ' is already in use');
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
+  }
 
 
 
