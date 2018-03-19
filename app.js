@@ -16,10 +16,12 @@ const config = require('./config');
 const PORT = process.env.PORT || process.env.DEV_PORT;
 const MAX_INSTANCES = 12 + 1;
 const MAX_TAKT_INSTANCES = 4;
+const andonControl = require('./andonControl');
 
 let instances = [];
 
 plc.connect();
+andonControl.start();
 
 var taktInstances = config.instances;
 
@@ -83,7 +85,7 @@ io.on('connection', (socket) => {
 });
 
 
-setInterval(updateInstances, 125);
+setInterval(updateInstances, 75);
 setInterval(updateTaktTime, 250);
 
 function updateInstances() {
@@ -148,18 +150,14 @@ function onError(error) {
       throw error;
     }
   
-    var bind = typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port;
-  
     // handle specific listen errors with friendly messages
     switch (error.code) {
       case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
+        console.error(' requires elevated privileges');
         process.exit(1);
         break;
       case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
+        console.error(' is already in use');
         process.exit(1);
         break;
       default:

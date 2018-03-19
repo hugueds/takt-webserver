@@ -8,7 +8,7 @@ router.get('/', (req, res, next) => {
 });
 
 
-router.get('avaliable', (req, res, next) => {
+router.get('available', (req, res, next) => {
     plc.getInstanceNames( (err,data) => {
         if (err) {
             res.json(err);
@@ -32,7 +32,7 @@ router.get('/:instanceId', (req, res, next) => {
 
 router.put('/:instanceId', (req, res, next) => {
     const instanceId = req.params.instanceId;    
-    console.log(req.body)
+    console.log('Recebendo: ' + req.body);
     plc.updateConfigInstance(req.params.instanceId, req.body, (err, data) => {
         if (err) {
             res.json({status: false, message : 'Error during update request'}).status(403);    

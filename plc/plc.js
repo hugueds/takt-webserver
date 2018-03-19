@@ -1,5 +1,3 @@
-'use strict';
-
 const snap = require('node-snap7');
 const Instance = require('../Models/ScreenInstance');
 const ConfigInstance = require('../Models/ConfigInstance');
@@ -12,11 +10,11 @@ const plc = {};
 let data = {};
 let ins = [];
 
-plc.connect = () => {
-    if (s7.Connect()) {
+plc.connect = () => {    
+    if (s7.Connected()) {
         return console.error("Client already connected", new Date().toLocaleString());
     }
-    s7.ConnectTo(PLC_CONFIG.PLC_SERVER, PLC_CONFIG.RACK, PLC_CONFIG.SLOT, (err) => {
+    s7.ConnectTo(PLC_CONFIG.PLC_SERVER, PLC_CONFIG.PLC_RACK, PLC_CONFIG.PLC_SLOT, (err) => {
         if (err) {
             return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err), new Date().toLocaleString());
         }
@@ -35,7 +33,7 @@ plc.getData = (instance) => {
     let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
     if (!data || data.length === 0) {
-        return console.error(">> No Data to get!", new Date().toLocaleString());
+        return console.error(">> No Data to get! - Get Data", new Date().toLocaleString());
     }
     return new Instance(data);
 };
@@ -145,9 +143,9 @@ plc.updateConfigInstance = (instance, data, callback) => {
 
     let pointer = instance * PLC_CONFIG.DB_CONFIG_SIZE;
 
-    let arrayBuffer = new Buffer.alloc(106);
+    let arrayBuffer = new Buffer.alloc(parseInt(PLC_CONFIG.DB_CONFIG_SIZE));
 
-    arrayBuffer.writeInt8(16);
+    // arrayBuffer.writeInt8(16);
     arrayBuffer.writeInt8(data.name.length, 1);
     arrayBuffer.write(data.name, 2);
 
@@ -185,7 +183,8 @@ plc.updateConfigInstance = (instance, data, callback) => {
 
 plc.getAndons = () => {
     let start = 0;
-    let bytes =  s7.DBRead(1, start, 4);        
+    let bytes =  s7.DBRead(PLC_CONFIG.DB_ANDON, start, PLC_CONFIG.DB_ANDON_SIZE);        
+    return bytes;
 }
 
 
