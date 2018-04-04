@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+const express = require('express');
+const app = require('../app');
+const path = require('path');
+const dotenv = require('dotenv').config();
+const http = require('http').Server(app);
+const PORT = process.env.PORT || process.env.DEV_PORT;
+
+const andonControl = require('../andonControl');
+const socket = require('../socket.js');
+const config = require('../config');
+
+socket.start(http);
+
+const io = socket.io();
+
+andonControl.start();
+
+http.listen(parseInt(PORT), (err) => {
+    if (err) return console.error(err);
+    console.log('Ambiente -> ' + app.settings.env);
+    console.log("Server Connected at port " + PORT + " " + new Date().toLocaleString());
+});
+
+http.on('error', onError);
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+      throw error;
+    }
+  
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(PORT, ' requires elevated privileges');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(PORT, ' is already in use');
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
+  }
+
+
+
+module.exports = http;

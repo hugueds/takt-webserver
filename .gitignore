@@ -1,2 +1,6 @@
 node_modules/
 .vscode/
+npm-debug.log
+package-lock.json
+process.yml.bkp
+.env

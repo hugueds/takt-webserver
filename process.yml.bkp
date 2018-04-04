@@ -1,4 +1,0 @@
-apps:
-	- script : npm start
-	intances : 1
-	

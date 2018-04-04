@@ -1,7 +1,7 @@
 const PLC_CONFIG = {
 
-    PLC_SERVER : process.env.PLC_SERVER,
-    PLC_TAKT : process.env.PLC_TAKT,
+    PLC_SERVER : process.env.PLC_SERVER || '10.8.66.82',
+    PLC_TAKT : process.env.PLC_TAKT || '10.8.66.8' ,
     PLC_RACK : parseInt(process.env.PLC_RACK) || 0,
     PLC_SLOT : parseInt(process.env.PLC_SLOT) || 2,
     MAX_INSTANCES : parseInt(process.env.MAX_INSTANCES) || 24 + 1,
