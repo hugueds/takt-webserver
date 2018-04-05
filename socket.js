@@ -1,10 +1,11 @@
 const config = require('./config');
 const plc = require('./plc/plc');
 
-let clients = [];
-
 let socketServer = null;
+
+let clients = [];
 let instances = [];
+
 var taktInstances = config.instances;
 const MAX_INSTANCES = 12 + 1;
 const MAX_TAKT_INSTANCES = 4;

@@ -16,7 +16,7 @@ const PLC_CONFIG = {
     DB_ADJUST_SIZE : parseInt(process.env.DB_ADJUST_SIZE) || 26,
     WAGON_SIZE : 10,
     WAGON_START : 6,
-    WAGON_TIMER : this.WAGON_START + 2,
+    WAGON_TIMER : 8,
     STOP_TIME : 2,
 
     // DB Config

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
+require('console-stamp')(console, '[HH:MM:ss.l]');
+const dotenv = require('dotenv').config();
 const express = require('express');
 const app = require('../app');
 const path = require('path');
-const dotenv = require('dotenv').config();
 const http = require('http').Server(app);
 const PORT = process.env.PORT || process.env.DEV_PORT;
 
@@ -12,9 +13,6 @@ const socket = require('../socket.js');
 const config = require('../config');
 
 socket.start(http);
-
-const io = socket.io();
-
 andonControl.start();
 
 http.listen(parseInt(PORT), (err) => {

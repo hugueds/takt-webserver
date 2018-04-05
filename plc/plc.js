@@ -60,9 +60,9 @@ plc.getWagonTimer = (instance, wagon) => {
     return data;
 };
 
-plc.updateWagonTimer = (instance, wagon, ms) => {
-    let start = PLC_CONFIG.WAGON_TIMER + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);
-    var size = 4;
+plc.updateWagonTimer = (instance, wagon, ms) => {    
+    const start = PLC_CONFIG.WAGON_START + 2 + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);   
+    const size = 4;
     let arr = new Uint32Array(1);
     arr[0] = ms;
     let buff = Buffer.from(arr.buffer);

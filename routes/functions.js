@@ -33,7 +33,7 @@ exports.updateWagons = (req, res, next) => {
 exports.updateWagonTimer = (req, res, next) => {
     let inst = req.params.instance;
     let wagon = req.params.wagon;
-    let timer = req.body.timer;
+    let timer = req.body.timer;    
 
     s7.updateWagonTimer(inst, wagon, timer);
     res.status(201).json({ message: "Wagon " + wagon + " timer updated", timer: timer });

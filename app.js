@@ -8,12 +8,9 @@ const path = require('path');
 const favicon = require('serve-favicon');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// const io = require('socket.io', { forceNew: true, 'multiplex': false })(http);
 const index = require('./routes/index');
 const configInstance = require('./routes/config');
 const PORT = process.env.PORT || process.env.DEV_PORT;
-
-
 
 app.set('views', path.join(__dirname, 'views')) // view engine setup
 app.set('view engine', 'ejs')
