@@ -8,6 +8,7 @@ let bytes = generateBytes(4);
 andonControl.start = () => setInterval(checkAndonStatus, 1000);
 
 function checkAndonStatus() {
+    let instances = plc.getInstances();    
     let buffer = plc.getAndons();
     // let readBytes = checkBytes(buffer);
     let readBytes = generateBytesFromBuffer(buffer);
@@ -15,9 +16,15 @@ function checkAndonStatus() {
     for (let i = 0; i < bytes.length; i++) {        
         for (let j = 0; j < readBytes.length; j++) {
             if (bytes[i].index == readBytes[j].index) {
-                if (!bytes[i].active && readBytes[j].active) {                                        
-                    console.log('Acionando andon: ', bytes[i]);
-                    Bot.sendMessage(process.env.ANDON_LOG_CHAT, "Chamando Andon na Instância: " + bytes[i].index);
+                if (!bytes[i].active && readBytes[j].active) {                    
+                    try {
+                        let index = bytes[i].index;
+                        let  message = "Chamando Andon na Instância: " + index + '-' + instances[index];
+                        Bot.sendMessage(process.env.ANDON_LOG_CHAT, message);
+                        console.log('Acionando andon: ', message);
+                    } catch(err) {
+                        console.error('Error na requisição do Telegram', err);
+                    }                   
                 }                                                                 
             }
         }

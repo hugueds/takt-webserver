@@ -2,6 +2,7 @@ const Telegram  = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
 const proxyUser = process.env.PROXY_USER
 const proxyServer = process.env.PROXY_SERVER;
+const proxyPass = process.env.PROXY_PASSWORD;
 const proxy = 'http://' + proxyUser + ':' + proxyPass + '@' + proxyServer;
 
 const Bot = new Telegram(token, {    

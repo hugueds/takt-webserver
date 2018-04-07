@@ -115,7 +115,7 @@ plc.getTaktTimeInstance = (instance) => {
     let pointer = instance * PLC_CONFIG.DB_TAKT_INSTANCE_SIZE;
     data = s7.DBRead(PLC_CONFIG.DB_TAKT_NUMBER, pointer, PLC_CONFIG.DB_TAKT_INSTANCE_SIZE);
     if (!data || !data.length) {
-        return console.error(">> No Takt Data to get!", new Date().toLocaleString());
+        return console.error(">> No Takt Data to get");
     }
     return new Takt(data);
 }
@@ -123,7 +123,7 @@ plc.getTaktTimeInstance = (instance) => {
 
 plc.getConfigInstance = (instance, callback) => {
     if (!s7.Connected()) {
-        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString());
+        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
     }
     let pointer = instance * PLC_CONFIG.DB_CONFIG_SIZE;
     

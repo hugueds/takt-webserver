@@ -43,10 +43,8 @@ function updateTaktTime() {
     } else {
         taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
         currentTaktInstance += 1;
-    }
-    // plc.getAndons();
+    }    
     return null;
-
 }
 
 
