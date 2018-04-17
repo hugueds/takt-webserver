@@ -28,6 +28,7 @@ plc.disconnect = () => {
 
 plc.getData = (instance) => {
     if (!s7.Connected()) {
+        plc.connect();
         return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString()); // ERRO SE NAO HOUVER CONEXAO
     }
     let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA

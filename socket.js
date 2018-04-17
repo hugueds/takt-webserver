@@ -7,7 +7,7 @@ let clients = [];
 let instances = [];
 
 var taktInstances = config.instances;
-const MAX_INSTANCES = 12 + 1;
+const MAX_INSTANCES = 14 + 1;
 const MAX_TAKT_INSTANCES = 4;
 
 let currentInstance = 0;
@@ -25,7 +25,7 @@ for (let i = 0; i < MAX_INSTANCES; i++) {
 
 plc.connect();
 
-setInterval(updateInstances, 100);
+setInterval(updateInstances, 200);
 setInterval(updateTaktTime, 200);
 
 function updateInstances() {
@@ -36,20 +36,22 @@ function updateInstances() {
         currentInstance++;
     }
 }
-
+var counter = 0;
 function updateTaktTime() {
     if (currentTaktInstance == MAX_TAKT_INSTANCES) {
         currentTaktInstance = 0;
     } else {
         taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
-        currentTaktInstance += 1;
-    }    
-    return null;
+        currentTaktInstance += 1;        
+        console.log(counter);
+        counter++;
+    }        
 }
 
 
 
 module.exports = {
+
     start: function (httpServer) {
 
         const io = require('socket.io', { forceNew: true, 'multiplex': false })(httpServer);

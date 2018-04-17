@@ -2,17 +2,17 @@ const Bot = require('./telegramBot');
 const plc = require('./plc/plc');
 const PLC_CONFIG = require('./plc/plcConfig');
 const andonControl = {};
+let andonInterval = null;
 
 let bytes = generateBytes(4);
 
-andonControl.start = () => setInterval(checkAndonStatus, 1000);
+andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1000);
+andonControl.stop = () => clearInterval(andonInterval);
 
 function checkAndonStatus() {
     let instances = plc.getInstances();    
     let buffer = plc.getAndons();
-    // let readBytes = checkBytes(buffer);
-    let readBytes = generateBytesFromBuffer(buffer);
-    // console.log(readBytes)
+    let readBytes = generateBytesFromBuffer(buffer);    
     for (let i = 0; i < bytes.length; i++) {        
         for (let j = 0; j < readBytes.length; j++) {
             if (bytes[i].index == readBytes[j].index) {
