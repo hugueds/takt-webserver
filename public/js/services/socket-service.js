@@ -6,7 +6,7 @@ angular.module('socket-service',[])
 
 	var locationServer = 'http://' + window.location.hostname;
 
- 	var socket = io(serverLan);
+ 	var socket = io();
 
  	return {
  		on: function (eventName, callback) {

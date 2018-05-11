@@ -26,17 +26,29 @@ plc.disconnect = () => {
     return s7.Disconnect();
 };
 
-plc.getData = (instance) => {
+plc.getData = (instance, callback) => {
     if (!s7.Connected()) {
         plc.connect();
         return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString()); // ERRO SE NAO HOUVER CONEXAO
     }
-    let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
-    data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
-    if (!data || data.length === 0) {
-        return console.error(">> No Data to get! - Get Data", new Date().toLocaleString());
-    }
-    return new Instance(data);
+    // let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
+    // data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
+    const MAX_INSTANCES = 18;    
+    s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function(err, data) {
+        if (!data || data.length === 0 || err) {
+            console.error(">> No Data to get! - Get Data", new Date().toLocaleString());
+            callback(err, null);
+            return;
+        }
+        let pointer = 0;
+        let instances = [];
+        for (let i = 0; i < MAX_INSTANCES; i++) {
+            let inst = data.slice(pointer, pointer + PLC_CONFIG.DB_SIZE);
+            pointer = pointer + PLC_CONFIG.DB_SIZE;
+            instances.push(new Instance(inst));
+        }    
+        callback(null, instances);
+    });        
 };
 
 plc.updateWagon = (instance, wagon, quantity) => {

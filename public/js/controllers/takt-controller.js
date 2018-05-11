@@ -14,10 +14,10 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();
 
-    $interval(getTakt, 1000);
-    $interval(updateInstance, 10000);
+    $interval(getPrideData, 1000);
+    $interval(updateInstance, 10000);    
 
-    function getTakt() {
+    function getPrideData() {
         if ($scope.instances && $scope.instances.length > 0) {
             socket.emit('get-takt', $scope.instances[idx].id);
         }
@@ -33,7 +33,8 @@ function mainController($scope, $filter, socket, $interval, instances) {
             }
         }
     }
-
+    
+    socket.on('server-takt-instance', function(data) { console.log(data.remainingTime)});
 
     $scope.wagonColor = function (wagon, quantity) {
         var color = { green: 0.75, yellow: 0.9, red: 1 };
@@ -47,7 +48,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
         return wagonColor;
     };
 
-    socket.on('put-takt', formatPlcData);
+    socket.on('put-takt', formatPlcData);   
 
     socket.on('newConnection', function (data) {
         console.log("NOVA CONEXÃO > " + data.toString());
@@ -59,7 +60,11 @@ function mainController($scope, $filter, socket, $interval, instances) {
     };
 
     function formatPlcData(data) {
-        if (data == null) $scope.error = "Sem Conexao...";
+
+        if (data == null) {
+            $scope.error = "Sem Conexao...";
+            return;
+        }
 
         $scope.takt = data;
         $scope.cfgWagonNumber = data.cfgWagonNumber; //Numero de vagoes
@@ -71,6 +76,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
         if (data.lineTakt <= 0) {
             $scope.taktNegative = true;
         }
+        
     }
 
     function generateWagons(amount) {

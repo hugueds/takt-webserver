@@ -1,60 +1,28 @@
 const config = require('./config');
 const plc = require('./plc/plc');
-
 let socketServer = null;
-
 let clients = [];
-let instances = [];
-
-var taktInstances = config.instances;
-const MAX_INSTANCES = 14 + 1;
-const MAX_TAKT_INSTANCES = 4;
-
-let currentInstance = 0;
-let currentTaktInstance = 0;
-
-function Instance(id) {
-    this.id = id;
-    this.count = 0;
-    this.data = {};
-}
-
-for (let i = 0; i < MAX_INSTANCES; i++) {
-    instances.push(new Instance(i));
-}
-
-plc.connect();
-
-setInterval(updateInstances, 200);
-setInterval(updateTaktTime, 200);
-
-function updateInstances() {
-    if (currentInstance == MAX_INSTANCES) {
-        currentInstance = 0;
-    } else {
-        instances[currentInstance].data = plc.getData(currentInstance);
-        currentInstance++;
-    }
-}
-var counter = 0;
-function updateTaktTime() {
-    if (currentTaktInstance == MAX_TAKT_INSTANCES) {
-        currentTaktInstance = 0;
-    } else {
-        taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
-        currentTaktInstance += 1;        
-        console.log(counter);
-        counter++;
-    }        
-}
-
 
 
 module.exports = {
-
     start: function (httpServer) {
 
         const io = require('socket.io', { forceNew: true, 'multiplex': false })(httpServer);
+
+        let instances = [];
+        let instances2 = [];
+
+        const taktInstances = config.instances;
+        const MAX_INSTANCES = 16;
+        const MAX_TAKT_INSTANCES = 4;
+
+        let currentInstance = 0;
+        let currentTaktInstance = 0;
+
+        plc.connect();
+
+        setInterval(updateInstances, 1000);
+        // setInterval(updateTaktTime, 250);
 
         io.on('connection', (socket) => {
 
@@ -64,10 +32,7 @@ module.exports = {
             console.log('A CLIENT HAS CONNECTED! -> ' + client);
 
             socket.on('get-takt', (instanceId) => {
-                if (instances[instanceId]) {
-                    let data = instances[instanceId].data
-                    socket.emit('put-takt', data);
-                }
+                socket.emit('put-takt', instances2[instanceId]);                
             });
 
             socket.on('plc-reconnect', (data) => {
@@ -82,12 +47,12 @@ module.exports = {
                 }
             });
 
-            socket.on('takt-instance', (taktInstance) => {
-                if (taktInstances[taktInstance]) {
-                    let data = taktInstances[taktInstance].data;
-                    socket.emit('server-takt-instance', data);
-                }
-            });
+            // socket.on('takt-instance', (taktInstance) => {
+            //     if (taktInstances[taktInstance]) {
+            //         let data = taktInstances[taktInstance].data;
+            //         socket.emit('server-takt-instance', data);
+            //     }
+            // });
 
             socket.on('ping', (data) => {
                 console.log(data.toString());
@@ -96,10 +61,29 @@ module.exports = {
 
         });
 
+        function updateInstances() {
+            plc.getData(0, function(err, data) {
+                if (err) return console.error(err);
+                instances2 = data;
+            });
+        }
+
+        function updateTaktTime() {
+            if (currentTaktInstance == MAX_TAKT_INSTANCES) {
+                currentTaktInstance = 0;
+            } else {
+                taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
+                currentTaktInstance += 1;
+            }
+        }
+
         socketServer = io;
         return;
     },
     io: function () {
         return socketServer;
+    },
+    clients: function () {
+        return clients;
     }
 }

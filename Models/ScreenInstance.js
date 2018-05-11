@@ -21,6 +21,7 @@ const Instance = function (dataBuffer) {
     this.cfgWagonAmount = dataBuffer.readInt16BE(68, 70) || null; // Numero de Popids por vagao    
 
     /* Implementando funcao para calcular a area dos vagoes */
+    
     let wagonNameSizes = [dataBuffer.readUInt8(73, 74), dataBuffer.readUInt8(119, 120)]
     this.wagon = [{
         "enabled": dataBuffer[70] & 0x01 > 0,
