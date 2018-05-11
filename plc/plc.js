@@ -12,13 +12,13 @@ let ins = [];
 
 plc.connect = () => {    
     if (s7.Connected()) {
-        return console.error("Client already connected", new Date().toLocaleString());
+        return console.error("Client is already connected");
     }
     s7.ConnectTo(PLC_CONFIG.PLC_SERVER, PLC_CONFIG.PLC_RACK, PLC_CONFIG.PLC_SLOT, (err) => {
         if (err) {
-            return console.error('>> Connection failed. Code#' + err + ' - ' + s7.ErrorText(err), new Date().toLocaleString());
+            return console.error('>> Connection failed. Code #' + err + ' - ' + s7.ErrorText(err));
         }
-        return console.log(">> Connected to PLC at " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString());
+        return console.log('>> Connected to PLC at ' + PLC_CONFIG.PLC_SERVER);
     });
 };
 
@@ -26,17 +26,17 @@ plc.disconnect = () => {
     return s7.Disconnect();
 };
 
-plc.getData = (instance, callback) => {
+plc.getData = (callback) => {
     if (!s7.Connected()) {
         plc.connect();
-        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString()); // ERRO SE NAO HOUVER CONEXAO
+        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER); // ERRO SE NAO HOUVER CONEXAO
     }
     // let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     // data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
     const MAX_INSTANCES = 18;    
     s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function(err, data) {
         if (!data || data.length === 0 || err) {
-            console.error(">> No Data to get! - Get Data", new Date().toLocaleString());
+            console.error(">> No Data to get! - Instance Data");
             callback(err, null);
             return;
         }
@@ -49,6 +49,7 @@ plc.getData = (instance, callback) => {
         }    
         callback(null, instances);
     });        
+    return;
 };
 
 plc.updateWagon = (instance, wagon, quantity) => {
@@ -60,7 +61,7 @@ plc.updateWagon = (instance, wagon, quantity) => {
         if (err) {
             return console.error(err, new Date().toLocaleString());
         }
-        console.log(`Instance ${instance}, Wagon: ${wagon} Updated`, new Date().toLocaleString());
+        console.log(`Instance ${instance}, Wagon: ${wagon} Updated`);
     });
     return true;
 };
@@ -111,19 +112,30 @@ plc.updateStopTime = (instance, ms) => {
 };
 
 plc.getInstances = () => {
-    let instances = [];    
+    if (!s7.Connected()) {
+        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
+    }
+    let instances = [];
     let size = 18;
     let start = 0;
+    console.log('Buscando instâncias no PLC');
     for (let i = 0; i < PLC_CONFIG.MAX_INSTANCES; i++) {
-        instances.push(s7.DBRead(PLC_CONFIG.DB_NUMBER, start, size).toString().replace(/[\u0000-\u001f]/g, ""));
+        let dataBuffer = s7.DBRead(PLC_CONFIG.DB_NUMBER, start, size);
         start += PLC_CONFIG.DB_SIZE;
+        if (!dataBuffer) {
+            instances.push([]);
+            return;
+        }
+        let instNameSize = dataBuffer.readUInt8(1, 2);
+        let inst = dataBuffer.slice(2, (2 + instNameSize)).toString('utf-8');    
+        instances.push(inst);
     }
     return instances;
 }
 
 plc.getTaktTimeInstance = (instance) => {
     if (!s7.Connected()) {
-        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER, new Date().toLocaleString());
+        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
     }
     let pointer = instance * PLC_CONFIG.DB_TAKT_INSTANCE_SIZE;
     data = s7.DBRead(PLC_CONFIG.DB_TAKT_NUMBER, pointer, PLC_CONFIG.DB_TAKT_INSTANCE_SIZE);
@@ -196,8 +208,7 @@ plc.updateConfigInstance = (instance, data, callback) => {
 
 plc.getAndons = () => {
     let start = 0;
-    let bytes =  s7.DBRead(PLC_CONFIG.DB_ANDON, start, PLC_CONFIG.DB_ANDON_SIZE);        
-    return bytes;
+    return s7.DBRead(PLC_CONFIG.DB_ANDON, start, PLC_CONFIG.DB_ANDON_SIZE);    
 }
 
 

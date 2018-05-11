@@ -47,6 +47,6 @@ exports.updateStopTime = (req, res, next) => {
     res.status(201).json({ message: "Stop Time updated", time: time });
 }
 
-exports.getInstances = (req, res, next) => {    
+exports.getInstances = (req, res, next) => {
     res.json(s7.getInstances());
 }

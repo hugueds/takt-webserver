@@ -13,7 +13,7 @@ module.exports = {
         let instances2 = [];
 
         const taktInstances = config.instances;
-        const MAX_INSTANCES = 16;
+        const MAX_INSTANCES = 18;
         const MAX_TAKT_INSTANCES = 4;
 
         let currentInstance = 0;
@@ -21,7 +21,7 @@ module.exports = {
 
         plc.connect();
 
-        setInterval(updateInstances, 1000);
+        const instanceInterval = setInterval(updateInstances, 1200);
         // setInterval(updateTaktTime, 250);
 
         io.on('connection', (socket) => {
@@ -62,10 +62,11 @@ module.exports = {
         });
 
         function updateInstances() {
-            plc.getData(0, function(err, data) {
+            plc.getData(function(err, data) {
                 if (err) return console.error(err);
                 instances2 = data;
             });
+            return;
         }
 
         function updateTaktTime() {

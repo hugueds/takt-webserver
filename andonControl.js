@@ -3,14 +3,17 @@ const plc = require('./plc/plc');
 const PLC_CONFIG = require('./plc/plcConfig');
 const andonControl = {};
 let andonInterval = null;
+let instances = plc.getInstances();  
 
 let bytes = generateBytes(4);
 
-andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1000);
+andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1250);
 andonControl.stop = () => clearInterval(andonInterval);
 
-function checkAndonStatus() {
-    let instances = plc.getInstances();    
+function checkAndonStatus() {    
+    if (!instances || !instances.length) {
+        instances = plc.getInstances();
+    }    
     let buffer = plc.getAndons();
     let readBytes = generateBytesFromBuffer(buffer);    
     for (let i = 0; i < bytes.length; i++) {        
