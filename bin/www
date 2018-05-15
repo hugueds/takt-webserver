@@ -2,16 +2,17 @@
 
 require('console-stamp')(console, '[HH:MM:ss.l]');
 const dotenv = require('dotenv').config();
+
+const andonControl = require('../andonControl');
+const socket = require('../socket.js');
+const config = require('../config');
+
 const express = require('express');
 const app = require('../app');
 const path = require('path');
 const http = require('http').Server(app);
 const PORT = process.env.PORT || process.env.DEV_PORT;
 const plc = require('../plc/plc');
-
-const andonControl = require('../andonControl');
-const socket = require('../socket.js');
-const config = require('../config');
 
 socket.start(http);
 andonControl.start();
@@ -28,15 +29,15 @@ function onError(error) {
     if (error.syscall !== 'listen') {
       throw error;
     }
-  
-    // handle specific listen errors with friendly messages
     switch (error.code) {
       case 'EACCES':
         console.error(PORT, ' requires elevated privileges');
+        plc.disconnect();
         process.exit(1);
         break;
       case 'EADDRINUSE':
         console.error(PORT, ' is already in use');
+        plc.disconnect();
         process.exit(1);
         break;
       default:
@@ -47,7 +48,7 @@ function onError(error) {
 process.on('SIGINT', function() {
     console.log("Caught interrupt signal");
     plc.disconnect();
-    process.exit();
+    process.exit(1);
 });
 
 module.exports = http;

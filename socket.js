@@ -7,7 +7,7 @@ let clients = [];
 module.exports = {
     start: function (httpServer) {
 
-        const io = require('socket.io', { forceNew: true, 'multiplex': false })(httpServer);
+        const io = require('socket.io')(httpServer);
 
         let instances = [];
         let instances2 = [];
@@ -21,7 +21,7 @@ module.exports = {
 
         plc.connect();
 
-        const instanceInterval = setInterval(updateInstances, 1200);
+        const instanceInterval = setInterval(updateInstances, 1325);
         // setInterval(updateTaktTime, 250);
 
         io.on('connection', (socket) => {
@@ -62,7 +62,7 @@ module.exports = {
         });
 
         function updateInstances() {
-            plc.getData(function(err, data) {
+            plc.getData((err, data) => {
                 if (err) return console.error(err);
                 instances2 = data;
             });

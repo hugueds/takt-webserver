@@ -10,7 +10,7 @@ const plc = {};
 let data = {};
 let ins = [];
 
-plc.connect = () => {    
+plc.connect = () => {
     if (s7.Connected()) {
         return console.error("Client is already connected");
     }
@@ -33,8 +33,8 @@ plc.getData = (callback) => {
     }
     // let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     // data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
-    const MAX_INSTANCES = 18;    
-    s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function(err, data) {
+    const MAX_INSTANCES = 18;
+    s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function (err, data) {
         if (!data || data.length === 0 || err) {
             console.error(">> No Data to get! - Instance Data");
             callback(err, null);
@@ -46,9 +46,9 @@ plc.getData = (callback) => {
             let inst = data.slice(pointer, pointer + PLC_CONFIG.DB_SIZE);
             pointer = pointer + PLC_CONFIG.DB_SIZE;
             instances.push(new Instance(inst));
-        }    
+        }
         callback(null, instances);
-    });        
+    });
     return;
 };
 
@@ -56,7 +56,7 @@ plc.updateWagon = (instance, wagon, quantity) => {
     let start = PLC_CONFIG.WAGON_START + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);
     let size = 2;
     let buff = Buffer.alloc(size);
-    buff.writeInt16BE(quantity);    
+    buff.writeInt16BE(quantity);
     s7.DBWrite(PLC_CONFIG.DB_ADJUST_NUMBER, start, size, buff, (err) => {
         if (err) {
             return console.error(err, new Date().toLocaleString());
@@ -74,8 +74,9 @@ plc.getWagonTimer = (instance, wagon) => {
     return data;
 };
 
-plc.updateWagonTimer = (instance, wagon, ms) => {    
-    const start = PLC_CONFIG.WAGON_START + 2 + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);   
+
+plc.updateWagonTimer = (instance, wagon, ms) => {
+    const start = PLC_CONFIG.WAGON_START + 2 + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);
     const size = 4;
     let arr = new Uint32Array(1);
     arr[0] = ms;
@@ -121,16 +122,30 @@ plc.getInstances = () => {
     console.log('Buscando instâncias no PLC');
     for (let i = 0; i < PLC_CONFIG.MAX_INSTANCES; i++) {
         let dataBuffer = s7.DBRead(PLC_CONFIG.DB_NUMBER, start, size);
-        start += PLC_CONFIG.DB_SIZE;
-        if (!dataBuffer) {
-            instances.push([]);
-            return;
+        if (dataBuffer) {
+            let instNameSize = dataBuffer.readUInt8(1, 2);
+            let inst = dataBuffer.slice(2, (2 + instNameSize)).toString('utf-8');
+            instances.push(inst);
+        } else {
+            instances.push('SEM NOME');            
         }
-        let instNameSize = dataBuffer.readUInt8(1, 2);
-        let inst = dataBuffer.slice(2, (2 + instNameSize)).toString('utf-8');    
-        instances.push(inst);
+        start += PLC_CONFIG.DB_SIZE;
     }
     return instances;
+}
+
+plc.getInstances2 = (callback) => {
+    const MAX_INSTANCES = 18;
+    let instances = [];
+    plc.getData((err, data) => {
+        if (err) 
+            return callback(err, null);
+
+        for (let i = 0; i < MAX_INSTANCES; i++) 
+            instances.push(data[i].instName);
+        
+        callback(null, instances);
+    });
 }
 
 plc.getTaktTimeInstance = (instance) => {
@@ -138,7 +153,7 @@ plc.getTaktTimeInstance = (instance) => {
         return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
     }
     let pointer = instance * PLC_CONFIG.DB_TAKT_INSTANCE_SIZE;
-    data = s7.DBRead(PLC_CONFIG.DB_TAKT_NUMBER, pointer, PLC_CONFIG.DB_TAKT_INSTANCE_SIZE);
+    let data = s7.DBRead(PLC_CONFIG.DB_TAKT_NUMBER, pointer, PLC_CONFIG.DB_TAKT_INSTANCE_SIZE);
     if (!data || !data.length) {
         return console.error(">> No Takt Data to get");
     }
@@ -151,7 +166,6 @@ plc.getConfigInstance = (instance, callback) => {
         return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
     }
     let pointer = instance * PLC_CONFIG.DB_CONFIG_SIZE;
-    
     s7.DBRead(PLC_CONFIG.DB_CONFIG_NUMBER, pointer, PLC_CONFIG.DB_CONFIG_SIZE, (err, buffer) => {
         if (err) {
             console.error(err, new Date().toLocaleString());
@@ -206,10 +220,24 @@ plc.updateConfigInstance = (instance, data, callback) => {
     });
 }
 
-plc.getAndons = () => {
-    let start = 0;
-    return s7.DBRead(PLC_CONFIG.DB_ANDON, start, PLC_CONFIG.DB_ANDON_SIZE);    
+plc.getAndons = (callback) => {    
+    s7.DBRead(PLC_CONFIG.DB_ANDON, 0, PLC_CONFIG.DB_ANDON_SIZE, (err, data) => {
+        if (err) return callback(err, null);
+        callback(null, data);
+    });
+    return;
 }
 
+plc.getAndons2 = (callback) => {
+    let start = 0;
+    s7.DBRead(PLC_CONFIG.DB_ANDON, start, PLC_CONFIG.DB_ANDON_SIZE, (err, data) => {
+        if (err) {
+            callback(err, null);
+            return;
+        }
+        callback(null, data);
+    });
+    return;
+}
 
 module.exports = plc;
