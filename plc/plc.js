@@ -29,7 +29,9 @@ plc.disconnect = () => {
 plc.getData = (callback) => {
     if (!s7.Connected()) {
         plc.connect();
-        return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER); // ERRO SE NAO HOUVER CONEXAO
+        const err = ">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER;
+        console.error(err);
+        return callback(err);        
     }
     // let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     // data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
@@ -37,11 +39,10 @@ plc.getData = (callback) => {
     s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function (err, data) {
         if (!data || data.length === 0 || err) {
             console.error(">> No Data to get! - Instance Data");
-            callback(err, null);
-            return;
+            return callback(err, null);            
         }
         let pointer = 0;
-        let instances = [];
+        const instances = [];
         for (let i = 0; i < MAX_INSTANCES; i++) {
             let inst = data.slice(pointer, pointer + PLC_CONFIG.DB_SIZE);
             pointer = pointer + PLC_CONFIG.DB_SIZE;
@@ -159,7 +160,6 @@ plc.getTaktTimeInstance = (instance) => {
     }
     return new Takt(data);
 }
-
 
 plc.getConfigInstance = (instance, callback) => {
     if (!s7.Connected()) {

@@ -14,6 +14,7 @@ const http = require('http').Server(app);
 const PORT = process.env.PORT || process.env.DEV_PORT;
 const plc = require('../plc/plc');
 
+plc.connect();
 socket.start(http);
 andonControl.start();
 
