@@ -1,6 +1,7 @@
 //'use strict';
 const colors = require('colors');
 const s7 = require('../plc/plc');
+const socket = require('../socket');
 
 
 
@@ -47,10 +48,8 @@ exports.updateStopTime = (req, res, next) => {
     res.status(201).json({ message: "Stop Time updated", time: time });
 }
 
-exports.getInstances = (req, res, next) => {
-    s7.getInstances2((err, data) => {
-        if (err) 
-            return next();
-        res.json(data);
-    });
+exports.getInstances = (req, res, next) => {    
+    const instances = socket.instances();
+    const instanceNames = instances.map( i => i.instName);
+    res.json(instanceNames);
 }

@@ -20,25 +20,34 @@ router.get('available', (req, res, next) => {
 
 
 router.get('/:instanceId', (req, res, next) => {
-    const instance = req.params.instanceId;    
-    plc.getConfigInstance(instance, (err, data) => {
-        if (err) {
-            res.json(err);
-            return;
-        }
-        res.json(data);
-    });
+    const instance = req.params.instanceId;   
+    try {
+        plc.getConfigInstance(instance, (err, data) => {
+            if (err) {
+                res.json(err);
+                return;
+            }
+            res.json(data);
+        });
+    }  catch(err) {
+        next();
+    }
+   
 });
 
 router.put('/:instanceId', (req, res, next) => {
     const instanceId = req.params.instanceId;    
     console.log('Recebendo: ' + req.body);
-    plc.updateConfigInstance(req.params.instanceId, req.body, (err, data) => {
-        if (err) {
-            res.json({status: false, message : 'Error during update request'}).status(403);    
-        }
-        res.json({status: true, message : 'Configuration Updated'});
-    });
+    try {
+        plc.updateConfigInstance(instanceId, req.body, (err, data) => {
+            if (err) {
+                res.json({status: false, message : 'Error during update request'}).status(403);    
+            }
+            res.json({status: true, message : 'Configuration Updated' + data });
+        });
+    } catch(err) {
+        next();
+    }   
     
 });
 
