@@ -4,17 +4,23 @@ const PLC_CONFIG = require('./plc/plcConfig');
 const andonControl = {};
 let andonInterval = null;
 let instances = [];
+let locked = false;
 
 let bytes = generateBytes(4);
 
-andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1250);
+andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1350);
 andonControl.stop = () => clearInterval(andonInterval);
 
 function checkAndonStatus() {
-    if (!instances || !instances.length) {
-        plc.getInstances2((err, data) => instances = data);
+    if (locked) {
         return;
     }
+    if (!instances || !instances.length) {
+        plc.getInstances2((err, data) => instances = data);
+        locked = false;
+        return;
+    }
+    locked = true;
     plc.getAndons((err, buffer) => {
         let readBytes = generateBytesFromBuffer(buffer);
         for (let i = 0; i < bytes.length; i++) {
@@ -29,6 +35,8 @@ function checkAndonStatus() {
                             console.log(message);
                         } catch (err) {
                             console.error('Error na requisição do Telegram', err);
+                        } finally {
+                            locked = false;
                         }
                     }
                 }
