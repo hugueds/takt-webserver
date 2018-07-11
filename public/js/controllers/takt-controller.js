@@ -10,6 +10,8 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
     var idx = 0;
     var instanceSize = 0;
+    var paralamaInstance = 17;
+    $scope.showAvailability = false;
     $scope.popidWagon = [];
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();
@@ -17,8 +19,13 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $interval(getPrideData, 1000);
     $interval(updateInstance, 10000);    
 
+    
+
     function getPrideData() {
         if ($scope.instances && $scope.instances.length > 0) {
+            if ($scope.instances[idx].id == paralamaInstance) {
+                $scope.showAvailability = true;
+            }
             socket.emit('get-takt', $scope.instances[idx].id);
         }
         generateWagons($scope.cfgWagonAmount);
@@ -41,7 +48,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
         quantity--;
-        if (quantity >= wagon) wagonColor = "wagon-used";
+        if (quantity >= wagon || $scope.takt.wagon[0].timer <= 0) wagonColor = "wagon-used";
         else if (prct < color.green) wagonColor = "wagon-green";
         else if (prct <= color.yellow && prct < color.red) wagonColor = "wagon-warning";
         else wagonColor = "wagon-danger";
@@ -73,6 +80,8 @@ function mainController($scope, $filter, socket, $interval, instances) {
         $scope.error = data.error;
         $scope.taktNegative = false;
 
+        $scope.takt.produced = $scope.takt.produced ? $scope.takt.produced : 0;
+
         if (data.lineTakt <= 0) {
             $scope.taktNegative = true;
         }
@@ -90,8 +99,8 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
 function adjustController($scope, $log, adjust, socket, instances) {
 
-    instances.getAvaliableInstances().then(function(){
-        $scope.avaliableInstances = instances.avaliableInstances.filter( d => d.name !== "");
+    instances.getAvailableInstances().then(function(){
+        $scope.availableInstances = instances.availableInstances.filter( d => d.name !== "");
     });
 
     var time = { h: '00', m: '00', s: '00' };
@@ -205,15 +214,15 @@ function welcomeController($scope, socket, instances) {
     $scope.deviceName = "";
 
     $scope.pickInstance = function (instance) {
-        var idx = $scope.avaliableInstances.indexOf(instance);
-        $scope.avaliableInstances.splice(idx, 1);
+        var idx = $scope.availableInstances.indexOf(instance);
+        $scope.availableInstances.splice(idx, 1);
         $scope.selectedInstances.push(instance);
     }
 
     $scope.removeInstance = function (instance) {
         var idx = $scope.selectedInstances.indexOf(instance);
         $scope.selectedInstances.splice(idx, 1);
-        $scope.avaliableInstances.push(instance);
+        $scope.availableInstances.push(instance);
     }
 
     $scope.saveChanges = function (deviceName, selectedInstances) {
@@ -226,18 +235,16 @@ function welcomeController($scope, socket, instances) {
     }
 
     function init() {
-        instances.getAvaliableInstances().then(function(){
-            $scope.avaliableInstances = instances.avaliableInstances.filter( i => i.name !== "");            
+        instances.getAvailableInstances().then(function(){
+            $scope.availableInstances = instances.availableInstances.filter( i => i.name !== "");            
         });        
     }
-
-
 
 }
 
 function configController($scope, instances, config) {
-    instances.getAvaliableInstances().then(function(){
-        $scope.instances = instances.avaliableInstances;
+    instances.getAvailableInstances().then(function(){
+        $scope.instances = instances.availableInstances;
     });
     $scope.selectedInstance = 0;
     $scope.selectedWagon = 0;
@@ -248,15 +255,17 @@ function configController($scope, instances, config) {
             $scope.configInstance = config.configInstance;
             $scope.selectedWagon = 0;
             $scope.time = null;
+            console.log(config.configInstance);
         });
     }
 
     $scope.saveInstance = function() {
         var newConfig = $scope.configInstance;
-        var selectedInstance = $scope.selectedInstance;
-        config.updateInstance(selectedInstance, newConfig).then(function(){
-            console.log('Instância: ' + selectedInstance + ' atualizada');
-        });
+        var selectedInstance = $scope.selectedInstance;        
+        console.log(newConfig);
+        // config.updateInstance(selectedInstance, newConfig).then(function(){
+        //     console.log('Instância: ' + selectedInstance + ' atualizada');
+        // });
     }
 
     $scope.t = function () {

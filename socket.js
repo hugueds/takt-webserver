@@ -1,60 +1,47 @@
-const config = require('./config');
 const plc = require('./plc/plc');
 let socketServer = null;
 let clients = [];
-
 let instances = [];
-let instances2 = [];
+let locked = false;
 
-let currentInstance = 0;
-let currentTaktInstance = 0;
-
-const taktInstances = config.instances;
-const MAX_INSTANCES = 18;
-const MAX_TAKT_INSTANCES = 4;
-
-const instanceInterval = setInterval(updateInstances, 1325);
+const instanceInterval = setInterval(updateInstances, 1200);
 
 function updateInstances() {
-    plc.getData((err, data) => {
-        if (err) return console.error(err);
-        instances2 = data;
-    });
+    if (!locked) {
+        locked = true;
+        plc.getData((err, data) => {
+            if (err) return console.error(err);
+            instances = data;
+            locked = false;
+        });
+    }    
     return;
-}
-
-function updateTaktTime() {
-    if (currentTaktInstance == MAX_TAKT_INSTANCES) {
-        currentTaktInstance = 0;
-    } else {
-        taktInstances[currentTaktInstance].data = plc.getTaktTimeInstance(currentTaktInstance);
-        currentTaktInstance += 1;
-    }
 }
 
 module.exports = {
     start: function (httpServer) {
 
-        const io = require('socket.io')(httpServer);        
+        const io = require('socket.io')(httpServer);
 
         io.on('connection', (socket) => {
 
             let client = socket.request.connection.remoteAddress.slice(7);
 
             if (client == '' || client == '127.0.0.1') {
-                client = socket.handshake.headers["x-real-ip"];
+                client = socket.handshake.headers['x-real-ip'];
                 console.log('The Real IP is', client);
-            }          
-            
+            }
+
             io.emit('newConnection', client);
             clients.push(client);
             console.log('A CLIENT HAS CONNECTED! -> ' + client);
 
             socket.on('get-takt', (instanceId) => {
-                socket.emit('put-takt', instances2[instanceId]);                
+                socket.emit('put-takt', instances[instanceId]);
             });
 
             socket.on('plc-reconnect', (data) => {
+                console.log(data);
                 plc.disconnect();
                 plc.connect();
             });
@@ -83,7 +70,7 @@ module.exports = {
                 socket.emit('pong', 'pong');
             });
 
-        });       
+        });
 
         socketServer = io;
         return;
@@ -93,5 +80,8 @@ module.exports = {
     },
     clients: function () {
         return clients;
+    },
+    instances: function () {
+        return instances;
     }
 }

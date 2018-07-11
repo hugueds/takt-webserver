@@ -28,13 +28,13 @@ const Instance = function (dataBuffer) {
         "name": dataBuffer.slice(74, (74 + wagonNameSizes[0])).toString('utf-8'),
         "quantity": dataBuffer.readInt16BE(106, 108),
         "timer": dataBuffer.readInt32BE(108, 112),
-        "avaliability": dataBuffer.readInt32BE(112, 116)
+        "availability": dataBuffer.readInt32BE(112, 116)
     }, {
         "enabled": dataBuffer[116] & 0x01 > 0,
         "name": dataBuffer.slice(120, (120 + wagonNameSizes[1])).toString('utf-8'),
         "quantity": dataBuffer.readInt16BE(152, 154),
         "timer": dataBuffer.readInt32BE(154, 158),
-        "avaliability": dataBuffer.readInt32BE(158, 162)
+        "availability": dataBuffer.readInt32BE(158, 162)
     }] || null;
 };
 

@@ -4,9 +4,9 @@
     src: url('./fonts/DSDIGI.woff') format('woff'), url('./fonts/DSDIGI.tff') format('truetype');
 }
 
-* {
+*, body {
     width: 100%;
-    
+    margin: 0 auto;
 }
 
 body {
@@ -60,15 +60,34 @@ body {
 }
 
 .takt-time {
-    font-size: 1400%;
-    text-align: center;
-    margin-top: -3.4%;
+    margin-top: -2%;
+    font-size: 12em;
+    text-align: center;    
     font-family: 'DSDIGI';
 }
 
 .takt-negative {
     color: red;
 }
+
+.takt-time-log-title {
+    text-align: center;
+}
+
+.takt-time-log {
+    text-align: center;
+    color: mediumseagreen;
+    font-family: 'DSDIGI';
+    font-size: 9rem;
+}
+
+.availability-time-log {
+    text-align: center;    
+    color: blue;
+    font-family: 'DSDIGI';
+    font-size: 9rem;    
+}
+
 
 
 /*	PRODUCTION	*/
@@ -85,13 +104,13 @@ body {
 
 .prod-produced-text,
 .prod-objective-text {
-    font-size: 150%;
+    font-size: 1.2em;
     /*color: black; //change to black*/
 }
 
 .prod-produced,
 .prod-objective {
-    font-size: 500%;
+    font-size: 5em;
     border: 1px solid black;
     width: 50%;
     margin-bottom: 2%;
@@ -168,6 +187,7 @@ body {
 }
 
 
+
 /* ADJUST SCREEN */
 
 #clock-container {
@@ -190,6 +210,10 @@ body {
     font-weight: bold;
 }
 
+.device-name {
+    clear: both;
+    margin: 0 auto;
+}
 
 /*
 #clock-container  input {

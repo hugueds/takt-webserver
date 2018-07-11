@@ -4,9 +4,9 @@
 
     <div class="stop-time-box">
         <div class="stop-time">
-            {{takt.lineStopTime | takt}}
+            {{takt.lineStopTime | takt}} 
         </div>
-        <div class='stop-time-text'>
+        <div class="stop-time-text">
             STOP TIME - LINE
         </div>
     </div>
@@ -15,15 +15,25 @@
 
     <div class="takt-time-box">
 
-        <div class='takt-time-text'>
+        <div class="takt-time-text">
             TAKT LINE
         </div>
-        <div class='takt-time' ng-class='{ "takt-negative" : taktNegative}'>
+        <div class="takt-time" ng-class="{ 'takt-negative' : taktNegative}">
             {{takt.lineTakt | takt}}
         </div>
-        <div ng-show='error' class='error'>
+        <div class="takt-time-log-title" ng-if="showAvailability">
+            PICKING TAKT
+        </div>
+        <div class="takt-time-log" ng-class="" ng-if="showAvailability && takt.wagon[0].timer > 0" >
+            {{takt.wagon[0].timer | takt}}
+        </div>
+        <div class="availability-time-log"  ng-if="showAvailability && takt.wagon[0].timer <= 0" >
+            {{takt.wagon[0].availability | takt}}
+        </div>
+        <!-- SE FOR INSTANCIA DO PARACHOQUE, EXIBIR O TAKT DA SEPARAÇÃO -->
+        <div ng-show="error" class="error">
             {{error}}
-            <button class='btn-lg btn-danger' ng-click='reconnect()'>RECONECTAR...</button>
+            <button class="btn-lg btn-danger" ng-click="reconnect()">RECONECTAR...</button>
         </div>
 
     </div>
@@ -51,20 +61,20 @@
 
 
 <!-- COMBOIOS -->
-<div class='content'>
+<div class="content">
 
-    <div ng-repeat='wagon in wagons'>
+    <div ng-repeat="wagon in wagons">
 
-        <div class='wagon'>
+        <div class="wagon" ng-if="wagon.enabled">
 
-            <div ng-repeat='popid in popidWagon'>
-                <div class="wagon-popid" ng-class='wagonColor(popid, wagon.quantity)'>
-                    <span class='wagon-popid-text'> {{popid}} </span>
+            <div ng-repeat="popid in popidWagon">
+                <div class="wagon-popid" ng-class="wagonColor(popid, wagon.quantity)">
+                    <span class="wagon-popid-text"> {{popid}} </span>
                 </div>
             </div>
 
-            <div class='wagon-name-box'>
-                <div class='wagon-name-text'>
+            <div class="wagon-name-box">
+                <div class="wagon-name-text">
                     {{wagon.name}}
                 </div>
             </div>
@@ -72,19 +82,19 @@
     </div>
 
 
-    <div class='instance-name text-center'>
+    <div class="instance-name text-center">
         {{takt.instName}}
     </div>
 
 
-    <div class="text-center">
+    <div class="text-center device-name">
         Dispositivo : {{device}}
     </div>
 
     <br>
 
     <div>
-        <a href='#/welcome' class="col-sm-offset-4 col-sm-4 btn btn-warning">RECONFIGURAR INSTÂNCIAS</a>
+        <a href="#/welcome" class="col-sm-offset-4 col-sm-4 btn btn-warning">RECONFIGURAR INSTÂNCIAS</a>
         <br>
     </div>
 

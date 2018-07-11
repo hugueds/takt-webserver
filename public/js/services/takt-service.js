@@ -51,11 +51,11 @@ function adjustService($http) {
 function instanceService($http, $q, $state, $localStorage, $window) {
 
     var local = $localStorage;
-    const Instance = function(id, name) {
+    const Instance = function (id, name) {
         this.id = id;
         this.name = name;
     }
-    var avaliableInstances = [
+    var availableInstances = [
         { id: 0, name: "KIT FA 1.1" },
         { id: 1, name: "KIT LE / LD" },
         { id: 2, name: "KIT FA 0" },
@@ -73,20 +73,20 @@ function instanceService($http, $q, $state, $localStorage, $window) {
 
     var o = {
         device: "",
-        avaliableInstances: avaliableInstances,
+        availableInstances: availableInstances,
         instances: [],
         registered: false
     }
 
-    o.getAvaliableInstances = function () {        
+    o.getAvailableInstances = function () {
         return $http.get('/instances')
-        .success(function(data){
-            let instances = data.map( (d,i) => new Instance(i,d));
-            angular.copy(instances, o.avaliableInstances);            
-        })
-        .error(function(err){
-            console.error(err);
-        });
+            .success(function (data) {
+                let instances = data.map((d, i) => new Instance(i, d));
+                angular.copy(instances, o.availableInstances);
+            })
+            .error(function (err) {
+                console.error(err);
+            });
     }
 
     o.getInstances = function () {
@@ -130,13 +130,13 @@ function instanceService($http, $q, $state, $localStorage, $window) {
 
 function configService($http) {
     var o = {
-        configInstance : {}
+        configInstance: {}
     };
 
 
     o.getConfigInstance = function (instanceId) {
         return $http.get('/config/' + instanceId)
-            .success(function (config) {                
+            .success(function (config) {
                 angular.copy(config, o.configInstance);
             })
             .error(function (err) {
@@ -144,15 +144,24 @@ function configService($http) {
             })
     }
 
-    o.updateInstance = function(instanceId, newConfig) {
-        return $http.put('/config/' + instanceId, newConfig)
-        .success(function (config) {
-            console.log('updated');
-            o.getConfigInstance(instanceId);
-        })
-        .error(function (err) {
-            console.error(err);
-        })
+    o.updateInstance = function (newConfig) {
+        return $http.put('/config', newConfig)
+            .success(function (config) {
+                console.log('Config Instance: ' + config.instance + ' updated');
+                o.getConfigInstance(config.instance);
+            })
+            .error(function (err) {
+                console.error(err);
+            })
+        // return $http.put('/config/' + instanceId, newConfig)
+        // .success(function (config) {
+        //     console.log('updated');
+        //     o.getConfigInstance(instanceId);
+        // })
+        // .error(function (err) {
+        //     console.error(err);
+        // })
     }
+
     return o;
 }

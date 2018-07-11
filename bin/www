@@ -5,11 +5,8 @@ const dotenv = require('dotenv').config();
 
 const andonControl = require('../andonControl');
 const socket = require('../socket.js');
-const config = require('../config');
 
-const express = require('express');
 const app = require('../app');
-const path = require('path');
 const http = require('http').Server(app);
 const PORT = process.env.PORT || process.env.DEV_PORT;
 const plc = require('../plc/plc');
@@ -19,37 +16,37 @@ socket.start(http);
 andonControl.start();
 
 http.listen(parseInt(PORT), (err) => {
-    if (err) return console.error(err);
-    console.log('Ambiente -> ' + app.settings.env);
-    console.log("Server Connected at port " + PORT);
+  if (err) return console.error(err);
+  console.log('Ambiente -> ' + app.settings.env);
+  console.log("Server Connected at port:", PORT);
 });
 
 http.on('error', onError);
 
 function onError(error) {
-    if (error.syscall !== 'listen') {
-      throw error;
-    }
-    switch (error.code) {
-      case 'EACCES':
-        console.error(PORT, ' requires elevated privileges');
-        plc.disconnect();
-        process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(PORT, ' is already in use');
-        plc.disconnect();
-        process.exit(1);
-        break;
-      default:
-        throw error;
-    }
+  if (error.syscall !== 'listen') {
+    throw error;
   }
+  switch (error.code) {
+    case 'EACCES':
+      console.error(PORT, ' requires elevated privileges');
+      plc.disconnect();
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(PORT, ' is already in use');
+      plc.disconnect();
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
 
-process.on('SIGINT', function() {
-    console.log("Caught interrupt signal");
-    plc.disconnect();
-    process.exit(1);
+process.on('SIGINT', function () {
+  console.log("Caught interrupt signal");
+  plc.disconnect();
+  process.exit(1);
 });
 
 module.exports = http;

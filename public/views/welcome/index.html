@@ -16,7 +16,7 @@
         float: left;
     }
 
-    .instances-avaliable {
+    .instances-available {
         margin: auto;
         position: relative;
         float: left;
@@ -80,13 +80,13 @@
 
         <div class='row welcome-instances'>
 
-            <div class="col-sm-6 instances-avaliable">
+            <div class="col-sm-6 instances-available">
                 <div class="instances-header">
                     <div class="col-sm-12 text-center">DISPONÍVEIS</div>
                     <div class="col-sm-4">ID</div>
                     <div class="col-sm-7 text-center">NOME</div>
                 </div>
-                <div class='instances-row' ng-repeat="inst in avaliableInstances" ng-click='pickInstance(inst)' ng-if="inst.name != ''">
+                <div class='instances-row' ng-repeat="inst in availableInstances" ng-click='pickInstance(inst)' ng-if="inst.name != ''">
                     <div class="col-sm-4">{{inst.id}}</div>
                     <div class="col-sm-6">{{inst.name}}</div>
                 </div>

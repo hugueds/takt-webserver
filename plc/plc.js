@@ -1,6 +1,7 @@
-const snap = require('node-snap7');
+const snap7 = require('node-snap7');
 const Instance = require('../Models/ScreenInstance');
 const ConfigInstance = require('../Models/ConfigInstance');
+const ConfigInstance2 = require('../Models/ConfigInstance2');
 const Takt = require('../Models/TaktInstance');
 const PLC_CONFIG = require('./plcConfig');
 
@@ -8,7 +9,8 @@ const s7 = new snap7.S7Client();
 
 const plc = {};
 let data = {};
-let ins = [];
+
+let reconnectionCounter = 0;
 
 plc.connect = () => {
     if (s7.Connected()) {
@@ -16,8 +18,10 @@ plc.connect = () => {
     }
     s7.ConnectTo(PLC_CONFIG.PLC_SERVER, PLC_CONFIG.PLC_RACK, PLC_CONFIG.PLC_SLOT, (err) => {
         if (err) {
-            return console.error('>> Connection failed. Code #' + err + ' - ' + s7.ErrorText(err));
+            reconnectionCounter++;
+            return console.error('>> Connection failed. Code #' + err + ' - ' + s7.ErrorText(err), 'Attempt n ' + reconnectionCounter);
         }
+        reconnectionCounter = 0;
         return console.log('>> Connected to PLC at ' + PLC_CONFIG.PLC_SERVER);
     });
 };
@@ -74,7 +78,6 @@ plc.getWagonTimer = (instance, wagon) => {
     data = s7.DBRead(PLC_CONFIG.DB_NUMBER, start, size);
     return data;
 };
-
 
 plc.updateWagonTimer = (instance, wagon, ms) => {
     const start = PLC_CONFIG.WAGON_START + 2 + (instance * PLC_CONFIG.DB_ADJUST_SIZE) + (wagon * PLC_CONFIG.WAGON_SIZE);
@@ -238,6 +241,65 @@ plc.getAndons2 = (callback) => {
         callback(null, data);
     });
     return;
+}
+
+plc.getConfig2 = (instance, callback) => {
+    const configDB = 33;
+    const configDBSize = 318;
+    const start = instance * configDBSize;
+
+    s7.DBRead(configDB, start, configDBSize, (err, data) => {
+        if (err) {
+            console.error(err);
+            return callback(err);
+        }
+        let configInstance = new ConfigInstance2(data);        
+        callback(null, configInstance);
+    });
+    return;
+}
+
+plc.updateConfig2 = (data, callback) => {
+
+    const dbConfigInterface = 3;
+    const start = 0;
+    const configDBSize = 180;
+    const status = 1;   
+    const arrayBuffer = new Buffer.alloc(configDBSize);
+
+    arrayBuffer.writeInt16BE(data.instance, 0);
+    arrayBuffer.writeInt16BE(data.wagonIndex, 2);
+    arrayBuffer.writeInt16BE(data.operationIndex, 4);
+    arrayBuffer.writeInt16BE(status, 6);
+
+    // Instance
+    arrayBuffer.writeInt8(20, 8);
+    arrayBuffer.writeInt8(data.config.name.length, 9);
+    arrayBuffer.write(data.config.name, 10);
+    arrayBuffer.writeInt16BE(data.config.cycleNumber, 30);
+    arrayBuffer.writeInt16BE(data.config.wagonNR, 32);
+
+    // Wagon
+    arrayBuffer.writeInt8(data.config.wagon.enabled, 34);
+    arrayBuffer.writeInt8(32, 36);
+    arrayBuffer.writeInt8(data.config.wagon.name.length, 37);
+    arrayBuffer.write(data.config.wagon.name, 38);
+    arrayBuffer.writeInt16BE(data.config.wagon.numOperations, 70);
+
+    // Operation
+    arrayBuffer.writeInt8(data.config.wagon.operation.enabled, 72);
+    arrayBuffer.writeInt8(10, 74);
+    arrayBuffer.writeInt8(data.config.wagon.operation.name.length, 75);
+    arrayBuffer.write(data.config.wagon.operation.name, 76);
+    arrayBuffer.writeInt32BE(data.config.wagon.operation.stdTime, 86);
+
+    s7.DBWrite(dbConfigInterface, start, configDBSize, arrayBuffer, (err, res) => {
+        if (err) {
+            console.error(err);
+            return callback(err);            
+        }
+        callback(null, data);
+    });     
 }
 
 module.exports = plc;
