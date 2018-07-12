@@ -137,6 +137,7 @@ function configService($http) {
     o.getConfigInstance = function (instanceId) {
         return $http.get('/config/' + instanceId)
             .success(function (config) {
+                config.instance = Number(instanceId);
                 angular.copy(config, o.configInstance);
             })
             .error(function (err) {
@@ -144,23 +145,15 @@ function configService($http) {
             })
     }
 
-    o.updateInstance = function (newConfig) {
-        return $http.put('/config', newConfig)
-            .success(function (config) {
-                console.log('Config Instance: ' + config.instance + ' updated');
-                o.getConfigInstance(config.instance);
+    o.updateInstance = function (config) {
+        return $http.post('/config', config)
+            .success(function (data) {
+                console.log('Config Instance: ' + data.instance + ' updated');
+                o.getConfigInstance(data.instance);
             })
             .error(function (err) {
                 console.error(err);
             })
-        // return $http.put('/config/' + instanceId, newConfig)
-        // .success(function (config) {
-        //     console.log('updated');
-        //     o.getConfigInstance(instanceId);
-        // })
-        // .error(function (err) {
-        //     console.error(err);
-        // })
     }
 
     return o;

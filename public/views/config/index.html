@@ -1,7 +1,13 @@
 <style>
+    *,
+    body {
+        width: 100%;
+        margin: 0 auto;
+    }
+
     .config-container {
         margin-top: 1%;
-        width: 50%;
+        /* width: 50%; */
     }
 
     .config-container button {
@@ -18,20 +24,19 @@
 
     <h1 class="text-center">CONFIGURAÇÕES</h1>
 
-    <div>
+    <div class="row">
 
-        <div class="form-group col-sm-6">
-            <label class="text-center"> Instância </label>
+        <div class="form-group col-sm-12">
+            <label class="text-center"> INSTÂNCIA </label>
             <select class="form-control" ng-model="selectedInstance" ng-change="getInstance(selectedInstance)">
                 <option value="{{instance.id}}" class="form-control" ng-repeat="instance in instances"> {{instance.id}} - {{instance.name}}</option>
             </select>
         </div>
 
 
-        <div ng-if="selectedInstance" class="form-group col-sm-12">
-            <!-- <div> -->
+        <div ng-if="selectedInstance">
 
-            <div>
+            <div class="form-group col-sm-6">
                 <label>Nome</label>
                 <input ng-model="configInstance.name" class="form-control" type="text" ng-value="configInstance.name" />
             </div>
@@ -46,9 +51,9 @@
             </div>
 
             <div class="form-group col-sm-3">
-                <label class="text-center">Comboios</label>
-                <select ng-model="configInstance.wagonNumber" class="form-control">
-                    <option selected> {{ configInstance.wagonNumber }} </option>
+                <label class="text-center">Quantidade Comboios</label>
+                <select ng-model="configInstance.wagonNR" class="form-control">
+                    <option selected> {{ configInstance.wagonNR }} </option>
                     <option disabled></option>
                     <option ng-repeat="value in [1,2] track by $index">{{ value }}</option>
                 </select>
@@ -59,8 +64,9 @@
     </div>
 
 
-    <div>
-        <div ng-hide_="!selectedInstance" class="form-group col-sm-3">
+    <div class="row">
+
+        <div ng-hide="!selectedInstance" class="form-group col-sm-3">
             <label class="text-center"> Comboio </label>
             <select ng-model="selectedWagon" class="form-control">
                 <option> 1 </option>
@@ -68,81 +74,84 @@
             </select>
         </div>
 
-        <div ng-show_="selectedWagon">
+        <div ng-show="selectedWagon">
 
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-4">
                 <label class="text-center"> Nome do Comboio</label>
                 <input ng-model="configInstance.wagon[selectedWagon - 1].name" ng-value="configInstance.wagon[selectedWagon - 1].name" class="form-control"
                     type="text">
             </div>
 
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-2">
                 <label class="text-center"> Habilitado </label>
                 <select ng-model="configInstance.wagon[selectedWagon - 1].enabled" class="form-control">
                     <option disabled selected> {{ configInstance.wagon[selectedWagon - 1].enabled | yesNo }} </option>
                     <option disabled></option>
-                    <option value="true">SIM</option>
-                    <option value="false">NÃO</option>
+                    <option value=1>SIM</option>
+                    <option value=0>NÃO</option>
                 </select>
             </div>
 
             <div class="form-group col-sm-3">
-                <label class="text-center">Operações</label>
-                <select ng-model="configInstance.wagonNumber" class="form-control">
-                    <option selected> {{ configInstance.wagonNumber }} </option>
+                <label class="text-center">Quantidade de Operações</label>
+                <select ng-model="configInstance.wagon[selectedWagon - 1].numOperations" class="form-control">
+                    <option disabled selected> {{ configInstance.wagon[selectedWagon - 1].numOperations }} </option>
                     <option disabled></option>
-                    <option ng-repeat="value in [1,2] track by $index">{{ value }}</option>
+                    <option ng-repeat="value in [1,2,3,4,5] track by $index">{{ value }}</option>
                 </select>
             </div>
 
-
         </div>
 
 
     </div>
 
-    <div ng-hide_="!selectedWagon" class="form-group col-sm-3">
-        <label class="text-center"> Operação </label>
-        <select ng-model="selectedOperation" class="form-control">
-            <option> 1 </option>
-            <option> 2 </option>
-        </select>
-        <div class="form-group col-sm-6">
-            <label class="text-center"> Habilitado </label>
-            <select ng-model="configInstance.wagon[selectedWagon - 1].enabled" class="form-control">
-                <option disabled selected> {{ configInstance.wagon[selectedWagon - 1].enabled | yesNo }} </option>
-                <option disabled></option>
-                <option value="true">SIM</option>
-                <option value="false">NÃO</option>
+    <div class="row">
+
+        <div class="form-group col-sm-3" ng-show="selectedWagon">
+            <label class="text-center"> Operação </label>
+            <select ng-model="selectedOperation" class="form-control">
+                <option ng-repeat="value in [1,2,3,4,5] track by $index">{{ value }}</option>
             </select>
         </div>
-        <div class="form-group col-sm-12">
-            <label class="text-center"> Nome da Operação</label>
-            <input ng-model="configInstance.wagon[selectedWagon - 1].name" ng-value="configInstance.wagon[selectedWagon - 1].name" class="form-control"
-                type="text">
+
+        <div ng-hide="!selectedOperation">
+
+            <div class="form-group col-sm-2">
+                <label class="text-center"> Habilitado </label>
+                <select ng-model="configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].enabled" class="form-control">
+                    <option disabled selected> {{ configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].enabled | yesNo }} </option>
+                    <option disabled></option>
+                    <option value=1>SIM</option>
+                    <option value=0>NÃO</option>
+                </select>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="text-center"> Nome da Operação</label>
+                <input ng-model="configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].name" ng-value="configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].name"
+                    class="form-control" type="text">
+            </div>
+
+            <div class="form-group col-sm-12">
+
+                <div>TEMPO</div>
+
+                <div class="form-group col-sm-4">
+                    <label class="text-center">MINUTOS </label>
+                    <input ng-change="updateTime()" ng-model="time.m" ng-value="configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].stdTime | minutes"
+                        class="form-control time" type="text" />
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <label class="text-center ">SEGUNDOS </label>
+                    <input ng-change="updateTime()" ng-model="time.s" ng-value="configInstance.wagon[selectedWagon - 1].operations[selectedOperation - 1].stdTime | seconds"
+                        class="form-control time" type="text">
+                </div>
+            </div>
         </div>
-
-        <div class="form-group col-sm-12">
-            <label for="">Tempo</label>
-        </div>
-
-        <div class="form-group col-sm-6">
-            <label class="text-center">MINUTOS </label>
-            <input ng-change="updateTime()" ng-model="time.m" ng-value="configInstance.wagon[selectedWagon - 1].stdTime | minutes" class="form-control time"
-                type="text" />
-        </div>
-
-        <div class="form-group col-sm-6">
-            <label class="text-center ">SEGUNDOS </label>
-            <input ng-change="updateTime()" ng-model="time.s" ng-value="configInstance.wagon[selectedWagon - 1].stdTime | seconds" class="form-control time"
-                type="text">
-        </div>
-
-
-
 
     </div>
-
 
 
     <button ng-click="saveInstance()" ng-if="selectedInstance" class="btn btn-primary"> SALVAR </button>
