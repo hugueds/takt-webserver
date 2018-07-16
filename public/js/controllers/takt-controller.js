@@ -48,7 +48,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
         var prct = wagon / $scope.cfgWagonAmount;
         var wagonColor = null;
         quantity--;
-        if (quantity >= wagon || $scope.takt.wagon[0].timer <= 0) wagonColor = "wagon-used";
+        if (quantity >= wagon) wagonColor = "wagon-used";
         else if (prct < color.green) wagonColor = "wagon-green";
         else if (prct <= color.yellow && prct < color.red) wagonColor = "wagon-warning";
         else wagonColor = "wagon-danger";

@@ -5,6 +5,4 @@ const ClientConfig = function(params) {
     this.config = params.config;
 }
 
-
-
 module.exports = ClientConfig;
