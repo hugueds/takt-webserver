@@ -36,10 +36,20 @@
 
         <div ng-if="selectedInstance">
 
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-4">
                 <label>Nome</label>
-                <input ng-model="configInstance.name" class="form-control" type="text" ng-value="configInstance.name" />
+                <input maxlength="18" ng-model="configInstance.name" class="form-control" type="text" ng-value="configInstance.name" />
             </div>
+
+            <div class="form-group col-sm-2">
+                <label class="text-center"> Paralelo </label>
+                <select ng-model="configInstance.parallelInstance" class="form-control">
+                    <option disabled selected> {{ configInstance.parallelInstance | yesNo }} </option>
+                    <option disabled></option>
+                    <option value=1>SIM</option>
+                    <option value=0>NÃO</option>
+                </select>
+            </div>            
 
             <div class="form-group col-sm-3">
                 <label class="text-center"> Ciclos </label>

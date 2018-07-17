@@ -4,6 +4,7 @@ const ConfigInstance2 = function (buffer) {
     }
     console.log(buffer.slice(66, 66 + buffer.readUInt8(65, 66)).toString());
     this.name = buffer.slice(2, 2 + buffer.readUInt8(1, 2)).toString();
+    this.parallelInstance = (buffer[28] & 0x01) > 0;
     this.cycleNumber = buffer.readInt16BE(22, 24);
     this.wagonNR = buffer.readInt16BE(24, 26);
     this.wagon = [
