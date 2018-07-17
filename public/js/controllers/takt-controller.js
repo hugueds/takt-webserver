@@ -19,8 +19,6 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $interval(getPrideData, 1000);
     $interval(updateInstance, 10000);
 
-
-
     function getPrideData() {
         if ($scope.instances && $scope.instances.length > 0) {
             if ($scope.instances[idx].id == paralamaInstance) {
@@ -34,10 +32,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
     function updateInstance() {
         if ($scope.instances && $scope.instances.length > 0) {
             instanceSize = $scope.instances.length;
-            idx++;
-            if (idx > instanceSize - 1) {
-                idx = 0;
-            }
+            idx = (idx > instanceSize - 1) ? 0 : idx++;            
         }
     }
 
