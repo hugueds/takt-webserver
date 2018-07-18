@@ -32,7 +32,10 @@ function mainController($scope, $filter, socket, $interval, instances) {
     function updateInstance() {
         if ($scope.instances && $scope.instances.length > 0) {
             instanceSize = $scope.instances.length;
-            idx = (idx > instanceSize - 1) ? 0 : idx++;            
+            idx++;
+            if (idx > instanceSize - 1) {
+                idx = 0;
+            }
         }
     }
 
@@ -273,7 +276,7 @@ function configController($scope, instances, config) {
                 "wagonNR": Number(newConfig.wagonNR),
                 "wagon": {
                     "enabled": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].enabled : 0,
-                    "name": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].name  : "",
+                    "name": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].name : "",
                     "numOperations": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].numOperations : 0,
                     "operation": {
                         "enabled": selectedOperation > 0 ? newConfig.wagon[selectedWagon - 1].operations[selectedOperation - 1].enabled : 0,
@@ -284,8 +287,8 @@ function configController($scope, instances, config) {
             }
 
         };
-        
-        config.updateInstance(cfg).then(function(){
+
+        config.updateInstance(cfg).then(function () {
             console.log('Instância: ' + selectedInstance + ' atualizada');
             window.location.reload();
         });
