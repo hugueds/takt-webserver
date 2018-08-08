@@ -275,7 +275,8 @@ plc.updateConfig2 = (data, callback) => {
     // Instance
     arrayBuffer.writeInt8(18, 8);
     arrayBuffer.writeInt8(data.config.name.length, 9);
-    arrayBuffer.write(data.config.parallelInstance, 28);
+    arrayBuffer.write(data.config.name, 10);
+    arrayBuffer.writeInt16BE(data.config.parallelInstance, 28);
     arrayBuffer.writeInt16BE(data.config.cycleNumber, 30);
     arrayBuffer.writeInt16BE(data.config.wagonNR, 32);
 

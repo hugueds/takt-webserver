@@ -41,6 +41,7 @@ router.get('/:instanceId', (req, res, next) => {
             if (err) {
                 return res.json(err);                
             }
+            console.log(data);
             res.json(data);
         });
     } catch (err) {

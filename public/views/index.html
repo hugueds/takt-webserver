@@ -4,7 +4,7 @@
 
     <div class="stop-time-box">
         <div class="stop-time">
-            {{takt.lineStopTime | takt}} 
+            {{takt.lineStopTime | takt}}
         </div>
         <div class="stop-time-text">
             STOP TIME - LINE
@@ -18,16 +18,16 @@
         <div class="takt-time-text">
             TAKT LINE
         </div>
-        <div class="takt-time" ng-class="{ 'takt-negative' : taktNegative}">
+        <div class="takt-time" ng-class="{ 'takt-negative' : taktNegative, 'andon': andon }">
             {{takt.lineTakt | takt}}
         </div>
         <div class="takt-time-log-title" ng-if="showAvailability">
             PICKING TAKT
         </div>
-        <div class="takt-time-log" ng-class="" ng-if="showAvailability && takt.wagon[0].timer > 0" >
+        <div class="takt-time-log" ng-class="" ng-if="showAvailability && takt.wagon[0].timer > 0">
             {{takt.wagon[0].timer | takt}}
         </div>
-        <div class="availability-time-log"  ng-if="showAvailability && takt.wagon[0].timer <= 0" >
+        <div class="availability-time-log" ng-if="showAvailability && takt.wagon[0].timer <= 0">
             {{takt.wagon[0].availability | takt}}
         </div>
         <!-- SE FOR INSTANCIA DO PARACHOQUE, EXIBIR O TAKT DA SEPARAÇÃO -->
@@ -65,8 +65,8 @@
 
     <div ng-repeat="wagon in wagons">
 
-        <div class="wagon" ng-if="wagon.enabled">
-
+        <div class="wagon" ng-if="wagon.enabled" ng-class="{ wagonCall : wagonParalama[$index] == true }" ng-click="deliverWagon(wagon)">
+            
             <div ng-repeat="popid in popidWagon">
                 <div class="wagon-popid" ng-class="wagonColor(popid, wagon.quantity)">
                     <span class="wagon-popid-text"> {{popid}} </span>

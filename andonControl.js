@@ -8,7 +8,7 @@ let locked = false;
 
 let bytes = generateBytes(4);
 
-andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1350);
+andonControl.start = () => andonInterval = setInterval(checkAndonStatus, 1250);
 andonControl.stop = () => clearInterval(andonInterval);
 
 function checkAndonStatus() {
@@ -16,33 +16,34 @@ function checkAndonStatus() {
         return;
     }
     if (!instances || !instances.length) {
+        console.error('Instances not found');
         plc.getInstances2((err, data) => instances = data);
         locked = false;
         return;
     }
     locked = true;
     plc.getAndons((err, buffer) => {
-        let readBytes = generateBytesFromBuffer(buffer);
+        const readBytes = generateBytesFromBuffer(buffer);
         for (let i = 0; i < bytes.length; i++) {
             for (let j = 0; j < readBytes.length; j++) {
                 if (bytes[i].index == readBytes[j].index) {
-                    if (!bytes[i].active && readBytes[j].active) {
+                    if (!bytes[i].active && readBytes[j].active && bytes[i].index < 17) {
                         try {
-                            let index = bytes[i].index;
-                            let inst = instances || instances.length > 0 ? instances[index] : '';
-                            let message = 'Chamando Andon na Instância: ' + index + ' - ' + inst;
+                            const index = bytes[i].index;
+                            const inst = instances || instances.length > 0 ? instances[index] : '';
+                            const message = 'Chamando Andon na Instância: ' + index + ' - ' + inst;
                             Bot.sendMessage(process.env.ANDON_LOG_CHAT, message);
                             console.log(message);
                         } catch (err) {
                             console.error('Error na requisição do Telegram', err);
-                        } finally {
-                            locked = false;
-                        }
+                        } 
                     }
                 }
             }
         }
+        locked = false;
         bytes = readBytes;
+        andonControl.bytes = readBytes;
     });
 }
 

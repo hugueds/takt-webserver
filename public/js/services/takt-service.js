@@ -148,6 +148,7 @@ function configService($http) {
     o.updateInstance = function (config) {
         return $http.post('/config', config)
             .success(function (data) {
+                console.log('DATA' + data);
                 console.log('Config Instance: ' + data.instance + ' updated');
                 o.getConfigInstance(data.instance);
             })

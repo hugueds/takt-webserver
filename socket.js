@@ -1,4 +1,5 @@
 const plc = require('./plc/plc');
+const andonControl = require('./andonControl');
 let socketServer = null;
 let clients = [];
 let instances = [];
@@ -14,7 +15,7 @@ function updateInstances() {
             instances = data;
             locked = false;
         });
-    }    
+    }
     return;
 }
 
@@ -68,6 +69,15 @@ module.exports = {
             socket.on('ping', (data) => {
                 console.log(data.toString());
                 socket.emit('pong', 'pong');
+            });
+
+            socket.on('get-wagon-call', (data) => {
+                if (!andonControl) {
+                    return;
+                }
+                const andon = andonControl.bytes.filter(a => a.index == data);
+                // socket.emit('wagon-call', andon);
+                socket.emit('wagon-call', andonControl.bytes);
             });
 
         });

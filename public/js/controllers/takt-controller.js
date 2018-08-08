@@ -15,6 +15,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $scope.popidWagon = [];
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();
+    $scope.wagonParalama = [];
 
     $interval(getPrideData, 1000);
     $interval(updateInstance, 10000);
@@ -25,6 +26,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
                 $scope.showAvailability = true;
             }
             socket.emit('get-takt', $scope.instances[idx].id);
+            socket.emit('get-wagon-call', $scope.instances[idx].id);
         }
         generateWagons($scope.cfgWagonAmount);
     }
@@ -39,7 +41,26 @@ function mainController($scope, $filter, socket, $interval, instances) {
         }
     }
 
+    socket.on('wagon-call', function (data) {
+        if ($scope.instances[idx].id == paralamaInstance) {
+            $scope.wagonParalama[0] = data[17].active;
+            $scope.wagonParalama[1] = data[18].active;
+        }
+
+    });
+
+    $scope.wagonAndonStatus = function (wagon) {
+        console.log(wagon);
+    }
+
+    $scope.deliverWagon = function (wagon) {
+        console.log(wagon);
+        // socket.emit(wagon-delivered, wagon)
+    }
+
     socket.on('server-takt-instance', function (data) { console.log(data.remainingTime) });
+
+
 
     $scope.wagonColor = function (wagon, quantity) {
         var color = { green: 0.75, yellow: 0.9, red: 1 };
@@ -71,6 +92,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
             return;
         }
 
+        $scope.andon = data.andon;
         $scope.takt = data;
         $scope.cfgWagonNumber = data.cfgWagonNumber; //Numero de vagoes
         $scope.cfgWagonAmount = data.cfgWagonAmount; //Numero de Popids por vagao
@@ -83,6 +105,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
         if (data.lineTakt <= 0) {
             $scope.taktNegative = true;
         }
+
 
     }
 
@@ -274,6 +297,7 @@ function configController($scope, instances, config) {
                 "name": newConfig.name,
                 "cycleNumber": Number(newConfig.cycleNumber),
                 "wagonNR": Number(newConfig.wagonNR),
+                "parallelInstance": Number(newConfig.parallelInstance),
                 "wagon": {
                     "enabled": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].enabled : 0,
                     "name": selectedWagon > 0 ? newConfig.wagon[selectedWagon - 1].name : "",
@@ -288,9 +312,11 @@ function configController($scope, instances, config) {
 
         };
 
+        console.log(cfg);
+
         config.updateInstance(cfg).then(function () {
             console.log('Instância: ' + selectedInstance + ' atualizada');
-            window.location.reload();
+            // window.location.reload();
         });
     }
 

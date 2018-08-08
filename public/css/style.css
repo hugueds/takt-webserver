@@ -66,6 +66,10 @@ body {
     font-family: 'DSDIGI';
 }
 
+.andon {
+    background-color: yellow;
+}
+
 .takt-negative {
     color: red;
 }
@@ -135,7 +139,19 @@ body {
     position: relative;
     float: left;
     margin-left: 10%;    
+    padding-left: 7rem;
 }
+
+.wagon.wagonCall {
+    background-color: rgb(0, 242, 255);
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
 
 .wagon-popid {
     border: 2px solid black;

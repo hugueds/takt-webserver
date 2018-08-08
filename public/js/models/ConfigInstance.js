@@ -7,6 +7,7 @@ var ConfigInstance = function (params) {
         "name": params.config.name,
         "cycleNumber": params.config.cycleNumber,
         "wagonNR": params.config.wagonNR,
+        "parallelInstance": params.config.parallelInstance,
         "wagon": {
             "enabled": params.config.wagon.enabled,
             "name": params.config.wagon.name,
