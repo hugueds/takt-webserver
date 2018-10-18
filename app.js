@@ -12,8 +12,17 @@ const index = require('./routes/index');
 const configInstance = require('./routes/config');
 const PORT = process.env.PORT || process.env.DEV_PORT;
 
+const allowCrossDomain = function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+};
+
+
 app.set('views', path.join(__dirname, 'views')) // view engine setup
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
+app.use(allowCrossDomain);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -40,15 +49,8 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-const allowCrossDomain = function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-};
 
 
-app.use(allowCrossDomain);
 
 
 

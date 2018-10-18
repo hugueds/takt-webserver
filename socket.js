@@ -72,7 +72,7 @@ module.exports = {
             });
 
             socket.on('get-wagon-call', (data) => {
-                if (!andonControl) {
+                if (!andonControl || !andonControl.bytes) {
                     return;
                 }
                 const andon = andonControl.bytes.filter(a => a.index == data);
