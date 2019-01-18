@@ -1,27 +1,29 @@
 #!/usr/bin/env node
 
-require('console-stamp')(console, '[HH:MM:ss.l]');
+require('console-stamp')(console, '[dd/mm HH:MM:ss.l]');
 const dotenv = require('dotenv').config();
+const debug = require('debug')('taktwebserver:server');
+
+const app = require('../app');
+const http = require('http');
+const server = http.createServer(app);
+
+const PORT = process.env.PORT || process.env.DEV_PORT;
 
 const andonControl = require('../andonControl');
 const socket = require('../socket.js');
-
-const app = require('../app');
-const http = require('http').Server(app);
-const PORT = process.env.PORT || process.env.DEV_PORT;
 const plc = require('../plc/plc');
 
+
+app.set('port', PORT);
+
 plc.connect();
-socket.start(http);
+socket.start(server);
 andonControl.start();
 
-http.listen(parseInt(PORT), (err) => {
-  if (err) return console.error(err);
-  console.log('Ambiente -> ' + app.settings.env);
-  console.log("Server Connected at port:", PORT);
-});
-
-http.on('error', onError);
+server.listen(PORT);
+server.on('error', onError);
+server.on('listening', onListening);
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -43,10 +45,18 @@ function onError(error) {
   }
 }
 
-process.on('SIGINT', function () {
-  console.log("Caught interrupt signal");
-  plc.disconnect();
-  process.exit(1);
-});
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
 
-module.exports = http;
+// process.on('SIGINT', function () {
+//   console.log("Caught interrupt signal");
+//   plc.disconnect();
+//   process.exit(1);
+// });
+
+
