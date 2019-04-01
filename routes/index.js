@@ -35,18 +35,21 @@ router.get('/telegram/:message', (req, res, next) => {
 
 router.get('/telegram/:group/:message', (req, res, next) => {
     const { group, message } = req.params;
-    console.log(`Sending Message to Group: ${group} \n Message: ${message}`);
+    const event = `Sending Message to Group: ${group} \n Message: ${message}`;
+    console.log(event);
     if (message === '' || !message) {
         message = 'Default Message';
     }
     try {
-        const compositeGroup = 'TELEGRAM_CHAT_' + group || 0;
-        Bot.sendMessage(process.env[compositeGroup], message, {parse_mode: 'HTML'});
+        const compositeGroup = 'TELEGRAM_CHAT_' + group;
+        const groupId = process.env[compositeGroup];
+        console.log('GROUP ID: ' + groupId);
+        Bot.sendMessage(groupId, message, { parse_mode: 'HTML' });
     }
     catch (err) {
         next();
     }
-    res.status(200).json({ message: message });
+    res.status(200).json({ event: event, message: message });
 });
 
 

@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
 require('console-stamp')(console, '[dd/mm HH:MM:ss.l]');
-const dotenv = require('dotenv').config();
-const debug = require('debug')('taktwebserver:server');
-
 const app = require('../app');
+const debug = require('debug')('pride:server');
 const http = require('http');
-const server = http.createServer(app);
+const dotenv = require('dotenv').config();
 
 const PORT = process.env.PORT || process.env.DEV_PORT;
 
 const andonControl = require('../andonControl');
 const socket = require('../socket.js');
 const plc = require('../plc/plc');
+
+const server = http.createServer(app);
 
 
 app.set('port', PORT);
@@ -29,15 +29,20 @@ function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
+
+  const bind = typeof PORT === 'string'
+  ? 'Pipe ' + PORT
+  : 'Port ' + PORT;
+
   switch (error.code) {
     case 'EACCES':
       console.error(PORT, ' requires elevated privileges');
-      plc.disconnect();
+      // plc.disconnect();
       process.exit(1);
       break;
     case 'EADDRINUSE':
       console.error(PORT, ' is already in use');
-      plc.disconnect();
+      // plc.disconnect();
       process.exit(1);
       break;
     default:
