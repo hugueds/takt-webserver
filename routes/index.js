@@ -5,6 +5,11 @@ const Bot = require('../telegramBot');
 
 router.route('/').get(plc.index);
 
+router.get('/bus', (req, res) => {
+	return res.sendFile('..public/bus.html', { root: __dirname });
+})
+
+
 router.route('/instances')
     .get(plc.getInstances);
 

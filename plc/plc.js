@@ -39,7 +39,7 @@ plc.getData = (callback) => {
     }
     // let pointer = (PLC_CONFIG.DB_START + (instance * PLC_CONFIG.DB_SIZE)); // CALCULA AREA DE DADOS DE ACORDO COM A INSTANCIA
     // data = s7.DBRead(PLC_CONFIG.DB_NUMBER, pointer, PLC_CONFIG.DB_SIZE);
-    const MAX_INSTANCES = 18;
+    const MAX_INSTANCES = +process.env.MAX_INSTANCES || 19;
     s7.DBRead(PLC_CONFIG.DB_NUMBER, 0, PLC_CONFIG.DB_SIZE * MAX_INSTANCES, function (err, data) {
         if (!data || data.length === 0 || err) {
             console.error(">> No Data to get! - Instance Data");
@@ -121,7 +121,7 @@ plc.getInstances = () => {
         return console.error(">> There is no connection with PLC: " + PLC_CONFIG.PLC_SERVER);
     }
     let instances = [];
-    let size = 18;
+    let size = 19;
     let start = 0;
     console.log('Buscando instâncias no PLC');
     for (let i = 0; i < PLC_CONFIG.MAX_INSTANCES; i++) {
@@ -139,7 +139,7 @@ plc.getInstances = () => {
 }
 
 plc.getInstances2 = (callback) => {
-    const MAX_INSTANCES = 18;
+    const MAX_INSTANCES = +process.env.MAX_INSTANCES || 19;
     let instances = [];
     plc.getData((err, data) => {
         if (err) 
