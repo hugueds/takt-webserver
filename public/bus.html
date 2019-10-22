@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>BUS TAKT TIME</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/black-theme.css" id='theme-css' />
+</head>
+
+<body>
+
+    <div class="container-fluid">
+
+        <div class="row title">
+            <h1 class='col-lg-12 col-md-12'>TAKT BUS</h1>
+        </div>
+
+        <div class="takt-time">
+            <span id='takt' class="text-center col-xs-12 col-lg-12 col-md-12"> 00:00 </span>
+        </div>
+
+        <div class='row production'>
+
+            <div class='col-md-4 col-lg-4 col-md-4 text-center'>
+                <div id='produced-text' class='col-md-5 col-md-offset-5 result-text'>PRODUZIDOS</div>
+                <div id='produced-value' class="col-md-5 col-md-offset-5 result-value"> 0 </div>
+            </div>
+
+            <div class='col-md-4 col-lg-4 col-md-4 text-center'>
+                <div id='time-text' class='col-md-5 col-md-offset-5 result-text'>HORA</div>
+                <div id='time-value' class='col-md-5 col-md-offset-5'>00:00</div>
+            </div>
+
+            <div class='col-md-4 col-lg-4 col-md-4 text-center'>
+                <div id='objective-text' class="col-md-5 col-md-offset-5 col-lg-5 col-lg-offset-5  result-text">
+                    OBJETIVO
+                </div>
+                <div id='objective-value' class='col-md-5 col-md-offset-5  col-lg-5 col-lg-offset-5  result-value'> 
+                    0
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row text-center">
+            <button id='change-theme'>MUDAR TEMA </button>
+        </div>
+
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/signal-r.min.js"></script>
+    <!-- <script src='js/socket-io.js'></script> -->
+    <!-- <script src="js/script.js"></script> -->
+
+    <script>
+
+        setTimeout(function() {
+            window.location.reload();
+        }, 360000)
+
+        var negative = false;
+        var selectedTheme = "dark";
+
+        var theme = {
+            "dark": { "href": "css/black-theme.css", "background": "black" },
+            "light": { "href": "css/white-theme.css", "background": "white" }
+        }
+
+
+        // var server = 'http://192.27.1.150/taktbus';
+        var server = 'http://' + window.location.host + '/taktbus';
+        var url = server + '/signalr';
+
+        var connection = $.hubConnection(url, { useDefaultPath: false });
+        var eventHubProxy = connection.createHubProxy('TaktHub');
+
+        connectSignalR();
+
+        function connectSignalR() {
+            connection.start()
+            .done(function () { 
+                    console.log('Connected');
+            })
+            .fail(function (err) {
+                setTimeout(function () { 
+                    connectSignalR(); 
+                }, 10000);
+                console.error(err);
+            });
+        }
+        
+
+        eventHubProxy.on('takt', function (a, b) {            
+            $('#takt').text(convertTime(b.timer));
+            $('#produced-value').text(b.production);
+            $('#objective-value').text(b.objective);
+            changeBackground();
+        });
+
+        function changeBackground() {
+            if (negative) {
+                return $('body').css('background', 'red');
+            }
+            $('body').css('background', theme[selectedTheme].background);
+        }
+
+        function convertTime(ms) {
+            var hr, min, sec;
+            if (ms < 0) {
+                negative = true;
+                ms = ms * -1;
+            }
+            else {
+                negative = false;
+            }
+
+            hr = 0;
+            min = (ms / 1000 / 60) << 0;
+            sec = (ms / 1000) % 60;
+
+            // takt = min;
+            // takt = sec < 10 ? min += ":0" : min+=":";
+
+            if (sec < 10)
+                takt = min + ":0" + sec;
+            else
+                takt = min + ":" + sec;
+
+            if (negative)
+                takt = "-" + takt;
+
+            return takt;
+        }
+
+        function getTime() {
+            var date = new Date();
+            var h = date.getHours();
+            var m = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+            document.getElementById("time-value").innerHTML = h + ':' + m;
+        }
+
+        var timeInterval = setInterval(getTime, 60000);
+
+    </script>
+
+
+</body>
+
+</html>
