@@ -22,7 +22,9 @@ function updateInstances() {
 module.exports = {
     start: function (httpServer) {
 
-        const io = require('socket.io')(httpServer);
+        const io = require('socket.io')(httpServer, { path: '/pride/socket.io' });
+
+	const np = io.of('/pŕide');
 
         io.on('connection', (socket) => {
 

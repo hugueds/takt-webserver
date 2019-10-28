@@ -11,7 +11,7 @@ function adjustService($http) {
     };
 
     o.getWagon = function () {
-        return $http.get('/wagons')
+        return $http.get('/pride/wagons')
             .success(function (data) {
                 angular.copy(data, o.wagons);
             })
@@ -20,7 +20,7 @@ function adjustService($http) {
 
     //Atualiza a quantidade de popids consumidos no comboio
     o.updateWagon = function (instance, wagon) {
-        return $http.post('/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/quantity', { quantity: wagon.quantity }) //HARD CODED PARA UMA INSTANCIA
+        return $http.post('/pride/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/quantity', { quantity: wagon.quantity }) //HARD CODED PARA UMA INSTANCIA
             .success(function (data) {
                 console.log("Dados Atualizados ", data);
             })
@@ -29,7 +29,7 @@ function adjustService($http) {
 
     //Atualiza o Stop Time da instancia
     o.updateStopTime = function (instance, time) {
-        return $http.post('/instance/' + instance + '/stop-time', { time: time }) //HARD CODED PARA UMA INSTANCIA
+        return $http.post('/pride/instance/' + instance + '/stop-time', { time: time }) //HARD CODED PARA UMA INSTANCIA
             .success(function (data) {
                 console.log("Stop time has been updated", data);
             })
@@ -38,7 +38,7 @@ function adjustService($http) {
 
     //Atualiza o Timer da instancia de acordo com o comboio selecionado
     o.updateWagonTime = function (instance, wagon, time) {
-        return $http.post('/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/timer', { timer: time }) //HARD CODED PARA UMA INSTANCIA
+        return $http.post('/pride/instance/' + instance + '/wagon/' + (wagon.number - 1) + '/timer', { timer: time }) //HARD CODED PARA UMA INSTANCIA
             .success(function (data) {
                 console.log(data);
             })
@@ -79,7 +79,7 @@ function instanceService($http, $q, $state, $localStorage, $window) {
     }
 
     o.getAvailableInstances = function () {
-        return $http.get('/instances')
+        return $http.get('/pride/instances')
             .success(function (data) {
                 let instances = data.map((d, i) => new Instance(i, d));
                 angular.copy(instances, o.availableInstances);
@@ -113,7 +113,7 @@ function instanceService($http, $q, $state, $localStorage, $window) {
             local.device = device;
             local.instances = instances;
             o.registered = true;
-            return setTimeout(function () { location = window.location.origin; }, 100);
+            return setTimeout(function () { location = window.location.origin + '/pride'; }, 500);
         }
     }
 
@@ -135,7 +135,7 @@ function configService($http) {
 
 
     o.getConfigInstance = function (instanceId) {
-        return $http.get('/config/' + instanceId)
+        return $http.get('/pride/config/' + instanceId)
             .success(function (config) {
                 config.instance = Number(instanceId);
                 angular.copy(config, o.configInstance);
@@ -146,7 +146,7 @@ function configService($http) {
     }
 
     o.updateInstance = function (config) {
-        return $http.post('/config', config)
+        return $http.post('/pride/config', config)
             .success(function (data) {
                 console.log('DATA' + data);
                 console.log('Config Instance: ' + data.instance + ' updated');

@@ -1,12 +1,15 @@
 angular.module('socket-service',[])
 .factory('socket', function ($rootScope) {
 
-	const serverLan = 'http://10.8.66.81';
+	const serverLan = 'http://10.8.66.81:8084';
 	const serverWifi = 'rpitimerserver';
 
 	var locationServer = 'http://' + window.location.hostname;
+	//locationServer = serverLan;
 
- 	var socket = io();
+//	var socket = io('/pride');
+ 	var socket = io('/', {path: '/pride/socket.io'});
+	
 
  	return {
  		on: function (eventName, callback) {

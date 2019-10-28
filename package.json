@@ -1,9 +1,9 @@
 {
   "name": "pride",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "scripts": {
-    "start": "sudo node bin/www"
+    "start": "node bin/www"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -16,6 +16,7 @@
     "ejs": "^2.5.6",
     "express": "^4.14.1",
     "morgan": "^1.9.1",
+    "mqtt": "^3.0.0",
     "node-snap7": "^1.0.1",
     "node-telegram-bot-api": "^0.30.0",
     "serve-favicon": "^2.3.2",
@@ -23,7 +24,7 @@
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
-    "browser-sync": "^2.18.8",
+    "browser-sync": "^2.26.7",
     "browsersync": "0.0.1-security"
   }
 }

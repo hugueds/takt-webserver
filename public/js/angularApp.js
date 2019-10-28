@@ -2,7 +2,7 @@
 angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appFilters'])
     .constant('SERVER', 'http://10.8.66.81/')
     .constant('HOSTNAME', 'rpitimerserver')
-    .constant('PRIDE_PORT', '80')
+    .constant('PRIDE_PORT', '8084')
     .constant('PART_MISSING_PORT', '8083')    
     .config([
         '$stateProvider', '$urlRouterProvider', '$locationProvider',
@@ -17,7 +17,10 @@ angular.module('TaktApp', ['ui.router', 'ui.bootstrap', 'takt-controller', 'appF
                 onEnter : function($state, instances) { 
                     instances.checkInstance().then(function (hasInstance){
                         if (!hasInstance) {
-                            $state.go('welcome');
+			    setTimeout(function() {
+				$state.go('welcome');
+			    }, 1000)
+                            
                             console.log('There is no instances set');
                         }
                     })

@@ -27,9 +27,9 @@ app.use(allowCrossDomain);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static('public'));
-app.use('/config', configInstance);
-app.use('/', index);
+app.use('/pride', express.static('public'));
+app.use('/pride/config', configInstance);
+app.use('/pride', index);
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //app.use(logger('dev'));
 

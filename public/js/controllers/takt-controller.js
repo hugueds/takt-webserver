@@ -226,7 +226,7 @@ function adjustController($scope, $log, adjust, socket, instances) {
     }
 }
 
-function welcomeController($scope, socket, instances) {
+function welcomeController($scope, instances) {
 
     init();
 
