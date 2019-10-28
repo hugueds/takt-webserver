@@ -13,20 +13,18 @@ const andonControl = require('../andonControl');
 const socket = require('../socket.js');
 const plc = require('../plc/plc');
 
-
-
 const server = http.createServer(app);
 
-
-
-
-plc.connect();
-socket.start(server);
+// plc.connect();
+// socket.start(server); //TEST
 andonControl.start();
 
 server.listen(PORT);
 server.on('error', onError);
 server.on('listening', onListening);
+
+socket.start(server);
+plc.connect();
 
 function onError(error) {
   
@@ -36,12 +34,12 @@ function onError(error) {
 
   switch (error.code) {
     case 'EACCES':
-      console.error(PORT, ' requires elevated privileges');
+      console.error(PORT, 'requires elevated privileges');
       // plc.disconnect();
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(PORT, ' is already in use');
+      console.error(PORT, 'is already in use');
       // plc.disconnect();
       process.exit(1);
       break;
