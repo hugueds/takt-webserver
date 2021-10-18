@@ -16,6 +16,7 @@ function mainController($scope, $filter, socket, $interval, instances) {
     $scope.device = instances.getDevice();
     $scope.instances = instances.getInstances();
     $scope.wagonParalama = [];
+    $scope.activeInstance = 0;
 
     $interval(getPrideData, 1000);
     $interval(updateInstance, 10000);
@@ -25,19 +26,18 @@ function mainController($scope, $filter, socket, $interval, instances) {
             if ($scope.instances[idx].id == paralamaInstance) {
                 $scope.showAvailability = true;
             }
-            socket.emit('get-takt', $scope.instances[idx].id);
-            socket.emit('get-wagon-call', $scope.instances[idx].id);
+            // socket.emit('get-takt', $scope.instances[idx].id);
+            // socket.emit('get-wagon-call', $scope.instances[idx].id);
         }
         generateWagons($scope.cfgWagonAmount);
     }
 
-    function updateInstance() {
-        if ($scope.instances && $scope.instances.length > 0) {
+    function updateInstance() {        
+        if ($scope.instances && $scope.instances.length) {
             instanceSize = $scope.instances.length;
-            idx++;
-            if (idx > instanceSize - 1) {
-                idx = 0;
-            }
+            $scope.activeInstance++;
+            if ($scope.activeInstance > instanceSize - 1)
+                $scope.activeInstance = 0;
         }
     }
 
@@ -46,7 +46,6 @@ function mainController($scope, $filter, socket, $interval, instances) {
             $scope.wagonParalama[0] = data[17].active;
             $scope.wagonParalama[1] = data[18].active;
         }
-
     });
 
     $scope.wagonAndonStatus = function (wagon) {
@@ -59,8 +58,6 @@ function mainController($scope, $filter, socket, $interval, instances) {
     }
 
     socket.on('server-takt-instance', function (data) { console.log(data.remainingTime) });
-
-
 
     $scope.wagonColor = function (wagon, quantity) {
         var color = { green: 0.75, yellow: 0.9, red: 1 };
@@ -76,8 +73,14 @@ function mainController($scope, $filter, socket, $interval, instances) {
 
     socket.on('put-takt', formatPlcData);
 
-    socket.on('newConnection', function (data) {
-        console.log("NOVA CONEXÃO > " + data.toString());
+    socket.on('new connection', (data) => {
+        if (data)
+            console.log("New Connection", data.toString());
+    });
+
+    socket.on('newConnection', (data) => {
+        if (data)
+            console.log("New Connection", data.toString());
     });
 
     $scope.reconnect = function () {
@@ -85,7 +88,10 @@ function mainController($scope, $filter, socket, $interval, instances) {
         console.log('Tentando reconectar com o PLC...');
     };
 
-    function formatPlcData(data) {
+    function formatPlcData(instance) {
+
+        var index = $scope.activeInstance;
+        var data = instance[index];
 
         if (data == null) {
             $scope.error = "Sem Conexao...";
@@ -105,8 +111,6 @@ function mainController($scope, $filter, socket, $interval, instances) {
         if (data.lineTakt <= 0) {
             $scope.taktNegative = true;
         }
-
-
     }
 
     function generateWagons(amount) {
@@ -114,7 +118,6 @@ function mainController($scope, $filter, socket, $interval, instances) {
         for (var i = 1; i <= amount; i++)
             $scope.popidWagon.push(i);
     }
-
 
 }
 

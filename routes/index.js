@@ -3,6 +3,8 @@ const router = express.Router();
 const plc = require('../routes/functions');
 const Bot = require('../telegramBot');
 
+const InstanceController = require('../InstanceController');
+
 router.route('/').get(plc.index);
 
 router.get('/bus', (req, res) => {
@@ -11,7 +13,10 @@ router.get('/bus', (req, res) => {
 
 
 router.route('/instances')
-    .get(plc.getInstances);
+    .get((req, res) => {
+        return res.json(InstanceController.getInstanceNames());
+    })
+    // .get(plc.getInstances); // old
 
 router.route('/instance/:instance/stop-time')
     .get(plc.getStopTime)

@@ -20,11 +20,12 @@ function updateInstances() {
 }
 
 module.exports = {
+
     start: function (httpServer) {
 
         const io = require('socket.io')(httpServer, { path: '/pride/socket.io' });
-
-	const np = io.of('/pŕide');
+        
+        const np = io.of('/pride');
 
         io.on('connection', (socket) => {
 
@@ -79,7 +80,7 @@ module.exports = {
                 }
                 const andon = andonControl.bytes.filter(a => a.index == data);
                 // socket.emit('wagon-call', andon);
-                socket.emit('wagon-call', andonControl.bytes);
+                // socket.emit('wagon-call', andonControl.bytes);
             });
 
         });

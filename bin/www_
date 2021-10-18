@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+require('console-stamp')(console, '[dd/mm HH:MM:ss.l]');
+const app = require('../app');
+const debug = require('debug')('pride:server');
+const http = require('http');
+const dotenv = require('dotenv').config();
+
+const PORT = process.env.PORT || process.env.DEV_PORT;
+app.set('port', PORT);
+
+const server = http.createServer(app);
+
+const InstanceController = require('../InstanceController');
+const SocketServer = require('../SocketServer');
+
+SocketServer.connect(server);
+InstanceController.start();
+
+setInterval(() => {
+  SocketServer.emit('put-takt', InstanceController.instances);
+}, 1000);
+
+
+server.listen(PORT);
+server.on('error', onError);
+server.on('listening', onListening);
+
+function onError(error) {
+
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(PORT, ' requires elevated privileges');
+      process.exit(1);
+    case 'EADDRINUSE':
+      console.error(PORT, ' is already in use');
+      process.exit(1);
+    default:
+      throw error;
+  }
+}
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string' ?
+    'pipe ' + addr :
+    'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+// process.on('SIGINT', function () {
+//   console.log("Caught interrupt signal");
+//   plc.disconnect();
+//   process.exit(1);
+// });

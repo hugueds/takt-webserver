@@ -11,22 +11,24 @@ class PLC {
         this.locked = false;
     }
 
-    connect() {
-        if (this.locked) {
-            return;
-        }
-        try {
-            this.locked = true;
-            this.s7.ConnectTo(this.ip, this.rack, this.slot, (err) => {
-                this.locked = false;
-                if (err)
-                    this._handleConnectionError(err);
-                else
-                    console.log(`PLC Connected at ${this.ip}`);
+    async connect() {
 
-            });
+        if (this.locked)
+            return;
+
+        this.locked = true;
+
+        try {
+            const res = await this.s7.ConnectTo(this.ip, this.rack, this.slot);
+            if (res)
+                console.log(`PLC Connected at ${this.ip}`);
+            else
+                console.error(`PLC ${this.ip} failed to connect`);
+            
         } catch (err) {
             this._handleConnectionError(err);
+        } finally {
+            this.locked = false;
         }
     }
 
@@ -36,10 +38,11 @@ class PLC {
 
     getPLCInfo() {
 
-        if (this.locked) {
+        if (this.locked)
             return;
-        }
+
         this.locked = true;
+
         const Promise = new Promise((resolve, reject) => {
             this.s7.GetCpuInfo((err, data) => {
                 if (!err) {
@@ -56,7 +59,6 @@ class PLC {
         return Promise;
 
     }
-
 
 
     _handleConnectionError(err) {
